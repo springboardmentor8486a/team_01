@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const homeRoutes = require('./router/homeRoutes');
 const adminRoutes = require('./router/adminRoutes');
 const volunteerRoutes = require('./router/volunteerRoutes');
@@ -8,6 +9,7 @@ const app = express();
 const connectToDb = require('./database/db');
 // middleware
 app.use(express.json());
+app.use(cookieParser());
 
 // connect the db
 connectToDb();

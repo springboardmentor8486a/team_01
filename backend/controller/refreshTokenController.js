@@ -3,7 +3,7 @@ const User = require("../model/userModel");
 
 // Refresh Token Controller
 const refreshTokenController = async (req, res) => {
-    const { refreshToken } = req.body;
+    const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
         return res.status(401).json({ success: false, message: "Refresh token required" });
     }
