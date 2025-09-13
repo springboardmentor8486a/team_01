@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registerController, loginController } = require('../controller/authController');
+const { registerController, loginController, forgotPasswordController, verifyOtpController, resetPasswordController } = require('../controller/authController');
 const { refreshTokenController } = require('../controller/refreshTokenController');
 const authenticateJWT = require('../middleware/authMiddleware');
 
@@ -8,6 +8,12 @@ const authenticateJWT = require('../middleware/authMiddleware');
 router.post('/register', registerController);
 // login
 router.post('/login', loginController);
+// forgot password - send OTP
+router.post('/forgot-password', forgotPasswordController);
+// verify OTP
+router.post('/verify-otp', verifyOtpController);
+// reset password
+router.post('/reset-password', resetPasswordController);
 // refresh token
 router.post('/refresh-token', refreshTokenController);
 
