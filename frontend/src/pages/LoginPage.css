@@ -1,0 +1,9 @@
+/* src/pages/LoginPage.css */
+.login-page {
+  width: 1241px;
+   height: 832px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #cce0f5;
+}
