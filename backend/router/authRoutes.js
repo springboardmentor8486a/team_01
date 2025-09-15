@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registerController, loginController, forgotPasswordController, verifyOtpController, resetPasswordController } = require('../controller/authController');
+const { registerController, loginController, forgotPasswordController, verifyOtpController, resetPasswordController, logoutController } = require('../controller/authController');
 const { refreshTokenController } = require('../controller/refreshTokenController');
 const authenticateJWT = require('../middleware/authMiddleware');
 
@@ -16,6 +16,8 @@ router.post('/verify-otp', verifyOtpController);
 router.post('/reset-password', resetPasswordController);
 // refresh token
 router.post('/refresh-token', refreshTokenController);
+// logout
+router.post('/logout', authenticateJWT, logoutController);
 
 // Example protected route (uncomment to use)
 // router.get('/protected', authenticateJWT, (req, res) => {
