@@ -193,10 +193,55 @@ const resetPasswordController = async (req, res) => {
     }
 };
 
+// Logout Controller
+const TokenBlacklist = require("../model/tokenBlacklistModel");
+
+const logoutController = async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ success: false, message: "Authorization header missing or invalid" });
+        }
+        const token = authHeader.split(' ')[1];
+
+        // Add the token to blacklist with expiry
+        const decoded = jwt.decode(token);
+        if (!decoded || !decoded.exp) {
+            return res.status(400).json({ success: false, message: "Invalid token" });
+        }
+        const expiryDate = new Date(decoded.exp * 1000); // exp is in seconds
+
+        const blacklistedToken = new TokenBlacklist({
+            token,
+            expiresAt: expiryDate
+        });
+        await blacklistedToken.save();
+
+        // Clear the refresh token cookie
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict'
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Logout successful"
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Logout failed",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     registerController,
     loginController,
     forgotPasswordController,
     verifyOtpController,
-    resetPasswordController
+    resetPasswordController,
+    logoutController
 };
