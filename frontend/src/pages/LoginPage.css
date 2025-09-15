@@ -1,9 +1,11 @@
-/* src/pages/LoginPage.css */
 .login-page {
-  width: 1241px;
-   height: 832px;
+  min-height: 100vh;       /* Full screen height */
+  width: 100vw;            /* Full screen width */
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #cce0f5;
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+  background-color: #CADFF6;
+  margin: 0;               /* Remove default margins */
+  padding: 0;
+  box-sizing: border-box;
 }

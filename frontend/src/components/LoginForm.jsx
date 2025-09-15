@@ -3,20 +3,18 @@ import React, { useState } from "react";
 import "./LoginForm.css";
 
 import logo from "../assets/logo.png";
+import maillogo from "../assets/maillogo.png";
+import padlock from "../assets/padlock.png";
 
-<div className="login-logo">
-  <img src={logo} alt="CleanStreet Logo" className="logo-img" />
-  <span className="logo-text">CleanStreet</span>
-</div>
 
 
 function LoginForm() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login clicked:", { username, password });
+    console.log("Login clicked:", { email, password });
     // later we’ll send this to backend
   };
 
@@ -29,15 +27,21 @@ function LoginForm() {
 
       <form onSubmit={handleSubmit}>
         <div className="input-box">
+          <span className="icon">
+     <img src={maillogo} alt="email" />
+      </span>
           <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
         <div className="input-box">
+          <span className="icon">
+    <img src={padlock} alt="password" />
+  </span>
           <input
             type="password"
             placeholder="Password"
