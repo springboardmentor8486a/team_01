@@ -1,6 +1,7 @@
 // src/components/LoginForm.jsx
 import React, { useState } from "react";
 import "./LoginForm.css";
+import { Link } from "react-router-dom";
 
 import logo from "../assets/logo.png";
 import maillogo from "../assets/maillogo.png";
@@ -51,7 +52,7 @@ function LoginForm() {
         </div>
 
         <div className="forgot">
-          <a href="#">Forgot Password?</a>
+          <Link to="/forgot-password">Forgot Password?</Link>
         </div>
 
         <button type="submit" className="login-btn">
