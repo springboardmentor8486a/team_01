@@ -3,6 +3,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import ForgotPassword from "./pages/ForgotPassword";
+import VerifyOtp from "./pages/VerifyOtp";
 
 function App() {
  return (
@@ -16,6 +17,9 @@ function App() {
 
         {/* forgot password */}
         <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        {/*otp*/}
+        <Route path="/verify-otp" element={<VerifyOtp />} />
       </Routes>
     </Router>
   );

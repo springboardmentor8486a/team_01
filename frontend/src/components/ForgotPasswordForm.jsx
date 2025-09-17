@@ -3,13 +3,14 @@ import React, { useState } from "react";
 import "./ForgotPasswordForm.css";
 import logo from "../assets/logo.png";
 import maillogo from "../assets/maillogo.png";
+import { useNavigate } from "react-router-dom";
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
   const validateEmail = (v) => /\S+@\S+\.\S+/.test(v);
-
+   const navigate=useNavigate();
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
@@ -18,9 +19,14 @@ export default function ForgotPasswordForm() {
       return;
     }
     // No API for now — show a confirmation toast / message
-    alert(`(UI only) OTP will be sent to ${email}`);
+    //alert(`(UI only) OTP will be sent to ${email}`);
     // Later: navigate to /otp and pass the email
     // navigate("/otp", { state: { email } });
+    // Later you’ll call API here
+    // Example: await axios.post("/auth/forgot-password", { email });
+
+    // For now, just navigate to Verify OTP page
+    navigate("/verify-otp");
   };
 
   return (
