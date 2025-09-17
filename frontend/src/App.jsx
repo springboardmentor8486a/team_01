@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import LoginPage from "./pages/LoginPage";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyOtp from "./pages/VerifyOtp";
+import HomePage from "./pages/HomePage";
 
 function App() {
  return (
@@ -14,6 +15,9 @@ function App() {
 
         {/* login page */}
         <Route path="/login" element={<LoginPage />} />
+
+        {/* home page */}
+        <Route path="/home" element={<HomePage />} />
 
         {/* forgot password */}
         <Route path="/forgot-password" element={<ForgotPassword />} />

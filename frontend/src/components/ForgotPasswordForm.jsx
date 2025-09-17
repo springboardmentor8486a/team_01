@@ -1,5 +1,6 @@
 // src/components/ForgotPasswordForm.jsx
 import React, { useState } from "react";
+import axios from "axios";
 import "./ForgotPasswordForm.css";
 import logo from "../assets/logo.png";
 import maillogo from "../assets/maillogo.png";
@@ -10,32 +11,36 @@ export default function ForgotPasswordForm() {
   const [error, setError] = useState("");
 
   const validateEmail = (v) => /\S+@\S+\.\S+/.test(v);
-   const navigate=useNavigate();
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     if (!validateEmail(email)) {
       setError("Please enter a valid email address");
       return;
     }
-    // No API for now — show a confirmation toast / message
-    //alert(`(UI only) OTP will be sent to ${email}`);
-    // Later: navigate to /otp and pass the email
-    // navigate("/otp", { state: { email } });
-    // Later you’ll call API here
-    // Example: await axios.post("/auth/forgot-password", { email });
-
-    // For now, just navigate to Verify OTP page
-    navigate("/verify-otp");
+    try {
+      const response = await axios.post("http://localhost:3000/api/auth/forgot-password", { email });
+      if (response.data && response.data.success) {
+        alert("OTP sent to your email");
+        navigate("/verify-otp", { state: { email } });
+      } else {
+        alert("Failed to send OTP. Please try again.");
+      }
+    } catch (error) {
+      alert("Error sending OTP. Please try again.");
+      console.error("Forgot password error:", error);
+    }
   };
 
   return (
     <div className="forgot-wrapper">
       <div className="forgot-card">
         <div className="forgot-header">
-         <div className="forgot-logo">
-                 <img src={logo} alt="CleanStreet Logo" className="logo-img" />
-               </div>
+          <div className="forgot-logo">
+            <img src={logo} alt="CleanStreet Logo" className="logo-img" />
+          </div>
         </div>
 
         <h1 className="forgot-title">Forgot Password?</h1>
@@ -47,8 +52,8 @@ export default function ForgotPasswordForm() {
         <form className="forgot-form" onSubmit={handleSubmit}>
           <div className="input-box">
             <span className="icon">
-                 <img src={maillogo} alt="email" />
-                  </span>
+              <img src={maillogo} alt="email" />
+            </span>
             <input
               type="email"
               placeholder="Enter your Mail Address"
