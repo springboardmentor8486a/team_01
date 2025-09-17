@@ -1,28 +1,36 @@
-import express from "express";
-import dotenv from "dotenv";
-import connectDB from "./config/db.js";
-import userRoutes from "./routes/userRoutes.js";
-import uploadRoutes from "./routes/uploadRoutes.js";
-
-
-dotenv.config();
-connectDB();
-
+require("dotenv").config();
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const homeRoutes = require('./router/homeRoutes');
+const adminRoutes = require('./router/adminRoutes');
+const volunteerRoutes = require('./router/volunteerRoutes');
+const authRoutes = require('./router/authRoutes');
+const issueRoutes = require('./router/issueRoutes');
 const app = express();
+const connectToDb = require('./database/db');
+// middleware
 app.use(express.json());
+app.use(cookieParser());
 
-
-app.use("/api/users", userRoutes);
-app.use("/api/upload", uploadRoutes);
-
-
-app.use((err, req, res, next) => {
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-  res.status(statusCode).json({
-    message: err.message,
-    stack: process.env.NODE_ENV === "production" ? null : err.stack,
-  });
+// connect the db
+connectToDb();
+app.get("/",(req, res)=>{
+   res.status(200).json({
+        success:"true",
+        message:"welcome hari"
+   })
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// routes
+app.use("/api/auth",authRoutes);
+app.use('/api/home', homeRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/volunteer', volunteerRoutes);
+app.use('/api/issues', issueRoutes);
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT,()=>{
+   console.log(`server is running on port:${PORT}`);
+});
+
