@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const User = require("../model/userModel");
+const { uploadToCloudinary } = require("../helpers/cloudinaryHelper");
 const registerController = async (req, res) => {
     try {
         const {name, email, password, role} = req.body;
@@ -14,13 +15,22 @@ const registerController = async (req, res) => {
                 message: "user already exists"
             })
         }
+
+        let profileImageUrl = null;
+        if (req.file) {
+            // Upload profile image to Cloudinary
+            const result = await uploadToCloudinary(req.file.buffer);
+            profileImageUrl = result.secure_url;
+        }
+
         // Hash password and save user
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ name, email, password: hashedPassword, role });
+        const newUser = new User({ name, email, password: hashedPassword, role, profileImage: profileImageUrl });
         await newUser.save();
         return res.status(201).json({
             success: true,
-            message: "User registered successfully"
+            message: "User registered successfully",
+            profileImage: profileImageUrl
         });
 
     } catch (error) {
@@ -237,11 +247,52 @@ const logoutController = async (req, res) => {
     }
 };
 
+// Profile Upload Controller
+const uploadProfileController = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "No file uploaded"
+            });
+        }
+
+        const userId = req.user.userId; // Assuming authMiddleware sets req.user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        // Upload to Cloudinary
+        const result = await uploadToCloudinary(req.file.buffer);
+
+        // Update user profile image
+        user.profileImage = result.secure_url;
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Profile image uploaded successfully",
+            profileImage: result.secure_url
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Profile upload failed",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     registerController,
     loginController,
     forgotPasswordController,
     verifyOtpController,
     resetPasswordController,
-    logoutController
+    logoutController,
+    uploadProfileController
 };

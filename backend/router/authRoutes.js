@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { registerController, loginController, forgotPasswordController, verifyOtpController, resetPasswordController, logoutController } = require('../controller/authController');
+const { registerController, loginController, forgotPasswordController, verifyOtpController, resetPasswordController, logoutController, uploadProfileController } = require('../controller/authController');
 const { refreshTokenController } = require('../controller/refreshTokenController');
 const authenticateJWT = require('../middleware/authMiddleware');
 
+const upload = require('../middleware/multer');
+
 // register
-router.post('/register', registerController);
+router.post('/register', upload.single('profileImage'), registerController);
 // login
 router.post('/login', loginController);
 // forgot password - send OTP
@@ -18,6 +20,9 @@ router.post('/reset-password', resetPasswordController);
 router.post('/refresh-token', refreshTokenController);
 // logout
 router.post('/logout', authenticateJWT, logoutController);
+
+// profile image upload
+router.post('/upload-profile', authenticateJWT, upload.single('profileImage'), uploadProfileController);
 
 // Example protected route (uncomment to use)
 // router.get('/protected', authenticateJWT, (req, res) => {
