@@ -1,14 +1,17 @@
 // src/components/ForgotPasswordForm.jsx
 import React, { useState } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setEmail } from "../store/authSlice";
 import "./ForgotPasswordForm.css";
 import logo from "../assets/logo.png";
 import maillogo from "../assets/maillogo.png";
 import { useNavigate } from "react-router-dom";
 
 export default function ForgotPasswordForm() {
-  const [email, setEmail] = useState("");
+  const [email, setEmailLocal] = useState("");
   const [error, setError] = useState("");
+  const dispatch = useDispatch();
 
   const validateEmail = (v) => /\S+@\S+\.\S+/.test(v);
   const navigate = useNavigate();
@@ -23,6 +26,7 @@ export default function ForgotPasswordForm() {
     try {
       const response = await axios.post("http://localhost:3000/api/auth/forgot-password", { email });
       if (response.data && response.data.success) {
+        dispatch(setEmail(email));
         alert("OTP sent to your email");
         navigate("/verify-otp", { state: { email } });
       } else {
@@ -58,7 +62,7 @@ export default function ForgotPasswordForm() {
               type="email"
               placeholder="Enter your Mail Address"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmailLocal(e.target.value)}
               aria-label="email"
             />
           </div>
