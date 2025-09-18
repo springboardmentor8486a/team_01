@@ -1,0 +1,122 @@
+/* Base container */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
+  font-family: "Arial", sans-serif;
+}
+
+/* Top (Blue Half) */
+.upper-section {
+  flex: 1;
+  background-color: #1e90ff;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+}
+
+/* Navbar */
+.landing-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.new-here-text {
+  font-size: 14px;
+}
+
+.get-started-btn {
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.get-started-btn:hover {
+  background: white;
+  color: #1e90ff;
+}
+
+/* Hero */
+.hero-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.hero-subtitle {
+  font-size: 20px;
+  margin-top: 8px;
+}
+
+/* Bottom (White Half) */
+.lower-section {
+  flex: 1;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.cards {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Individual Card */
+.card {
+  width: 200px;
+  border: 2px solid #1e90ff;
+  border-radius: 10px;
+  overflow: hidden;
+  background: white;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.card img {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+}
+
+.card p {
+  padding: 12px;
+  font-weight: 500;
+  font-size: 15px;
+  color: #333;
+}
