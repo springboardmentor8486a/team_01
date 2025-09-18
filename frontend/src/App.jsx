@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyOtp from "./pages/VerifyOtp";
 import HomePage from "./pages/HomePage";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
  return (
@@ -24,6 +25,9 @@ function App() {
 
         {/*otp*/}
         <Route path="/verify-otp" element={<VerifyOtp />} />
+        
+        {/* reset password*/}
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     </Router>
   );
