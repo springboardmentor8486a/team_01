@@ -15,7 +15,7 @@ export default function ForgotPasswordForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError(" ");
     if (!validateEmail(email)) {
       setError("Please enter a valid email address");
       return;

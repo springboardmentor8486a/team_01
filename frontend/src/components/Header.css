@@ -1,0 +1,140 @@
+/* Header Styles */
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 3rem;
+    background-color: transparent;
+    position: relative;
+    z-index: 10;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #2D4A6E;
+}
+
+.header-logo {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+}
+
+.nav-links {
+    display: flex;
+    gap: 6.5rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #6A8AAE;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding-bottom: 0.5rem;
+    position: relative;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #2D4A6E;
+}
+
+.nav-link.active {
+    color: #2D4A6E;
+    font-weight: 700;
+    border-bottom-color: transparent;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: #2D4A6E;
+    border-radius: 2px;
+}
+
+/* --- Dropdown Styles --- */
+.user-profile {
+    position: relative;
+}
+
+.user-profile-clickable {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    color: #2D4A6E;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 20px;
+    transition: background-color 0.2s;
+}
+
+.user-profile-clickable:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.user-icon-background {
+    background-color: #D6E8FF;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.user-icon-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 120%;
+    right: 0;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 170px; /* <-- DECREASED WIDTH from 200px to make it more compact */
+    z-index: 100;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: none;
+    border: none;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    text-align: left;
+    font-size: 1rem;
+    color: #333;
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+}
+
+.dropdown-item:hover {
+    background-color: #F0F7FF;
+}
+
+.dropdown-icon {
+    width: 20px;
+    height: 20px;
+}
