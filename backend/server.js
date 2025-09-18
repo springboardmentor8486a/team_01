@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const homeRoutes = require('./router/homeRoutes');
 const adminRoutes = require('./router/adminRoutes');
 const volunteerRoutes = require('./router/volunteerRoutes');
@@ -9,6 +10,10 @@ const issueRoutes = require('./router/issueRoutes');
 const app = express();
 const connectToDb = require('./database/db');
 // middleware
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 app.use(express.json());
 app.use(cookieParser());
 

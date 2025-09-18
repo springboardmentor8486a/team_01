@@ -1,0 +1,20 @@
+.cards {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem; /* space between cards */
+  padding: 2rem;
+  flex-wrap: wrap; /* allows wrapping on small screens */
+}
+
+.card-img {
+  width: 300px;   /* control card size */
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.card-img:hover {
+  transform: scale(1.05);
+}
