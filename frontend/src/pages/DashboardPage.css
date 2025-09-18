@@ -175,7 +175,7 @@ h2 {
 }
 
 .issue-map-button {
-    background-image: linear-gradient(to right, #4A90E2, #3B82F6);
+    background-image: linear-gradient(to right, #004080, #3B82F6);
 }
 
 .action-button:hover, .issue-map-button:hover {

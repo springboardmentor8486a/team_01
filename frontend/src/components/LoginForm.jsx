@@ -1,6 +1,5 @@
-// src/components/LoginForm.jsx
 import React, { useState } from "react";
-import axios from "axios"; // Added axios import
+import axios from "axios"; 
 import "./LoginForm.css";
 import { Link, useNavigate } from "react-router-dom";
 

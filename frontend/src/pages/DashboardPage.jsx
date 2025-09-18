@@ -1,11 +1,6 @@
 import React from 'react';
 import './DashboardPage.css';
 import Header from '../components/Header';
-
-// --- IMPORTANT ---
-// The icons in the new design are different.
-// You will need to replace your old icon files with these new ones.
-// I am using the same variable names for convenience.
 import totalIssuesIcon from '../assets/totalissues.png';
 import pendingIcon from '../assets/pending.png';
 import inProgressIcon from '../assets/inprogress.png';

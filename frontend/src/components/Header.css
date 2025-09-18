@@ -31,37 +31,19 @@
 
 .nav-link {
     text-decoration: none;
-    color: #6A8AAE;
-    font-weight: 600;
-    font-size: 1.1rem;
+    color: #5A7A9E;
+    font-weight: 500;
     padding-bottom: 0.5rem;
-    position: relative;
     border-bottom: 3px solid transparent;
     transition: all 0.2s ease;
 }
 
-.nav-link:hover {
-    color: #2D4A6E;
+.nav-link:hover, .nav-link.active {
+    color: #0052A3;
+    border-bottom-color: #0052A3;
 }
 
-.nav-link.active {
-    color: #2D4A6E;
-    font-weight: 700;
-    border-bottom-color: transparent;
-}
-
-.nav-link.active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background-color: #2D4A6E;
-    border-radius: 2px;
-}
-
-/* --- Dropdown Styles --- */
+/* Dropdown Styles */
 .user-profile {
     position: relative;
 }
@@ -106,7 +88,7 @@
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    width: 170px; /* <-- DECREASED WIDTH from 200px to make it more compact */
+    width: 200px;
     z-index: 100;
     overflow: hidden;
     display: flex;
@@ -127,14 +109,17 @@
     color: #333;
     cursor: pointer;
     border-radius: 6px;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 .dropdown-item:hover {
     background-color: #F0F7FF;
 }
 
+/* --- THIS IS THE CORRECTED PART --- */
 .dropdown-icon {
     width: 20px;
     height: 20px;
+    stroke: #5A7A9E; /* Sets the color of the icon lines */
+    stroke-width: 2;   /* Sets the thickness of the icon lines */
 }
