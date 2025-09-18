@@ -1,20 +1,23 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setEmail, setOtp } from "../store/authSlice";
 import "./VerifyOtpForm.css";
 import otpLogo from "../assets/otpmail.png";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function VerifyOtpForm() {
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otp, setOtpLocal] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (value, index) => {
     if (/^[0-9]?$/.test(value)) {
       const newOtp = [...otp];
       newOtp[index] = value;
-      setOtp(newOtp);
+      setOtpLocal(newOtp);
 
       // auto-focus next box
       if (value && index < 5) {
@@ -42,6 +45,8 @@ function VerifyOtpForm() {
         otp: otpValue,
       });
       if (response.data && response.data.success) {
+        dispatch(setEmail(email));
+        dispatch(setOtp(otpValue));
         alert("OTP verified successfully");
         // Navigate to reset password page or home page as needed
         navigate("/reset-password", { state: { email } });
