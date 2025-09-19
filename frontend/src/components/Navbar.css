@@ -1,0 +1,50 @@
+/* Reset issue: */
+
+
+
+.navbar {
+  position: absolute;  /* sits on top of hero */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 40px;
+  margin-top: 20px;
+  box-sizing: border-box;
+  background: transparent; /* no extra background, hero shows */
+}
+
+.navbar-left img.navbar-brand {
+  height: 50px;  /* adjust size */
+  width: auto;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-new {
+  font-size: 1rem;
+  margin-right: 12px;
+  color: #fff;
+}
+
+.navbar-button {
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #4a90e2;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.navbar-button:hover {
+  background-color: #f2f2f2;
+}

@@ -1,0 +1,13 @@
+.hero-container {
+  position: relative;
+  width: 1260px;
+  height: 489px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.hero-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
