@@ -6,6 +6,7 @@ import VerifyOtp from "./pages/VerifyOtp";
 import HomePage from "./pages/HomePage";
 import ResetPassword from "./pages/ResetPassword";
 import RegisterPage from "./pages/RegisterPage";
+import DashboardPage from "./pages/DashboardPage";
 import './App.css'; // Added from main
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/verify-otp" element={<VerifyOtp />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
          
 
         </Routes>
