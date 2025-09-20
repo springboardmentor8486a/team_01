@@ -3,7 +3,7 @@
 
 
 .navbar {
-  position: absolute;  /* sits on top of hero */
+  position:absolute;  /* sits on top of hero */
   top: 0;
   left: 0;
   width: 100%;

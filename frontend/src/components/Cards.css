@@ -3,7 +3,7 @@
   justify-content: center;
   align-items: center;
   gap: 2rem; /* space between cards */
-  padding: 2rem;
+  padding:0 2rem;
   flex-wrap: wrap; /* allows wrapping on small screens */
 }
 
