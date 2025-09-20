@@ -1,0 +1,105 @@
+.register-box {
+  background: rgba(59, 142, 229, 1);
+  padding: 30px;
+  border-radius: 15px;
+  width: 380px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Heading */
+.register-box h2 {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Subtitle */
+.register-box .subtitle {
+  font-family: "Konkhmer Sleokchher", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 10px 0 20px;
+  line-height: 1.4;
+}
+
+/* Input field container */
+.register-box .input-box {
+  display: flex;
+  align-items: center;
+  background-color: rgb(241, 234, 234);
+  border-radius: 10px;
+  padding: 10px 12px;
+  width: 300px;
+  margin: 12px 0; /* even spacing between fields */
+}
+
+/* Icons */
+.register-box .input-box img {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+}
+
+/* Inputs & Select */
+.register-box .input-box input,
+.register-box .input-box select {
+  border: none;
+  outline: none;
+  background: transparent;
+  flex: 1;
+  font-size: 14px;
+  color: black;
+  padding: 2px;
+}
+
+/* Dropdown arrow removed for cleaner look */
+.register-box .input-box select {
+  appearance: none;
+  cursor: pointer;
+}
+
+/* Options styling */
+.register-box .input-box select option {
+  color: black;
+  background: white;
+}
+
+/* Register button */
+.register-box .register-btn {
+  background: white;
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  width: 120px;
+  cursor: pointer;
+  margin: 20px 0 10px;
+  transition: background 0.3s;
+}
+
+.register-box .register-btn:hover {
+  background: #e3eaf5;
+}
+
+/* Bottom text */
+.register-box .login-text {
+  font-size: 12px;
+  margin-top: 10px;
+  color: #f1f1f1;
+}
+
+.register-box .login-text a {
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.register-box .login-text a:hover {
+  text-decoration: underline;
+}
