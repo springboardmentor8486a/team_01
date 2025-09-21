@@ -142,8 +142,6 @@ h2 {
     font-size: 0.9rem;
     color: #6A8AAE;
 }
-
-/* Quick Action Buttons */
 .actions-list {
     display: flex;
     flex-direction: column;
@@ -151,7 +149,6 @@ h2 {
     margin-bottom: 1rem;
 }
 
-/* --- THIS IS THE CORRECTED PART --- */
 .action-button, .issue-map-button {
     display: flex;
     align-items: center;
@@ -160,14 +157,14 @@ h2 {
     font-size: 1rem;
     font-weight: 600;
     text-align: left;
-    padding: 0.75rem 1.5rem; /* Standardized padding */
+    padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 9999px; /* Pill shape */
+    border-radius: 9999px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: 'Inter', sans-serif;
-    width: 100%; /* <-- THIS FORCES ALL BUTTONS TO BE THE SAME WIDTH */
-    box-sizing: border-box; /* Ensures padding is included in the width calculation */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .action-button {
@@ -175,7 +172,7 @@ h2 {
 }
 
 .issue-map-button {
-    background-image: linear-gradient(to right, #004080, #3B82F6);
+    background-image: linear-gradient(to right, #004080, #004080);
 }
 
 .action-button:hover, .issue-map-button:hover {
@@ -195,4 +192,48 @@ h2 {
 .action-icon {
     height: 24px;
     width: 24px;
+}
+
+
+@media (max-width: 1024px) {
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 768px) {
+    .main-content {
+        padding: 0 1rem 1rem 1rem;
+    }
+
+    .dashboard-header {
+        padding: 1rem;
+        flex-wrap: wrap; 
+        justify-content: center; 
+    }
+
+    .nav-links {
+        gap: 1rem;
+    }
+
+    .welcome-banner h1 {
+        font-size: 32px; 
+    }
+
+    .welcome-banner p {
+        font-size: 1rem;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .dashboard-body {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    h2 {
+        font-size: 1.5rem; 
+    }
 }
