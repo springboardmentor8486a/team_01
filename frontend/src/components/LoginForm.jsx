@@ -27,7 +27,7 @@ function LoginForm() {
       });
       // You can store token, redirect, or show a success message here
       if (response.data && response.data.accessToken) {
-        localStorage.setItem("token", response.data.accessToken);
+        localStorage.setItem("accessToken", response.data.accessToken);
         // Set axios default Authorization header for future requests
         axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
       }

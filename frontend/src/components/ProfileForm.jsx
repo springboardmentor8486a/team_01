@@ -20,11 +20,22 @@ const ProfileForm = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('accessToken');
+
+      console.log('ProfileForm - Token from localStorage:', token ? 'Token exists' : 'No token found');
+
+      if (!token) {
+        console.log('ProfileForm - No access token found in localStorage');
+        setLoading(false);
+        return;
+      }
+
       const response = await axios.get('http://localhost:3000/api/auth/profile', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
+
+      console.log('ProfileForm - Profile API response:', response.data);
 
       if (response.data.success) {
         const userData = response.data.user;
@@ -38,10 +49,14 @@ const ProfileForm = () => {
         };
         setFormData(profileData);
         setOriginalData(profileData);
-
+        console.log('ProfileForm - User data set:', profileData);
+      } else {
+        console.log('ProfileForm - API response not successful:', response.data.message);
       }
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      console.error('ProfileForm - Error fetching user profile:', error);
+      console.error('ProfileForm - Error response:', error.response?.data);
+      console.error('ProfileForm - Error status:', error.response?.status);
       // Keep default empty values on error
     } finally {
       setLoading(false);
