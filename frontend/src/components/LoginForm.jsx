@@ -90,7 +90,7 @@ function LoginForm() {
         </button>
 
         <p className="register">
-          New user? <a href="#">Register</a>
+          New user? <a href="/register">Register</a>
         </p>
       </form>
     </div>

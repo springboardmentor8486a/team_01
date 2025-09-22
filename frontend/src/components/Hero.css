@@ -1,13 +1,26 @@
 .hero-container {
   position: relative;
-  width: 1260px;
-  height: 489px;
+  width: 100%;         /* full screen width */
+  height: auto;        /* let image height adjust naturally */
   max-width: 100%;
   overflow: hidden;
 }
 
 .hero-image {
-  width: 100%;
-  height: auto;
+  width: 100%;         /* stretch to screen width */
+  height: auto;        /* maintain aspect ratio */
   display: block;
+  object-fit: cover;   /* ensure good fit */
+}
+
+/* Mobile tweaks */
+@media (max-width: 768px) {
+  .hero-container {
+    height:auto;
+  }
+
+  .hero-image {
+    width: 100%;
+    height: auto;
+  }
 }
