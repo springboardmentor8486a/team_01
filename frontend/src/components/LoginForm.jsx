@@ -33,8 +33,8 @@ function LoginForm() {
       }
       alert("Login successful!");
       console.log("Login success:", response.data);
-      // Redirect to home page after successful login
-      navigate("/home");
+      // Redirect to dashboard page after successful login
+      navigate("/dashboard");
     } catch (error) {
       // Handle error (show message to user)
       if (error.response && error.response.data && error.response.data.message) {
