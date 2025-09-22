@@ -27,14 +27,14 @@ function LoginForm() {
       });
       // You can store token, redirect, or show a success message here
       if (response.data && response.data.accessToken) {
-        localStorage.setItem("token", response.data.accessToken);
+        localStorage.setItem("accessToken", response.data.accessToken);
         // Set axios default Authorization header for future requests
         axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
       }
       alert("Login successful!");
       console.log("Login success:", response.data);
-      // Redirect to home page after successful login
-      navigate("/home");
+      // Redirect to dashboard page after successful login
+      navigate("/dashboard");
     } catch (error) {
       // Handle error (show message to user)
       if (error.response && error.response.data && error.response.data.message) {

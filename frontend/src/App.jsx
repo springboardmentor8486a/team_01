@@ -7,12 +7,13 @@ import HomePage from "./pages/HomePage";
 import ResetPassword from "./pages/ResetPassword";
 import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
+import ProfilePage from "./pages/ProfilePage";
 import './App.css'; // Added from main
 
 function App() {
   return (
     <Router>
-      
+
         <Routes>
           {/* Login and related routes from your branch */}
           <Route path="/" element={<Navigate to="/home" replace />} />
@@ -23,10 +24,11 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
-         
+          <Route path="/profile" element={<ProfilePage />} />
+
 
         </Routes>
-     
+
     </Router>
   );
 }

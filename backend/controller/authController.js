@@ -1,18 +1,29 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
-const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const User = require("../model/userModel");
 const { uploadToCloudinary } = require("../helpers/cloudinaryHelper");
+const { sendEmail } = require("../helpers/emailService");
+
 const registerController = async (req, res) => {
     try {
-        const {name, email, password, role} = req.body;
-        const user = await User.findOne({email});
-        if(user){
+        const {name, email, password, role, fullName, phoneNumber, bio, location} = req.body;
+
+        // Check if user already exists by email
+        const existingUser = await User.findOne({email});
+        if(existingUser){
             return res.status(400).json({
                 success: false,
-                message: "user already exists"
+                message: "User with this email already exists"
+            })
+        }
+
+        // Check if username (name field) already exists
+        const existingUsername = await User.findOne({name});
+        if(existingUsername){
+            return res.status(400).json({
+                success: false,
+                message: "Username already taken"
             })
         }
 
@@ -25,7 +36,17 @@ const registerController = async (req, res) => {
 
         // Hash password and save user
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ name, email, password: hashedPassword, role, profileImage: profileImageUrl });
+        const newUser = new User({
+            name, // This is now the username
+            email,
+            password: hashedPassword,
+            role,
+            profileImage: profileImageUrl,
+            fullName,
+            phoneNumber,
+            bio,
+            location
+        });
         await newUser.save();
         return res.status(201).json({
             success: true,
@@ -101,15 +122,6 @@ console.log("EMAIL_SERVICE:", process.env.EMAIL_SERVICE);
 console.log("EMAIL_USER:", process.env.EMAIL_USER ? "Loaded" : "Not Loaded");
 console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "Loaded" : "Not Loaded");
 
-// Nodemailer transporter setup
-const transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE || 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS // App password
-    }
-});
-
 // Forgot Password Controller
 const forgotPasswordController = async (req, res) => {
     try {
@@ -129,13 +141,7 @@ const forgotPasswordController = async (req, res) => {
         user.otpExpiry = otpExpiry;
         await user.save();
         // Send OTP via email
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Password Reset OTP',
-            text: `Your OTP for password reset is: ${otp}. It expires in 10 minutes.`
-        };
-        await transporter.sendMail(mailOptions);
+        await sendEmail(email, 'Password Reset OTP', `Your OTP for password reset is: ${otp}. It expires in 10 minutes.`);
         return res.status(200).json({
             success: true,
             message: "OTP sent to your email"
@@ -287,6 +293,80 @@ const uploadProfileController = async (req, res) => {
     }
 };
 
+// Get User Profile Controller
+const getUserProfileController = async (req, res) => {
+    try {
+        const userId = req.user.userId; // Assuming authMiddleware sets req.user
+        const user = await User.findById(userId).select('-password -otp -otpExpiry');
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "User profile retrieved successfully",
+            user: user
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Failed to retrieve user profile",
+            error: error.message
+        });
+    }
+};
+
+// Update User Profile Controller
+const updateUserProfileController = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { name, fullName, phoneNumber, bio, location } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        // Update fields if provided
+        if (name !== undefined) user.name = name; // Update name field (which is the username)
+        if (fullName !== undefined) user.fullName = fullName;
+        if (phoneNumber !== undefined) user.phoneNumber = phoneNumber;
+        if (bio !== undefined) user.bio = bio;
+        if (location !== undefined) user.location = location;
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "User profile updated successfully",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                fullName: user.fullName,
+                phoneNumber: user.phoneNumber,
+                bio: user.bio,
+                location: user.location,
+                role: user.role,
+                profileImage: user.profileImage
+            }
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Failed to update user profile",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     registerController,
     loginController,
@@ -294,5 +374,7 @@ module.exports = {
     verifyOtpController,
     resetPasswordController,
     logoutController,
-    uploadProfileController
+    uploadProfileController,
+    getUserProfileController,
+    updateUserProfileController
 };
