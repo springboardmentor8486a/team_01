@@ -14,12 +14,15 @@ function RegisterForm() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    name: "",
+    name: "", // This will be the username
     email: "",
     location: "",
     role: "",
     password: "",
     confirmPassword: "",
+    fullName: "",
+    phoneNumber: "",
+    bio: "",
   });
 
   const [profileImage, setProfileImage] = useState(null);
@@ -66,11 +69,14 @@ function RegisterForm() {
 
     try {
       const data = new FormData();
-      data.append("name", formData.name);
+      data.append("name", formData.name); // This is now the username
       data.append("email", formData.email);
       data.append("location", formData.location);
       data.append("role", formData.role);
       data.append("password", formData.password);
+      data.append("fullName", formData.fullName);
+      data.append("phoneNumber", formData.phoneNumber);
+      data.append("bio", formData.bio);
       if (profileImage) {
         data.append("profileImage", profileImage);
       }
@@ -94,6 +100,9 @@ function RegisterForm() {
           role: "",
           password: "",
           confirmPassword: "",
+          fullName: "",
+          phoneNumber: "",
+          bio: "",
         });
         setProfileImage(null);
         setProfileImagePreview(null);
@@ -148,9 +157,21 @@ function RegisterForm() {
           <img src={userIcon} alt="user" />
           <input
             type="text"
-            placeholder="Name"
+            placeholder="Username"
             name="name"
             value={formData.name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="input-box">
+          <img src={userIcon} alt="user" />
+          <input
+            type="text"
+            placeholder="Full Name"
+            name="fullName"
+            value={formData.fullName}
             onChange={handleChange}
             required
           />
@@ -215,6 +236,28 @@ function RegisterForm() {
             value={formData.confirmPassword}
             onChange={handleChange}
             required
+          />
+        </div>
+
+        <div className="input-box">
+          <img src={userIcon} alt="phone" />
+          <input
+            type="tel"
+            placeholder="Phone Number"
+            name="phoneNumber"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="input-box">
+          <img src={userIcon} alt="bio" />
+          <textarea
+            placeholder="Bio (Tell us about yourself)"
+            name="bio"
+            value={formData.bio}
+            onChange={handleChange}
+            rows="3"
           />
         </div>
 

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './DashboardPage.css';
 import Header from '../components/Header';
 import totalIssuesIcon from '../assets/dashboardAssets/totalissues.png';
@@ -15,6 +16,31 @@ import feedbackIcon from '../assets/dashboardAssets/pofeedback.png';
 import issueMapIcon from '../assets/dashboardAssets/issuemap.png';
 
 const DashboardPage = () => {
+    const [stats, setStats] = useState({
+        total: 0,
+        pending: 0,
+        inProgress: 0,
+        resolved: 0
+    });
+    const [loading, setLoading] = useState(true);
+
+    const fetchStats = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get('http://localhost:3000/api/issues/stats');
+            setStats(response.data);
+        } catch (err) {
+            console.error('Error fetching stats:', err);
+            // Keep default values on error
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchStats();
+    }, []);
+
     const handleActionClick = (action) => {
         alert(`${action} button clicked!`);
     };
@@ -34,7 +60,7 @@ const DashboardPage = () => {
                         <div className="card-header blue-header"></div>
                         <div className="card-body">
                             <p>Total Issues</p>
-                            <span>4</span>
+                            <span>{loading ? '...' : stats.total}</span>
                         </div>
                         <img src={totalIssuesIcon} alt="Total Issues" className="stat-icon" />
                     </div>
@@ -42,7 +68,7 @@ const DashboardPage = () => {
                         <div className="card-header blue-header"></div>
                         <div className="card-body">
                             <p>pending</p>
-                            <span>1</span>
+                            <span>{loading ? '...' : stats.pending}</span>
                         </div>
                         <img src={pendingIcon} alt="Pending" className="stat-icon" />
                     </div>
@@ -50,7 +76,7 @@ const DashboardPage = () => {
                         <div className="card-header blue-header"></div>
                         <div className="card-body">
                             <p>In Progress</p>
-                            <span>3</span>
+                            <span>{loading ? '...' : stats.inProgress}</span>
                         </div>
                         <img src={inProgressIcon} alt="In Progress" className="stat-icon" />
                     </div>
@@ -58,7 +84,7 @@ const DashboardPage = () => {
                         <div className="card-header blue-header"></div>
                         <div className="card-body">
                             <p>Resolved</p>
-                            <span>2</span>
+                            <span>{loading ? '...' : stats.resolved}</span>
                         </div>
                         <img src={resolvedIcon} alt="Resolved" className="stat-icon" />
                     </div>
