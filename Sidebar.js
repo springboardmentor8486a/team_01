@@ -1,36 +1,36 @@
 import React from 'react';
-import './Sidebar.css';
+import './Header.css';
 
-const Sidebar = () => {
+
+const Header = () => {
   return (
-    <aside className="sidebar">
-      <div className="user-info">
-        <div className="avatar-container">
-          <div className="avatar">
-            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </div>
-          <button className="camera-button">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-              <circle cx="12" cy="13" r="4"></circle>
-            </svg>
-          </button>
+    <header className="header">
+      <div className="header-left">
+        <div className="logo">
+          <div className="logo-icon">CS</div>
+          <span className="logo-text">CleanStreet</span>
         </div>
-        
-        <h2 className="user-name">User</h2>
-        <p className="username">@demo_user</p>
-        
-        <button className="role-button">Citizen</button>
-        
-        <p className="bio">
-          Active citizen helping to improve our community through CleanStreet
-        </p>
       </div>
-    </aside>
+      
+      <div className="header-center">
+        <div className="search-bar">
+          <svg className="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+          <input type="text" placeholder="Search" className="search-input" />
+        </div>
+      </div>
+      
+      <div className="header-right">
+        <nav className="nav-links">
+          <a href="#" className="nav-link dashboard">Dashboard</a>
+          <a href="#" className="nav-link profile active">Profile</a>
+        </nav>
+      </div>
+    </header>
   );
 };
 
-export default Sidebar;
+export default Header;
+
