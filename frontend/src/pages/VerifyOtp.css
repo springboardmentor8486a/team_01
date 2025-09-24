@@ -1,0 +1,11 @@
+.verifyotp-page {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #CADFF6;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
