@@ -1,0 +1,76 @@
+.verifyotp-box {
+  background:  rgba(59, 142, 229, 1);
+  padding: 40px;
+  border-radius: 15px;
+  width: 350px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.otp-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.otp-img {
+  width: 60px;   /* adjust size */
+  height: auto;
+}
+
+
+.verifyotp-box h2 {
+  margin-bottom: 5px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.verifyotp-box p {
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.otp-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.otp-inputs input {
+  width: 45px;
+  height: 50px;
+  font-size: 20px;
+  text-align: center;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+.verifyotp-box button {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 12px;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.verifyotp-box button:hover {
+  background-color: #f0f0f0;
+}
+
+.resend-text {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.resend-text a {
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+}
