@@ -1,5 +1,8 @@
-import React, { useRef } from 'react';
+
+import React, { useRefuseState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+
+
 import axios from 'axios';
 import './Sidebar.css';
 
@@ -54,6 +57,7 @@ const Sidebar = () => {
           <div className="avatar">
             {user?.profileImage ? (
               <img src={user.profileImage} alt="User Avatar" className="avatar-image" />
+
             ) : (
               <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>

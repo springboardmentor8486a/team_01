@@ -18,7 +18,6 @@ const ProfileForm = () => {
     profileImage: ''
   });
   const dispatch = useDispatch();
-
   const [originalData, setOriginalData] = useState({});
 
   const fetchUserProfile = async () => {
@@ -86,6 +85,7 @@ const ProfileForm = () => {
     setIsEditing(!isEditing);
   };
 
+
   const handleImageUpload = async (file) => {
     if (!file) return;
     const formDataUpload = new FormData();
@@ -132,6 +132,7 @@ const ProfileForm = () => {
         setOriginalData(formData);
         setIsEditing(false);
         dispatch(setUser(response.data.user));
+
         alert('Profile updated successfully!');
       }
     } catch (error) {
@@ -153,6 +154,7 @@ const ProfileForm = () => {
       handleImageUpload(file);
     }
   };
+
 
 
 
@@ -305,6 +307,7 @@ const ProfileForm = () => {
         )}
 
         {isEditing && (
+
           <div className="form-actions">
             <button
               type="button"

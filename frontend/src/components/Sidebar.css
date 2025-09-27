@@ -54,6 +54,21 @@
   background-color: #555;
 }
 
+
+.camera-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 120px;
+  font-size: 16px;
+  color: #666;
+}
+
 .user-name {
   font-size: 24px;
   font-weight: bold;
@@ -99,7 +114,6 @@
     min-height: auto;
     padding: 16px;
   }
-  
   .avatar {
     width: 80px;
     height: 80px;
@@ -109,6 +123,7 @@
     font-size: 20px;
   }
   
+
   .bio {
     max-width: 100%;
   }
@@ -119,3 +134,4 @@
   border-radius: 50%;
   object-fit: cover;
 }
+
