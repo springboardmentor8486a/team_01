@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import axios from "axios"; // Added axios import
 import "./LoginForm.css";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { setUser } from '../store/authSlice';
 
 import logo from "../assets/logo.png";
 import maillogo from "../assets/maillogo.png";
@@ -16,6 +18,8 @@ function LoginForm() {
   const [password, setPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +37,19 @@ function LoginForm() {
       }
       alert("Login successful!");
       console.log("Login success:", response.data);
+
+      // Fetch user profile after login to get full user data including profileImage
+      try {
+        const profileResponse = await axios.get("http://localhost:3000/api/auth/profile");
+        if (profileResponse.data.success && profileResponse.data.user) {
+          dispatch(setUser(profileResponse.data.user));
+          console.log("User profile fetched and stored in Redux:", profileResponse.data.user);
+        }
+      } catch (profileError) {
+        console.error("Failed to fetch user profile after login:", profileError);
+        // Still proceed to dashboard even if profile fetch fails
+      }
+
       // Redirect to dashboard page after successful login
       navigate("/dashboard");
     } catch (error) {

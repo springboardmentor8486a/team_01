@@ -1,22 +1,49 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
 import './Sidebar.css';
 
 const Sidebar = () => {
   const fileInputRef = useRef(null);
-  const [avatar, setAvatar] = useState(null);
+  const user = useSelector((state) => state.auth.user);
 
   const handleCameraClick = () => {
     fileInputRef.current.click();
   };
 
+  const handleImageUpload = async (file) => {
+    if (!file) return;
+    const formDataUpload = new FormData();
+    formDataUpload.append('profileImage', file);
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await axios.post('http://localhost:3000/api/auth/upload-profile', formDataUpload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      if (response.data.success) {
+        // Refetch profile to update user in Redux
+        const profileResponse = await axios.get('http://localhost:3000/api/auth/profile', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        if (profileResponse.data.success && profileResponse.data.user) {
+          alert('Profile image updated successfully!');
+        }
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Please try again.');
+    }
+  };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setAvatar(reader.result); // Set uploaded image as avatar
-      };
-      reader.readAsDataURL(file);
+      handleImageUpload(file);
     }
   };
 
@@ -25,8 +52,8 @@ const Sidebar = () => {
       <div className="user-info">
         <div className="avatar-container">
           <div className="avatar">
-            {avatar ? (
-              <img src={avatar} alt="User Avatar" className="avatar-image" />
+            {user?.profileImage ? (
+              <img src={user.profileImage} alt="User Avatar" className="avatar-image" />
             ) : (
               <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
@@ -53,13 +80,13 @@ const Sidebar = () => {
           </button>
         </div>
 
-        <h2 className="user-name">User</h2>
-        <p className="username">@demo_user</p>
+        <h2 className="user-name">{user?.fullName || 'User'}</h2>
+        <p className="username">@{user?.name || 'demo_user'}</p>
 
-        <button className="role-button">Citizen</button>
+        <button className="role-button">{user?.role || 'Citizen'}</button>
 
         <p className="bio">
-          Active citizen helping to improve our community through CleanStreet
+          {user?.bio || 'Active citizen helping to improve our community through CleanStreet'}
         </p>
       </div>
     </aside>
