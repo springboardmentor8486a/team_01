@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../store/authSlice';
@@ -20,7 +20,7 @@ const ProfileForm = () => {
   const dispatch = useDispatch();
   const [originalData, setOriginalData] = useState({});
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('accessToken');
@@ -67,11 +67,11 @@ const ProfileForm = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     fetchUserProfile();
-  }, []);
+  }, [fetchUserProfile]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
