@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../store/authSlice';
 import './ProfileForm.css';
 
 const ProfileForm = () => {
@@ -12,8 +14,10 @@ const ProfileForm = () => {
     location: '',
     email: '',
     phoneNumber: '',
-    bio: ''
+    bio: '',
+    profileImage: ''
   });
+  const dispatch = useDispatch();
   const [originalData, setOriginalData] = useState({});
 
   const fetchUserProfile = async () => {
@@ -45,11 +49,13 @@ const ProfileForm = () => {
           location: userData.location || '',
           email: userData.email || '',
           phoneNumber: userData.phoneNumber || '',
-          bio: userData.bio || ''
+          bio: userData.bio || '',
+          profileImage: userData.profileImage || ''
         };
         setFormData(profileData);
         setOriginalData(profileData);
-        console.log('ProfileForm - User data set:', profileData);
+        dispatch(setUser(userData));
+        console.log('ProfileForm - User data set and dispatched to Redux:', profileData);
       } else {
         console.log('ProfileForm - API response not successful:', response.data.message);
       }
@@ -79,6 +85,30 @@ const ProfileForm = () => {
     setIsEditing(!isEditing);
   };
 
+
+  const handleImageUpload = async (file) => {
+    if (!file) return;
+    const formDataUpload = new FormData();
+    formDataUpload.append('profileImage', file);
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await axios.post('http://localhost:3000/api/auth/upload-profile', formDataUpload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      if (response.data.success) {
+        // Refetch profile to get updated user data
+        await fetchUserProfile();
+        alert('Profile image updated successfully!');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Please try again.');
+    }
+  };
+
   const handleSave = async () => {
     try {
       setSaving(true);
@@ -101,6 +131,8 @@ const ProfileForm = () => {
       if (response.data.success) {
         setOriginalData(formData);
         setIsEditing(false);
+        dispatch(setUser(response.data.user));
+
         alert('Profile updated successfully!');
       }
     } catch (error) {
@@ -115,6 +147,14 @@ const ProfileForm = () => {
     setFormData(originalData);
     setIsEditing(false);
   };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      handleImageUpload(file);
+    }
+  };
+
 
 
 
@@ -255,6 +295,19 @@ const ProfileForm = () => {
         </div>
 
         {isEditing && (
+          <div className="form-group image-upload-group">
+            <label className="form-label">Profile Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="form-input"
+            />
+          </div>
+        )}
+
+        {isEditing && (
+
           <div className="form-actions">
             <button
               type="button"
