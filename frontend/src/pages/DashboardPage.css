@@ -1,9 +1,8 @@
-/* Main Content Area */
+
 .main-content {
     padding: 0 3rem 2rem 3rem;
 }
 
-/* Welcome Banner */
 .welcome-banner {
     background-color: #E0ECF8;
     border-radius: 20px;
@@ -22,7 +21,7 @@
 
 .welcome-banner h1 strong {
     font-family: 'Kurale', serif;
-    font-weight: 400;
+    font-weight: 400;  
     color: #3B82F6;
 }
 
@@ -32,7 +31,6 @@
     font-size: 1.1rem;
 }
 
-/* Stats Cards */
 .stats-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -82,7 +80,6 @@
     opacity: 0.8;
 }
 
-/* Dashboard Body & Section Titles */
 .dashboard-body {
     display: grid;
     grid-template-columns: 2fr 1fr;

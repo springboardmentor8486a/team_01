@@ -1,20 +1,20 @@
 import React from 'react';
 import './DashboardPage.css';
 import Header from '../components/Header';
-import totalIssuesIcon from '../assets/dashboardAssets/totalissues.png';
-import pendingIcon from '../assets/dashboardAssets/pending.png';
-import inProgressIcon from '../assets/dashboardAssets/inprogress.png';
-import resolvedIcon from '../assets/dashboardAssets/resolved.png';
-import potholeImg from '../assets/dashboardAssets/pothole.png';
-import streetlightImg from '../assets/dashboardAssets/streetlight.png';
-import garbageImg from '../assets/dashboardAssets/garbage.png';
-import postIcon from '../assets/dashboardAssets/post.png';
-import volunteerIcon from '../assets/dashboardAssets/volunteer.png';
-import trackIcon from '../assets/dashboardAssets/track.png';
-import feedbackIcon from '../assets/dashboardAssets/pofeedback.png';
-import issueMapIcon from '../assets/dashboardAssets/issuemap.png';
+import totalIssuesIcon from '../assets/totalissues.png';
+import pendingIcon from '../assets/pending.png';
+import inProgressIcon from '../assets/inprogress.png';
+import resolvedIcon from '../assets/resolved.png';
+import potholeImg from '../assets/pothole.png';
+import streetlightImg from '../assets/streetlight.png';
+import garbageImg from '../assets/garbage.png';
+import postIcon from '../assets/post.png';
+import volunteerIcon from '../assets/volunteer.png';
+import trackIcon from '../assets/track.png';
+import feedbackIcon from '../assets/pofeedback.png';
+import issueMapIcon from '../assets/issuemap.png';
 
-const DashboardPage = () => {
+const HomePage = () => {
     const handleActionClick = (action) => {
         alert(`${action} button clicked!`);
     };
@@ -123,4 +123,4 @@ const DashboardPage = () => {
     );
 };
 
-export default DashboardPage;
+export default HomePage;

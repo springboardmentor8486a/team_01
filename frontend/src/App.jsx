@@ -1,32 +1,28 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
+// Import all the pages you have created
 import LoginPage from "./pages/LoginPage";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyOtp from "./pages/VerifyOtp";
-import HomePage from "./pages/HomePage";
-import ResetPassword from "./pages/ResetPassword";
-import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
-import './App.css'; // Added from main
+import AdminDashboardPage from "./pages/AdminDashboardPage"; // This is the new admin dashboard
 
 function App() {
-  return (
+ return (
     <Router>
-      
-        <Routes>
-          {/* Login and related routes from your branch */}
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/verify-otp" element={<VerifyOtp />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-         
+      <Routes>
+        {/* Route 1: When the user visits the root "/", render the LoginPage */}
+        {/* This is a better default route than a redirect */}
+        <Route path="/" element={<LoginPage />} />
 
-        </Routes>
-     
+        {/* Define the routes for all your pages */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+      </Routes>
     </Router>
   );
 }

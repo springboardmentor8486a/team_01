@@ -1,65 +1,125 @@
-.header {
-    background-color: #ffffff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 1rem 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.header-content {
-    max-width: 1200px;
-    margin: 0 auto;
+/* Header Styles */
+.dashboard-header {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-    padding: 0 2rem;
+    padding: 1rem 3rem;
+    background-color: transparent;
+    position: relative;
+    z-index: 10;
 }
 
-.logo h2 {
-    margin: 0;
-    color: #3B82F6;
-    font-size: 1.5rem;
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.75rem;
     font-weight: 700;
+    color: #2D4A6E;
 }
 
-.nav {
+.header-logo {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+}
+
+.nav-links {
     display: flex;
-    gap: 2rem;
+    gap: 6.5rem;
 }
 
-.nav a {
+.nav-link {
     text-decoration: none;
-    color: #6A8AAE;
+    color: #5A7A9E;
     font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
 }
 
-.nav a:hover,
-.nav a.active {
-    color: #3B82F6;
-    background-color: #E0ECF8;
+.nav-link:hover, .nav-link.active {
+    color: #0052A3;
+    border-bottom-color: #0052A3;
 }
 
-.user-actions {
+/* Dropdown Styles */
+.user-profile {
+    position: relative;
+}
+
+.user-profile-clickable {
     display: flex;
     align-items: center;
-    gap: 1rem;
-}
-
-.logout-btn {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
+    gap: 0.75rem;
+    font-weight: 600;
+    color: #2D4A6E;
     cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
+    padding: 5px;
+    border-radius: 20px;
+    transition: background-color 0.2s;
 }
 
-.logout-btn:hover {
-    background-color: #c82333;
+.user-profile-clickable:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.user-icon-background {
+    background-color: #D6E8FF;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.user-icon-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 120%;
+    right: 0;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    z-index: 100;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: none;
+    border: none;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    text-align: left;
+    font-size: 1rem;
+    color: #333;
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.dropdown-item:hover {
+    background-color: #F0F7FF;
+}
+
+/* --- THIS IS THE CORRECTED PART --- */
+.dropdown-icon {
+    width: 20px;
+    height: 20px;
+    stroke: #5A7A9E; /* Sets the color of the icon lines */
+    stroke-width: 2;   /* Sets the thickness of the icon lines */
 }
