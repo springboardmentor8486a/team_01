@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './IssueManagementPage.css';
-import Header from '../components/Header';
 
 const IssueManagementPage = () => {
     const [issues, setIssues] = useState([]);
@@ -10,7 +9,7 @@ const IssueManagementPage = () => {
     const [editingIssue, setEditingIssue] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
 
-    // Sample initial data matching your HTML
+    // Sample initial data matching your Figma design
     const initialIssues = [
         {
             id: 1,
@@ -135,7 +134,22 @@ const IssueManagementPage = () => {
 
     return (
         <div className="issue-management-container">
-            <Header activePage="issues" />
+            {/* Header Section */}
+            <div className="header">
+                <div className="header-left">
+                    <h1>Civic Issue Tracker</h1>
+                </div>
+                <div className="user-info">
+                    <div className="user-avatar">A</div>
+                    <span>Admin</span>
+                </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="tabs">
+                <div className="tab active">Issue Management</div>
+                <div className="tab">User Management</div>
+            </div>
             
             <main className="main-content">
                 <div className="page-header">
@@ -358,4 +372,40 @@ const IssueModal = ({ issue, onClose, onSubmit }) => {
                     <div className="form-group">
                         <label htmlFor="issueReporter">Reported By *</label>
                         <input
-                           
+                            type="text"
+                            id="issueReporter"
+                            name="reporter"
+                            value={formData.reporter}
+                            onChange={handleChange}
+                            required
+                            placeholder="Your name"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="issueDescription">Description</label>
+                        <textarea
+                            id="issueDescription"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            placeholder="Provide more details about the issue..."
+                            rows="4"
+                        />
+                    </div>
+                    
+                    <div className="form-actions">
+                        <button type="button" className="btn btn-secondary" onClick={onClose}>
+                            Cancel
+                        </button>
+                        <button type="submit" className="btn btn-primary">
+                            {issue ? 'Update' : 'Submit'} Issue
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default IssueManagementPage;
