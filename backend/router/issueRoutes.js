@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getIssues, createIssue, getIssueStats, updateIssueStatus } = require("../controller/issueController");
+const { getIssues, createIssue, getIssueStats, updateIssueStatus, deleteIssue } = require("../controller/issueController");
 const upload = require("../middleware/upload");
 
 // GET /api/issues - get all issues
@@ -14,5 +14,8 @@ router.get("/stats", getIssueStats);
 
 // PUT /api/issues/:id - update issue status
 router.put("/:id", updateIssueStatus);
+
+// DELETE /api/issues/:id - delete an issue
+router.delete("/:id", deleteIssue);
 
 module.exports = router;
