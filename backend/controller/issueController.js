@@ -1,4 +1,5 @@
 const Issue = require("../model/issueModel");
+const { uploadToCloudinary } = require("../helpers/cloudinaryHelper");
 
 // Get all issues
 const getIssues = async (req, res) => {
@@ -11,27 +12,61 @@ const getIssues = async (req, res) => {
 };
 
 // Create a new issue
+// Create a new issue
 const createIssue = async (req, res) => {
   try {
-    const { title, type, priority, address, landmark, description, location } = req.body;
+    // console.log("Request body:", req.body);
+    // console.log("Request file:", req.file);
 
-    if (!title || !type) {
-      return res.status(400).json({ message: "Title and type are required" });
+    const { title, type, priority, address, landmark, description, lat, lng } = req.body;
+
+    // Simple validation - just check if they exist and have content
+    if (!title || !type || String(title).length === 0 || String(type).length === 0) {
+      return res.status(400).json({ 
+        message: "Title and type are required",
+        debug: {
+          title: title,
+          type: type,
+          titleType: typeof title,
+          typeType: typeof type
+        }
+      });
+    }
+
+    // Parse location if lat and lng are provided
+    let location = null;
+    if (lat && lng) {
+      location = {
+        lat: parseFloat(lat),
+        lng: parseFloat(lng)
+      };
+    }
+
+    let imageUrl = null;
+    if (req.file) {
+      try {
+        const result = await uploadToCloudinary(req.file.buffer, 'infosys_project');
+        imageUrl = result.secure_url;
+      } catch (uploadError) {
+        console.error("Cloudinary upload error:", uploadError);
+      }
     }
 
     const newIssue = new Issue({
-      title,
-      type,
-      priority,
-      address,
-      landmark,
-      description,
+      title: String(title),
+      type: String(type),
+      priority: priority || "Low",
+      address: address || "",
+      landmark: landmark || "",
+      description: description || "",
       location,
+      image: imageUrl,
     });
 
     const savedIssue = await newIssue.save();
     res.status(201).json(savedIssue);
   } catch (error) {
+    console.error("Create issue error:", error);
     res.status(500).json({ message: "Failed to create issue", error: error.message });
   }
 };

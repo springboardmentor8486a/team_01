@@ -12,6 +12,7 @@ const issueSchema = new mongoose.Schema({
     lng: Number,
   },
   status: { type: String, enum: ["Pending", "In Progress", "Resolved"], default: "Pending" },
+  image: { type: String, default: null }, // Optional field for issue image URL from Cloudinary
   createdAt: { type: Date, default: Date.now },
 });
 
