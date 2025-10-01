@@ -10,7 +10,7 @@
   --green-low: #8bc34a;
   --text-dark: #333;
   --text-light: #777;
-  --background-light: #f5f7fa;
+  --background-light: #e3f2fd;
   --card-background: #ffffff;
   --border-color: #ddd;
   --shadow-light: 0 4px 8px rgba(0, 0, 0, 0.05);
@@ -62,7 +62,7 @@
 .search-input-container {
   flex-grow: 1;
   position: relative;
-  /* Removed margin-right: 20px to use gap */
+  margin-right: 50px;
 }
 
 .search-icon {

@@ -44,7 +44,7 @@ const UpdateIssueModal = ({ issue, onClose }) => {
                 <option value="in progress">In Progress</option>
                 <option value="resolved">Resolved</option>
                 <option value="pending">Pending</option>
-                <option value="new">New</option>
+      
               </select>
             </div>
 

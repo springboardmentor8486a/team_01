@@ -13,10 +13,10 @@
 }
 
 .update-issue-modal {
-  background-color: white;
+  background-color: #e3f2fd;
   border-radius: 10px;
   width: 90%;
-  max-width: 600px; /* Made slightly smaller (from 450px) to match the view */
+  max-width: 600px; 
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   overflow: hidden;
 }
