@@ -61,6 +61,7 @@ const createIssue = async (req, res) => {
       description: description || "",
       location,
       image: imageUrl,
+      reporterId: req.user.userId,
     });
 
     const savedIssue = await newIssue.save();

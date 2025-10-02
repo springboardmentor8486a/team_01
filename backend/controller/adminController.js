@@ -153,8 +153,40 @@ const getAdminCircleStats = async (req, res) => {
   }
 };
 
+// const Issue = require("../model/issueModel");
+// const User = require("../model/userModel");
+
+// Existing functions...
+
+// New controller function to get issue management details
+const getAdminIssueManagement = async (req, res) => {
+  try {
+    const issues = await Issue.find()
+      .populate('reporterId', 'name fullName')
+      .sort({ createdAt: -1 });
+
+    // Format issues for response
+    const formattedIssues = issues.map(issue => ({
+      issue: {
+        title: issue.title,
+        address: issue.address || issue.landmark || ""
+      },
+      status: issue.status,
+      priority: issue.priority,
+      category: issue.type,
+      reportedBy: issue.reporterId ? (issue.reporterId.fullName || issue.reporterId.name) : "Unknown",
+      date: issue.createdAt ? issue.createdAt.toLocaleDateString('en-GB') : ""
+    }));
+
+    res.status(200).json(formattedIssues);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch issue management data", error: error.message });
+  }
+};
+
 module.exports = {
   getAdminStats,
   getAdminChartStats,
   getAdminCircleStats,
+  getAdminIssueManagement,
 };
