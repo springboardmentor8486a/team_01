@@ -95,7 +95,66 @@ const getAdminChartStats = async (req, res) => {
   }
 };
 
+const getAdminCircleStats = async (req, res) => {
+  try {
+    // Define main categories to look for
+    const mainCategories = [
+      "Road Maintenance",
+      "Lighting",
+      "Waste Management",
+      "Vandalism"
+    ];
+
+    // Aggregate issues by type and count
+    const aggregation = await Issue.aggregate([
+      {
+        $group: {
+          _id: { $ifNull: ["$type", "Other"] },  // Group undefined/null types as "Other"
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    // Calculate total count of all issues
+    const total = aggregation.reduce((acc, item) => acc + item.count, 0);
+
+    // Initialize counts object
+    let categoryCounts = {
+      "Road Maintenance": 0,
+      "Lighting": 0,
+      "Waste Management": 0,
+      "Vandalism": 0,
+      "Other": 0
+    };
+
+    // Process aggregation results
+    aggregation.forEach(item => {
+      const category = item._id ? item._id.trim() : "Other";
+      if (mainCategories.includes(category)) {
+        categoryCounts[category] = item.count;
+      } else {
+        categoryCounts["Other"] += item.count;
+      }
+    });
+
+    // Convert counts to percentages and format response
+    const categories = Object.entries(categoryCounts)
+      .map(([category, count]) => ({
+        category,
+        percentage: total > 0 ? Math.round((count / total) * 100) : 0
+      }))
+      .filter(item => item.percentage > 0);  // Only include categories with issues
+
+    res.status(200).json({
+      categories
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch circle stats", error: error.message });
+  }
+};
+
 module.exports = {
   getAdminStats,
   getAdminChartStats,
+  getAdminCircleStats,
 };
