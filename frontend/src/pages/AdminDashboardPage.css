@@ -136,4 +136,154 @@
 .actions-header, .actions-cell { text-align: right; }
 .actions-wrapper { display: flex; gap: 0.5rem; justify-content: flex-end; }
 .action-button { border-radius: 0.5rem !important; height: 2rem !important; width: 2rem !important; background-color: #f1f5f9; border: 1px solid #e2e8f0; }
+<<<<<<< HEAD
 .action-icon { height: 1rem; width: 1rem; }
+=======
+.action-icon { height: 1rem; width: 1rem; }
+
+.add-user-button {
+  height: 3rem !important;
+  border-radius: 0.75rem !important;
+  font-weight: 600 !important;
+  background-color: #2563eb !important;
+  color: white !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+.add-user-icon {
+  height: 1rem;
+  width: 1rem;
+  margin-right: 0.5rem;
+}
+.role-badge { text-transform: capitalize; font-weight: 500; border: 1px solid transparent; font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 9999px; }
+.role-badge.user { background-color: #e0e7ff; color: #3730a3; }
+.role-badge.volunteer { background-color: #d1fae5; color: #065f46; }
+.role-badge.admin { background-color: #fee2e2; color: #991b1b; }
+.delete-button {
+  color: #dc2626 !important;
+}
+.delete-button:hover {
+  background-color: #fee2e2 !important;
+}
+/* --- src/pages/AdminDashboardPage.css --- */
+
+/* ... (all your existing CSS from the previous step) ... */
+
+
+/* --- NEW, ATTRACTIVE DIALOG STYLES --- */
+/* --- src/pages/AdminDashboardPage.css --- */
+
+/* ... (all your existing CSS from the previous step) ... */
+
+
+/* --- NEW, PIXEL-PERFECT DIALOG STYLES --- */
+/* Find this rule at the top of your dialog styles */
+.add-user-dialog {
+  max-width: 650px !important; /* <-- INCREASED THIS VALUE */
+  border-radius: 0.75rem !important;
+  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+  padding: 1.5rem !important;
+}
+
+.dialog-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  color: #1e293b;
+}
+
+.dialog-description {
+  font-size: 0.875rem;
+  text-align: center;
+  color: #64748b;
+  padding-bottom: 1.5rem;
+}
+
+/* Find this rule in your AdminDashboardPage.css */
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem; /* <-- INCREASED THIS VALUE for more vertical space */
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* Default to one column on mobile */
+  gap: 2.25rem;
+}
+
+@media (min-width: 640px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr); /* Two columns on larger screens */
+  }
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-item label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #334155;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1.125rem;
+  width: 1.125rem;
+  color: #94a3b8;
+}
+
+/* Find this rule in your AdminDashboardPage.css */
+.dialog-input, .dialog-input[role="combobox"] {
+  padding-left: 2.75rem !important;
+  height: 3rem !important; /* This controls the height */
+  border-radius: 0.5rem !important;
+  border: 1px solid #e2e8f0 !important;
+  background-color: #f8fafc !important;
+  /* By not specifying a width, it will fit the grid column correctly */
+}
+
+/* --- FOOTER & BUTTON STYLES --- */
+.dialog-footer {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  gap: 0.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.footer-create-button, .footer-cancel-button {
+  width: 100%;
+  height: 3rem !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.2s ease;
+}
+
+.footer-create-button {
+  background-color: #1e293b !important; /* Dark primary button */
+  color: white !important;
+}
+.footer-create-button:hover {
+  background-color: #334155 !important;
+}
+
+.footer-cancel-button {
+  background-color: #f1f5f9 !important; /* Light secondary button */
+  color: #475569 !important;
+}
+.footer-cancel-button:hover {
+  background-color: #e2e8f0 !important;
+}
+>>>>>>> df9566d (admin page update)
