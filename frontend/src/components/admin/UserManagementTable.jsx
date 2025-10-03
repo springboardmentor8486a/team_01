@@ -1,90 +1,86 @@
-import React from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Filter, Search, Edit, Trash2 } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Filter, Search, Edit, Trash2, X } from 'lucide-react';
 
-const mockUsers = [
+const mockUsersData = [
   { id: 1, name: 'John Citizen', email: 'john.citizen@example.com', role: 'user', location: 'Downtown District', joinDate: '20/9/2024' },
   { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', role: 'volunteer', location: 'Maple Creek', joinDate: '15/9/2024' },
   { id: 3, name: 'Mike Johnson', email: 'mike.johnson@example.com', role: 'user', location: 'Oakridge', joinDate: '23/9/2024' },
   { id: 4, name: 'Sarah Wilson', email: 'sarah.wilson@example.com', role: 'admin', location: 'City Hall', joinDate: '18/9/2024' },
 ];
 
-export default function UserManagementTable({ users = mockUsers }) {
-  const getRoleClass = (role) => {
-    switch (role) {
-      case 'admin': return 'role-badge admin';
-      case 'volunteer': return 'role-badge volunteer';
-      default: return 'role-badge user';
-    }
-  };
+const Dialog = ({ isOpen, onClose, children }) => {
+    if (!isOpen) return null;
+    return ( <div className="dialog-overlay" onClick={onClose}><div className="dialog-container" onClick={e => e.stopPropagation()}><button className="dialog-close-btn" onClick={onClose}><X size={20} /></button>{children}</div></div> );
+};
 
-  const userList = users.length > 0 ? users : mockUsers;
+const EditUserDialog = ({ user, onClose, onSave }) => {
+    const handleSubmit = (e) => { e.preventDefault(); onSave(user.id, { role: e.target.role.value, location: e.target.location.value }); onClose(); };
+    return ( <Dialog isOpen={!!user} onClose={onClose}><div className="dialog-header"><h3 className="dialog-title">Edit User: {user?.name}</h3></div><form className="dialog-content" onSubmit={handleSubmit}><div className="form-grid"><div className="form-item"><label htmlFor="role">Role</label><select id="role" name="role" defaultValue={user?.role} className="dialog-select"><option value="user">User</option><option value="volunteer">Volunteer</option><option value="admin">Admin</option></select></div><div className="form-item"><label htmlFor="location">Location</label><input id="location" name="location" defaultValue={user?.location} className="dialog-input" /></div></div><div className="dialog-footer"><button type="button" className="dialog-button-secondary" onClick={onClose}>Cancel</button><button type="submit" className="dialog-button-primary">Save Changes</button></div></form></Dialog> );
+};
 
-  return (
-    <div className="user-management-container">
-      <div className="table-filters">
-        <div className="search-wrapper">
-          <Search className="search-icon" />
-          <Input placeholder="Search users by name or email..." className="search-input" />
-        </div>
-        <div className="filter-actions">
-          <Select defaultValue="all">
-            <SelectTrigger className="filter-trigger">
-              <Filter className="filter-icon" />
-              <span>All Roles</span>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Roles</SelectItem>
-              <SelectItem value="user">User</SelectItem>
-              <SelectItem value="volunteer">Volunteer</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+const DeleteUserDialog = ({ user, onClose, onDelete }) => ( <Dialog isOpen={!!user} onClose={onClose}><div className="dialog-header"><h3 className="dialog-title">Confirm Deletion</h3><p className="dialog-subtitle">Are you sure you want to delete this user?</p></div><div className="dialog-content"><p className="delete-warning">User "{user?.name}" will be permanently removed.</p><div className="dialog-footer"><button type="button" className="dialog-button-secondary" onClick={onClose}>Cancel</button><button type="button" className="dialog-button-danger" onClick={() => { onDelete(user.id); onClose(); }}>Delete User</button></div></div></Dialog> );
 
-      <div className="table-wrapper">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>User</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Location</TableHead>
-              <TableHead>Joined Date</TableHead>
-              <TableHead className="actions-header">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {userList.map((user) => (
-              <TableRow key={user.id} className="table-row">
-                <TableCell>
-                  <div className="user-name">{user.name}</div>
-                  <div className="user-email">{user.email}</div>
-                </TableCell>
-                <TableCell>
-                  <Badge className={getRoleClass(user.role)}>{user.role}</Badge>
-                </TableCell>
-                <TableCell>{user.location}</TableCell>
-                <TableCell>{user.joinDate}</TableCell>
-                <TableCell className="actions-cell">
-                  <div className="actions-wrapper">
-                    <Button variant="outline" size="icon" className="action-button">
-                      <Edit className="action-icon" />
-                    </Button>
-                    <Button variant="outline" size="icon" className="action-button delete-button">
-                      <Trash2 className="action-icon" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-    </div>
-  );
+export default function UserManagementTable() {
+    const [users, setUsers] = useState(mockUsersData);
+    const [modalState, setModalState] = useState({ type: null, user: null });
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [selectedRole, setSelectedRole] = useState('All Roles');
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => { if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setIsDropdownOpen(false); };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [dropdownRef]);
+
+    const openModal = (type, user) => setModalState({ type, user });
+    const closeModal = () => setModalState({ type: null, user: null });
+    const handleSave = (id, updates) => setUsers(p => p.map(u => u.id === id ? { ...u, ...updates } : u));
+    const handleDelete = (id) => setUsers(p => p.filter(u => u.id !== id));
+    const handleRoleSelect = (role) => { setSelectedRole(role); setIsDropdownOpen(false); };
+    const getRoleClass = (role) => `role-badge ${role}`;
+
+    return (
+        <>
+            <div className="user-management-container">
+                <div className="table-filters">
+                    <div className="search-wrapper"><Search className="search-icon" /><input placeholder="Search users by name or email..." className="search-input" /></div>
+                    <div className="filter-actions" ref={dropdownRef}>
+                        <button className="filter-trigger-btn" onClick={() => setIsDropdownOpen(p => !p)}><Filter className="filter-icon" /><span>{selectedRole}</span></button>
+                        {isDropdownOpen && (
+                            <div className="dropdown-menu">
+                                <div className="dropdown-item" onClick={() => handleRoleSelect('All Roles')}>All Roles</div>
+                                <div className="dropdown-item" onClick={() => handleRoleSelect('User')}>User</div>
+                                <div className="dropdown-item" onClick={() => handleRoleSelect('Volunteer')}>Volunteer</div>
+                                <div className="dropdown-item" onClick={() => handleRoleSelect('Admin')}>Admin</div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <div className="table-wrapper">
+                    <table>
+                        <thead><tr><th>User</th><th>Role</th><th>Location</th><th>Joined Date</th><th className="actions-header">Actions</th></tr></thead>
+                        <tbody>
+                            {users.map(user => (
+                                <tr key={user.id}>
+                                    <td><div className="user-name">{user.name}</div><div className="user-email">{user.email}</div></td>
+                                    <td><span className={getRoleClass(user.role)}>{user.role}</span></td>
+                                    <td>{user.location}</td>
+                                    <td>{user.joinDate}</td>
+                                    <td className="actions-cell">
+                                        <div className="actions-wrapper">
+                                            <button className="action-button" title="Edit User" onClick={() => openModal('edit', user)}><Edit className="action-icon" /></button>
+                                            <button className="action-button delete-button" title="Delete User" onClick={() => openModal('delete', user)}><Trash2 className="action-icon" /></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <EditUserDialog user={modalState.type === 'edit' ? modalState.user : null} onClose={closeModal} onSave={handleSave} />
+            <DeleteUserDialog user={modalState.type === 'delete' ? modalState.user : null} onClose={closeModal} onDelete={handleDelete} />
+        </>
+    );
 }
