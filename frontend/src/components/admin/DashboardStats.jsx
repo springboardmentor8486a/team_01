@@ -1,18 +1,20 @@
-import React from 'react';
 import { FileText, Clock, AlertCircle, CheckCircle, Users, TrendingUp } from 'lucide-react';
 
-const StatCard = ({ title, value, icon: Icon }) => (
-  <div className="stat-card">
-    <div className="stat-card-header-bar" />
-    <div className="stat-card-content">
-      <div>
-        <p className="stat-card-title">{title}</p>
-        <p className="stat-card-value">{value}</p>
+const StatCard = ({ title, value, icon }) => {
+  const Icon = icon;
+  return (
+    <div className="stat-card">
+      <div className="stat-card-header-bar" />
+      <div className="stat-card-content">
+        <div>
+          <p className="stat-card-title">{title}</p>
+          <p className="stat-card-value">{value}</p>
+        </div>
+        <Icon className="stat-card-icon" />
       </div>
-      <Icon className="stat-card-icon" />
     </div>
-  </div>
-);
+  );
+};
 
 export default function DashboardStats({ stats }) {
   return (
