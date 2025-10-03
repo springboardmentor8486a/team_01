@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import AdminHeader from '../components/admin/AdminHeader';
 import DashboardStats from '../components/admin/DashboardStats';
@@ -9,14 +10,40 @@ import { mockIssues, mockUsers, chartData, categoryData } from '../components/so
 import './AdminDashboardPage.css';
 
 export default function AdminDashboardPage() {
-  const stats = {
-    total: mockIssues.length,
-    pending: mockIssues.filter(i => i.status === 'pending').length,
-    inProgress: mockIssues.filter(i => i.status === 'in progress').length,
-    resolved: mockIssues.filter(i => i.status === 'resolved').length,
-    activeUsers: 4,
-    thisMonth: 18,
-  };
+  const [stats, setStats] = useState({
+    total: 0,
+    pending: 0,
+    inProgress: 0,
+    resolved: 0,
+    activeUsers: 0,
+    thisMonth: 0,
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem('accessToken'); // Corrected key to match login storage
+        const response = await axios.get('http://localhost:3000/api/admin/stat', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = response.data;
+        setStats({
+          total: data.totalIssues,
+          pending: data.pending,
+          inProgress: data.inProgress,
+          resolved: data.resolved,
+          activeUsers: data.activeUsers,
+          thisMonth: data.thisMonth,
+        });
+      } catch (error) {
+        console.error('Failed to fetch admin stats:', error);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   return (
     <div className="admin-dashboard-container">

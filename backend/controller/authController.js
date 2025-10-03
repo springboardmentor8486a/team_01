@@ -7,6 +7,7 @@ const { sendEmail } = require("../helpers/emailService");
 
 const registerController = async (req, res) => {
     try {
+        console.log("Role received in registerController:", req.body.role);
         const {name, email, password, role, fullName, phoneNumber, bio, location} = req.body;
 
         // Check if user already exists by email
