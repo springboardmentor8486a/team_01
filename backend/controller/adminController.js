@@ -184,9 +184,65 @@ const getAdminIssueManagement = async (req, res) => {
   }
 };
 
+const getAdminIssueDetails = async (req, res) => {
+  try {
+    const issues = await Issue.find()
+      .populate('reporterId', 'name fullName')
+      .sort({ createdAt: -1 });
+
+    const formattedIssues = issues.map(issue => ({
+      id: issue._id,
+      title: issue.title,
+      description: issue.description || "",
+      address: issue.address || issue.landmark || "",
+      status: issue.status,
+      priority: issue.priority,
+      category: issue.type,
+      reportedBy: issue.reporterId ? (issue.reporterId.fullName || issue.reporterId.name) : "Unknown",
+      date: issue.createdAt ? issue.createdAt.toLocaleDateString('en-GB') : "",
+      upvotes: 5  // static value for now
+    }));
+
+    res.status(200).json(formattedIssues);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch issue details", error: error.message });
+  }
+};
+
+const getAdminIssueDetailById = async (req, res) => {
+  try {
+    const issueId = req.params.id;
+    const issue = await Issue.findById(issueId)
+      .populate('reporterId', 'name fullName');
+
+    if (!issue) {
+      return res.status(404).json({ message: "Issue not found" });
+    }
+
+    const formattedIssue = {
+      id: issue._id,
+      title: issue.title,
+      description: issue.description || "",
+      address: issue.address || issue.landmark || "",
+      status: issue.status,
+      priority: issue.priority,
+      category: issue.type,
+      reportedBy: issue.reporterId ? (issue.reporterId.fullName || issue.reporterId.name) : "Unknown",
+      date: issue.createdAt ? issue.createdAt.toLocaleDateString('en-GB') : "",
+      upvotes: 5  // static value for now
+    };
+
+    res.status(200).json(formattedIssue);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch issue detail", error: error.message });
+  }
+};
+
 module.exports = {
   getAdminStats,
   getAdminChartStats,
   getAdminCircleStats,
   getAdminIssueManagement,
+  getAdminIssueDetails,
+  getAdminIssueDetailById,
 };
