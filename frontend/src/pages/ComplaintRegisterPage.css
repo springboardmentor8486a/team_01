@@ -348,7 +348,7 @@ textarea {
 
 /* Ensure the entire page background is consistent */
 html, body, .complaint-container, .complaint-container > * {
-  background-color: #f0f6ff;
+  background-color: #ddeaff;
 }
 
 /* Override for specific elements that should have different colors */
