@@ -118,15 +118,17 @@ export default function AdminDashboardPage() {
                 });
                 const data = response.data;
                 // Transform data to flatten issue object and normalize status and priority
-                const transformedIssues = data.map((item, index) => ({
-                    id: item.id || item._id || index,
-                    issue: item.issue || {},
-                    status: item.status ? item.status.toLowerCase() : '',
-                    priority: item.priority ? item.priority.toLowerCase() : '',
-                    category: item.category || '',
-                    reportedBy: item.reportedBy || '',
-                    date: item.date || '',
-                }));
+                const transformedIssues = data
+                    .filter(item => item._id || item.id) // filter out items without valid id
+                    .map(item => ({
+                        id: item._id || item.id,
+                        issue: item.issue || {},
+                        status: item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1).toLowerCase() : '',
+                        priority: item.priority ? item.priority.charAt(0).toUpperCase() + item.priority.slice(1).toLowerCase() : '',
+                        category: item.category || '',
+                        reportedBy: item.reportedBy || '',
+                        date: item.date || '',
+                    }));
                 setIssues(transformedIssues);
             } catch (error) {
                 console.error('Failed to fetch issues:', error);

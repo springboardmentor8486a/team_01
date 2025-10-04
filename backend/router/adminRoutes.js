@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const authenticateJWT = require('../middleware/authMiddleware');
 const { adminMiddleware } = require('../middleware/roleMiddleware');
-const { 
-  getAdminStats, 
-  getAdminChartStats, 
-  getAdminCircleStats, 
+const {
+  getAdminStats,
+  getAdminChartStats,
+  getAdminCircleStats,
   getAdminIssueManagement,
   getAdminIssueDetails,
-  getAdminIssueDetailById
+  getAdminIssueDetailById,
+  updateAdminIssueStatusPriority
 } = require('../controller/adminController');
 
 // Admin-only route example
@@ -31,5 +32,8 @@ router.get('/issuemanagement', authenticateJWT, adminMiddleware, getAdminIssueMa
 // New admin issue details routes
 router.get('/issuedetails', authenticateJWT, adminMiddleware, getAdminIssueDetails);
 router.get('/issuedetails/:id', authenticateJWT, adminMiddleware, getAdminIssueDetailById);
+
+// Update issue status and priority
+router.put('/issuemanagement/:id', authenticateJWT, adminMiddleware, updateAdminIssueStatusPriority);
 
 module.exports = router;

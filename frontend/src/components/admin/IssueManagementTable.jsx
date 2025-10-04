@@ -14,9 +14,65 @@ const Dialog = ({ isOpen, onClose, children }) => {
 };
 
 const ShowIssueDialog = ({ issue, onClose }) => ( <Dialog isOpen={!!issue} onClose={onClose}><div className="dialog-header"><h3 className="dialog-title">{issue?.issue?.title}</h3><p className="dialog-subtitle">{issue?.issue?.address}</p></div><div className="dialog-content"><div className="detail-grid"><div className="detail-item"><strong>Status:</strong> <span className={`status-badge ${issue?.status.replace(' ', '-')}`}>{issue?.status}</span></div><div className="detail-item"><strong>Priority:</strong> <span className={`priority-${issue?.priority}`}>{issue?.priority}</span></div><div className="detail-item"><strong>Category:</strong> {issue?.category}</div><div className="detail-item"><strong>Reported By:</strong> {issue?.reportedBy}</div></div><p className="detail-description"><strong>Description:</strong> {issue?.issue?.description}</p></div></Dialog> );
+import axios from 'axios';
+
 const EditIssueDialog = ({ issue, onClose, onSave }) => {
-    const handleSubmit = (e) => { e.preventDefault(); onSave(issue.id, { status: e.target.status.value, priority: e.target.priority.value }); onClose(); };
-    return ( <Dialog isOpen={!!issue} onClose={onClose}><div className="dialog-header"><h3 className="dialog-title">Edit Issue #{issue?.id}</h3></div><form className="dialog-content" onSubmit={handleSubmit}><div className="form-grid"><div className="form-item"><label htmlFor="status">Status</label><select id="status" name="status" defaultValue={issue?.status} className="dialog-select"><option value="pending">Pending</option><option value="in progress">In Progress</option><option value="resolved">Resolved</option></select></div><div className="form-item"><label htmlFor="priority">Priority</label><select id="priority" name="priority" defaultValue={issue?.priority} className="dialog-select"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div></div><div className="dialog-footer"><button type="button" className="dialog-button-secondary" onClick={onClose}>Cancel</button><button type="submit" className="dialog-button-primary">Save Changes</button></div></form></Dialog> );
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const status = e.target.status.value;
+        const priority = e.target.priority.value;
+
+        try {
+            const token = localStorage.getItem('accessToken'); // use the correct key from login
+            await axios.put(
+                `http://localhost:3000/api/admin/issuemanagement/${issue.issue?._id || issue.id}`,
+                { status, priority },
+                { 
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    } 
+                }
+            );
+            alert('Issue updated successfully');
+            onSave(issue.id, { status, priority });
+            onClose();
+        } catch (error) {
+            alert('Failed to update issue: ' + (error.response?.data?.message || error.message));
+        }
+    };
+
+    return (
+        <Dialog isOpen={!!issue} onClose={onClose}>
+            <div className="dialog-header">
+                <h3 className="dialog-title">Edit Issue #{issue?.id}</h3>
+            </div>
+            <form className="dialog-content" onSubmit={handleSubmit}>
+                <div className="form-grid">
+                    <div className="form-item">
+                        <label htmlFor="status">Status</label>
+                        <select id="status" name="status" defaultValue={issue?.status} className="dialog-select">
+                            <option value="Pending">Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Resolved">Resolved</option>
+                        </select>
+                    </div>
+                    <div className="form-item">
+                        <label htmlFor="priority">Priority</label>
+                        <select id="priority" name="priority" defaultValue={issue?.priority} className="dialog-select">
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="dialog-footer">
+                    <button type="button" className="dialog-button-secondary" onClick={onClose}>Cancel</button>
+                    <button type="submit" className="dialog-button-primary">Save Changes</button>
+                </div>
+            </form>
+        </Dialog>
+    );
 };
 
 export default function IssueManagementTable({ issues: propIssues }) {
@@ -40,8 +96,8 @@ export default function IssueManagementTable({ issues: propIssues }) {
     const closeModal = () => setModalState({ type: null, issue: null });
     const handleSave = (id, updates) => setIssues(p => p.map(i => i.id === id ? { ...i, ...updates } : i));
     const handleStatusSelect = (status) => { setSelectedStatus(status); setIsDropdownOpen(false); };
-    const getStatusClass = (status) => `status-badge ${status.replace(' ', '-')}`;
-    const getPriorityClass = (priority) => `priority-${priority}`;
+const getStatusClass = (status) => `status-badge ${status.toLowerCase().replace(/ /g, '-')}`;
+const getPriorityClass = (priority) => `priority-${priority.toLowerCase()}`;
 
     return (
         <>
