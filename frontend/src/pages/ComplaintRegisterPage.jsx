@@ -1,12 +1,22 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // ADD THIS IMPORT
 import "./ComplaintRegisterPage.css";
+import { useNavigate } from "react-router-dom"; // ADD THIS IMPORT
+
+
 
 const ComplaintRegistration = () => {
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
-  const navigate = useNavigate(); // ADD THIS HOOK
+    const navigate = useNavigate(); // ADD THIS HOOK
 
+  // ... your existing code ...
+
+  // ADD THIS FUNCTION
+  const handleUpdateLocation = () => {
+    navigate('/location-selection');
+  };
+
+  // ... your existing code ...
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -25,11 +35,6 @@ const ComplaintRegistration = () => {
     setPhotoPreview(null);
   };
 
-  // ADD THIS SIMPLE FUNCTION - JUST NAVIGATE TO LOCATION PAGE
-  const handleUpdateLocation = () => {
-    navigate('/location-selection');
-  };
-
   return (
     <div className="complaint-container">
         <header className="complaint-header">
@@ -45,8 +50,7 @@ const ComplaintRegistration = () => {
 
       {/* Banner */}
       <div className="complaint-banner">
-        <nav className="back-btn"> 
-            <a href="/dashboard">←</a>
+        <nav className="back-btn"> <a href="/dashboard">←</a>
         </nav>
         <h1>Report an Issue</h1>
         <p>Help make your community cleaner and safer</p>
@@ -131,28 +135,27 @@ const ComplaintRegistration = () => {
           </label>
         </div>
 
-        {/* Location */}
-        <div className="form-section">
-          <h2>📍 Location Details</h2>
-          <div className="location-box">
-            <div>
-              <label>Latitude</label>
-              <input type="text" value="13.0827" readOnly />
-            </div>
-            <div>
-              <label>Longitude</label>
-              <input type="text" value="80.2707" readOnly />
-            </div>
-            {/* UPDATE THIS BUTTON - ADD onClick HANDLER */}
-            <button 
-              type="button" 
-              className="update-location"
-              onClick={handleUpdateLocation} // ADD THIS LINE
-            >
-              Update Location
-            </button>
-          </div>
-        </div>
+{/* Location */}
+<div className="form-section">
+  <h2>📍 Location Details</h2>
+  <div className="location-box">
+    <div>
+      <label>Latitude</label>
+      <input type="text" value="13.0827" readOnly />
+    </div>
+    <div>
+      <label>Longitude</label>
+      <input type="text" value="80.2707" readOnly />
+    </div>
+    <button 
+      type="button" 
+      className="update-location"
+      onClick={handleUpdateLocation} // ADD THIS LINE
+    >
+      Update Location
+    </button>
+  </div>
+</div>
 
         {/* Upload Photo */}
         <div className="form-section">
