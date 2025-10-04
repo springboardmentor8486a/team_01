@@ -260,7 +260,7 @@ const LocationSelectionPage = () => {
 
       {/* Inline CSS */}
       <style>{`
-        .location-page { background: #dce8faff; font-family: "Segoe UI", Arial, sans-serif; color: #1d1d1f; min-height: 100vh; padding-bottom: 30px; }
+        .location-page { background: #e2ecfbff; font-family: "Segoe UI", Arial, sans-serif; color: #1d1d1f; min-height: 100vh; padding-bottom: 30px; }
         .location-header { background: #4a9dfc; color: white; padding: 30px 40px; }
         .location-header h1 { font-size: 24px; margin: 10px 0; }
         .location-header p { font-size: 14px; opacity: 0.9; }
