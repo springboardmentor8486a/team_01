@@ -6,7 +6,7 @@ import DashboardStats from '../components/admin/DashboardStats';
 import DashboardCharts from '../components/admin/DashboardCharts';
 import IssueManagementTable from '../components/admin/IssueManagementTable';
 import UserManagementTable from '../components/admin/UserManagementTable';
-import { mockIssues, mockUsers, chartData, categoryData } from '../components/source';
+import { mockUsers } from '../components/source';
 import './AdminDashboardPage.css';
 
 export default function AdminDashboardPage() {
@@ -18,6 +18,10 @@ export default function AdminDashboardPage() {
     activeUsers: 0,
     thisMonth: 0,
   });
+
+  const [chartData, setChartData] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
+  const [issues, setIssues] = useState([]);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -45,6 +49,93 @@ export default function AdminDashboardPage() {
     fetchStats();
   }, []);
 
+  useEffect(() => {
+    const fetchChartData = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get('http://localhost:3000/api/admin/chart/stat', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = response.data;
+        // Transform API response to chartData format
+        const transformedData = data.months.map((month, index) => ({
+          month,
+          issues: data.reported[index],
+          resolved: data.resolved[index],
+        }));
+        setChartData(transformedData);
+      } catch (error) {
+        console.error('Failed to fetch chart data:', error);
+      }
+    };
+
+    fetchChartData();
+  }, []);
+
+  useEffect(() => {
+    const fetchCategoryData = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const response = await axios.get('http://localhost:3000/api/admin/circle/stat', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = response.data;
+        // Color mapping for known categories
+        const colorMap = {
+          'Road Maintenance': '#2563eb',
+          'Lighting': '#3b82f6',
+          'Waste Management': '#60a5fa',
+          'Vandalism': '#93c5fd',
+          'Other': '#dbeafe',
+        };
+        // Transform API response to categoryData format
+        const transformedCategoryData = data.categories.map(item => ({
+          name: item.category,
+          value: item.percentage,
+          color: colorMap[item.category] || '#cccccc', // default color if not found
+        }));
+        setCategoryData(transformedCategoryData);
+      } catch (error) {
+        console.error('Failed to fetch category data:', error);
+      }
+    };
+
+    fetchCategoryData();
+  }, []);
+
+  useEffect(() => {
+        const fetchIssues = async () => {
+            try {
+                const token = localStorage.getItem('accessToken');
+                const response = await axios.get('http://localhost:3000/api/admin/issuemanagement', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const data = response.data;
+                // Transform data to flatten issue object and normalize status and priority
+                const transformedIssues = data.map((item, index) => ({
+                    id: item.id || item._id || index,
+                    issue: item.issue || {},
+                    status: item.status ? item.status.toLowerCase() : '',
+                    priority: item.priority ? item.priority.toLowerCase() : '',
+                    category: item.category || '',
+                    reportedBy: item.reportedBy || '',
+                    date: item.date || '',
+                }));
+                setIssues(transformedIssues);
+            } catch (error) {
+                console.error('Failed to fetch issues:', error);
+            }
+        };
+
+        fetchIssues();
+    }, []);
+
   return (
     <div className="admin-dashboard-container">
       <AdminHeader />
@@ -62,7 +153,7 @@ export default function AdminDashboardPage() {
 
         {/* This is the new, dedicated container for the charts */}
         <div className="charts-row">
-          <DashboardCharts chartData={chartData} categoryData={categoryData} />
+        <DashboardCharts chartData={chartData} categoryData={categoryData} />
         </div>
 
         {/* The management section is now separate from the charts */}
@@ -74,7 +165,7 @@ export default function AdminDashboardPage() {
             </TabsList>
 
             <TabsContent value="issues" className="management-tabs-content">
-              <IssueManagementTable issues={mockIssues} />
+              <IssueManagementTable issues={issues} />
             </TabsContent>
             <TabsContent value="users" className="management-tabs-content">
               <UserManagementTable users={mockUsers} />

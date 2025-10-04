@@ -169,7 +169,8 @@ const getAdminIssueManagement = async (req, res) => {
     const formattedIssues = issues.map(issue => ({
       issue: {
         title: issue.title,
-        address: issue.address || issue.landmark || ""
+        address: issue.address || issue.landmark || "",
+        description: issue.description || ""  // Added description field
       },
       status: issue.status,
       priority: issue.priority,
