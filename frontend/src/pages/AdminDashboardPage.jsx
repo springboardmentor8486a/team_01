@@ -6,7 +6,7 @@ import DashboardStats from '../components/admin/DashboardStats';
 import DashboardCharts from '../components/admin/DashboardCharts';
 import IssueManagementTable from '../components/admin/IssueManagementTable';
 import UserManagementTable from '../components/admin/UserManagementTable';
-import { mockUsers } from '../components/source';
+// import { mockUsers } from '../components/source';
 import './AdminDashboardPage.css';
 
 export default function AdminDashboardPage() {
@@ -22,6 +22,7 @@ export default function AdminDashboardPage() {
   const [chartData, setChartData] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const [issues, setIssues] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -138,6 +139,24 @@ export default function AdminDashboardPage() {
         fetchIssues();
     }, []);
 
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const token = localStorage.getItem('accessToken');
+                const response = await axios.get('http://localhost:3000/api/admin/usermanagement', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setUsers(response.data);
+            } catch (error) {
+                console.error('Failed to fetch users:', error);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+
   return (
     <div className="admin-dashboard-container">
       <AdminHeader />
@@ -170,7 +189,7 @@ export default function AdminDashboardPage() {
               <IssueManagementTable issues={issues} />
             </TabsContent>
             <TabsContent value="users" className="management-tabs-content">
-              <UserManagementTable users={mockUsers} />
+              <UserManagementTable users={users} />
             </TabsContent>
           </Tabs>
         </div>

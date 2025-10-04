@@ -289,6 +289,74 @@ const updateAdminIssueStatusPriority = async (req, res) => {
   }
 };
 
+const getUserManagement = async (req, res) => {
+  try {
+    const users = await User.find({}, 'name role location createdAt').lean();
+
+    const formattedUsers = users.map(user => ({
+      id: user._id,
+      name: user.name,
+      role: user.role,
+      location: user.location || "Not specified",
+      joinedDate: user.createdAt ? user.createdAt.toLocaleDateString('en-GB') : "Unknown"
+    }));
+
+    res.status(200).json(formattedUsers);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch user management data", error: error.message });
+  }
+};
+
+const updateUserManagement = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { role, location } = req.body;
+
+    // Validate role
+    const validRoles = ["user", "admin", "volunteer"];
+    if (role && !validRoles.includes(role)) {
+      return res.status(400).json({ message: "Invalid role value" });
+    }
+
+    // Find and update user
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { role, location },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      id: updatedUser._id,
+      name: updatedUser.name,
+      role: updatedUser.role,
+      location: updatedUser.location || "Not specified",
+      joinedDate: updatedUser.createdAt ? updatedUser.createdAt.toLocaleDateString('en-GB') : "Unknown"
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update user", error: error.message });
+  }
+};
+
+const deleteUserManagement = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete user", error: error.message });
+  }
+};
+
 module.exports = {
   getAdminStats,
   getAdminChartStats,
@@ -297,4 +365,7 @@ module.exports = {
   getAdminIssueDetails,
   getAdminIssueDetailById,
   updateAdminIssueStatusPriority,
+  getUserManagement,
+  updateUserManagement,
+  deleteUserManagement,
 };
