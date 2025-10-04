@@ -229,7 +229,7 @@ const LocationSelectionPage = () => {
 
       {/* Manual Entry */}
       <div className="manual-card">
-        <h2>✍️ Manual Coordinate Entry</h2>
+        <h2>Manual Coordinate Entry</h2>
         <div className="manual-inputs">
           <input
             type="text"
@@ -260,11 +260,11 @@ const LocationSelectionPage = () => {
 
       {/* Inline CSS */}
       <style>{`
-        .location-page { background: #f4f9ff; font-family: "Segoe UI", Arial, sans-serif; color: #1d1d1f; min-height: 100vh; padding-bottom: 30px; }
+        .location-page { background: #dce8faff; font-family: "Segoe UI", Arial, sans-serif; color: #1d1d1f; min-height: 100vh; padding-bottom: 30px; }
         .location-header { background: #4a9dfc; color: white; padding: 30px 40px; }
         .location-header h1 { font-size: 24px; margin: 10px 0; }
         .location-header p { font-size: 14px; opacity: 0.9; }
-        .back-btn { background: transparent; border: none; color: white; font-size: 16px; cursor: pointer; }
+        .back-btn { background: transparent; border: none; color: white; font-size: 18px; cursor: pointer; }
         .search-box { display: flex; align-items: center; background: white; margin: 20px auto; width: 90%; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); overflow: hidden; }
         .search-box input { flex: 1; border: none; padding: 14px; font-size: 15px; outline: none; }
         .search-box .search-btn { background: #4a9dfc; color: white; padding: 14px 20px; border: none; cursor: pointer; min-width: 60px; }
@@ -281,7 +281,7 @@ const LocationSelectionPage = () => {
         .info-row .value { font-weight: 300; color: #222; text-align: right; max-width: 65%; }
         .coordinates-row .value { display: flex; gap: 12px; justify-content: flex-end; }
         .coord-boxes { display: flex; gap: 12px; }
-        .coord-box { background: #e7ebf3ff; border-radius: 6px; padding: 6px 10px; text-align: center; min-width: 80px; }
+        .coord-box { background: #e8f0ff; border-radius: 6px; padding: 6px 10px; text-align: center; min-width: 80px; }
         .coord-number { font-weight: 500; }
         .coord-label { font-size: 12px; color: #555; margin-top: 2px; }
         .action-buttons { display: flex; gap: 16px; width: 90%; margin: 20px auto; }
@@ -295,3 +295,5 @@ const LocationSelectionPage = () => {
     </div>
   );
 };
+
+export default LocationSelectionPage;
