@@ -17,7 +17,7 @@ function App() {
     <Router>
       <Routes>
         {/* Remove the duplicate ComplaintRegisterPage route */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/" element={<Navigate to="/home" replace />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
