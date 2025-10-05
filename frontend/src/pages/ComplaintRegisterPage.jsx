@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./ComplaintRegisterPage.css";
 import { useNavigate } from "react-router-dom"; // ADD THIS IMPORT
 
@@ -35,9 +36,60 @@ const ComplaintRegistration = () => {
     setPhotoPreview(null);
   };
 
+  // New submit handler
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData();
+
+    // Collect form values
+    const issueType = form.querySelector('select[required]').value;
+    const issueTitle = form.querySelector('input[type="text"][placeholder="Brief summary of the issue"]').value;
+    let priority = form.querySelectorAll('select[required]')[1].value;
+    // Capitalize first letter of priority to match backend enum
+    priority = priority.charAt(0).toUpperCase() + priority.slice(1);
+    const address = form.querySelector('input[type="text"][placeholder="Enter city or address"]').value;
+    const landmark = form.querySelector('input[type="text"][placeholder="Nearby landmark for reference"]').value;
+    const description = form.querySelector('textarea[placeholder^="Describe the issue"]').value;
+
+    formData.append("type", issueType);
+    formData.append("title", issueTitle);
+    formData.append("priority", priority);
+    formData.append("address", address);
+    formData.append("landmark", landmark);
+    formData.append("description", description);
+
+    // Add location hardcoded for now (latitude and longitude)
+    formData.append("lat", "13.0827");
+    formData.append("lng", "80.2707");
+
+    // Add photo if exists
+    if (photo) {
+      formData.append("image", photo);
+    }
+
+    try {
+      const token = localStorage.getItem("accessToken");
+      await axios.post("http://localhost:3000/api/issues", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      alert("Complaint registered successfully!");
+      form.reset();
+      setPhoto(null);
+      setPhotoPreview(null);
+    } catch (error) {
+      alert("Failed to register complaint. Please try again.");
+      console.error(error);
+    }
+  };
+
   return (
     <div className="complaint-container">
-        <header className="complaint-header">
+      <header className="complaint-header">
             <div className="brand-group">
                 <div className="logo">CS</div>
                 <a href="/dashboard" className="brand-name">CleanStreet</a>
@@ -57,7 +109,7 @@ const ComplaintRegistration = () => {
       </div>
 
       {/* Form */}
-      <form className="complaint-form">
+      <form className="complaint-form" onSubmit={handleSubmit}>
         <div className="form-section">
           <h2>📷 Issue Details</h2>
           <p>Provide detailed information about the issue you want to report</p>
