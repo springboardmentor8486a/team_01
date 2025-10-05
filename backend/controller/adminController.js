@@ -167,9 +167,11 @@ const getAdminIssueManagement = async (req, res) => {
 
     // Format issues for response
     const formattedIssues = issues.map(issue => ({
+      _id: issue._id,  // Include _id for frontend
       issue: {
         title: issue.title,
-        address: issue.address || issue.landmark || ""
+        address: issue.address || issue.landmark || "",
+        description: issue.description || ""  // Added description field
       },
       status: issue.status,
       priority: issue.priority,
@@ -238,6 +240,123 @@ const getAdminIssueDetailById = async (req, res) => {
   }
 };
 
+const updateAdminIssueStatusPriority = async (req, res) => {
+  try {
+    const issueId = req.params.id;
+    const { status, priority } = req.body;
+
+    // Validate status
+    const validStatuses = ["Pending", "In Progress", "Resolved"];
+    if (status && !validStatuses.includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    // Validate priority
+    const validPriorities = ["Low", "Medium", "High"];
+    if (priority && !validPriorities.includes(priority)) {
+      return res.status(400).json({ message: "Invalid priority value" });
+    }
+
+    // Find and update the issue
+    const updatedIssue = await Issue.findByIdAndUpdate(
+      issueId,
+      { status, priority },
+      { new: true, runValidators: true }
+    ).populate('reporterId', 'name fullName');
+
+    if (!updatedIssue) {
+      return res.status(404).json({ message: "Issue not found" });
+    }
+
+    // Format the response similar to getAdminIssueDetailById
+    const formattedIssue = {
+      id: updatedIssue._id,
+      title: updatedIssue.title,
+      description: updatedIssue.description || "",
+      address: updatedIssue.address || updatedIssue.landmark || "",
+      status: updatedIssue.status,
+      priority: updatedIssue.priority,
+      category: updatedIssue.type,
+      reportedBy: updatedIssue.reporterId ? (updatedIssue.reporterId.fullName || updatedIssue.reporterId.name) : "Unknown",
+      date: updatedIssue.createdAt ? updatedIssue.createdAt.toLocaleDateString('en-GB') : "",
+      upvotes: 5  // static value for now
+    };
+
+    res.status(200).json(formattedIssue);
+  } catch (error) {
+    console.error("Error in updateAdminIssueStatusPriority:", error);
+    res.status(500).json({ message: "Failed to update issue", error: error.message });
+  }
+};
+
+const getUserManagement = async (req, res) => {
+  try {
+    const users = await User.find({}, 'name role location createdAt').lean();
+
+    const formattedUsers = users.map(user => ({
+      id: user._id,
+      name: user.name,
+      role: user.role,
+      location: user.location || "Not specified",
+      joinedDate: user.createdAt ? user.createdAt.toLocaleDateString('en-GB') : "Unknown"
+    }));
+
+    res.status(200).json(formattedUsers);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch user management data", error: error.message });
+  }
+};
+
+const updateUserManagement = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { role, location } = req.body;
+
+    // Validate role
+    const validRoles = ["user", "admin", "volunteer"];
+    if (role && !validRoles.includes(role)) {
+      return res.status(400).json({ message: "Invalid role value" });
+    }
+
+    // Find and update user
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { role, location },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      id: updatedUser._id,
+      name: updatedUser.name,
+      role: updatedUser.role,
+      location: updatedUser.location || "Not specified",
+      joinedDate: updatedUser.createdAt ? updatedUser.createdAt.toLocaleDateString('en-GB') : "Unknown"
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update user", error: error.message });
+  }
+};
+
+const deleteUserManagement = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete user", error: error.message });
+  }
+};
+
 module.exports = {
   getAdminStats,
   getAdminChartStats,
@@ -245,4 +364,8 @@ module.exports = {
   getAdminIssueManagement,
   getAdminIssueDetails,
   getAdminIssueDetailById,
+  updateAdminIssueStatusPriority,
+  getUserManagement,
+  updateUserManagement,
+  deleteUserManagement,
 };

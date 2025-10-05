@@ -45,14 +45,20 @@ function LoginForm() {
         if (profileResponse.data.success && profileResponse.data.user) {
           dispatch(setUser(profileResponse.data.user));
           console.log("User profile fetched and stored in Redux:", profileResponse.data.user);
+          // Redirect based on user role after successful login
+          if (profileResponse.data.user.role === "admin") {
+            navigate("/admin/dashboard");
+          } else {
+            navigate("/dashboard");
+          }
+        } else {
+          navigate("/dashboard");
         }
       } catch (profileError) {
         console.error("Failed to fetch user profile after login:", profileError);
         // Still proceed to dashboard even if profile fetch fails
+        navigate("/dashboard");
       }
-
-      // Redirect to dashboard page after successful login
-      navigate("/dashboard");
     } catch (error) {
       // Handle error (show message to user)
       if (error.response && error.response.data && error.response.data.message) {

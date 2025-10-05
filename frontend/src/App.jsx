@@ -8,6 +8,7 @@ import ResetPassword from "./pages/ResetPassword";
 import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 import './App.css'; // Added from main
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
 
 
         </Routes>
