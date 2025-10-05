@@ -10,9 +10,8 @@ import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
 import ComplaintRegisterPage from './pages/ComplaintRegisterPage';
 import LocationSelectionPage from './pages/LocationSelectionPage';
-import './App.css';
 import AdminDashboardPage from "./pages/AdminDashboardPage";
-import './App.css'; // Added from main
+import './App.css';
 
 function App() {
   return (
@@ -33,21 +32,19 @@ function App() {
         <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
       </Routes>
 
-//         <Routes>
-//           {/* Login and related routes from your branch */}
-//           <Route path="/" element={<Navigate to="/home" replace />} />
-//           <Route path="/login" element={<LoginPage />} />
-//           <Route path="/home" element={<HomePage />} />
-//           <Route path="/forgot-password" element={<ForgotPassword />} />
-//           <Route path="/verify-otp" element={<VerifyOtp />} />
-//           <Route path="/reset-password" element={<ResetPassword />} />
-//           <Route path="/register" element={<RegisterPage />} />
-//           <Route path="/dashboard" element={<DashboardPage />} />
-//           <Route path="/profile" element={<ProfilePage />} />
+        {/* <Routes>
+         
+           <Route path="/" element={<Navigate to="/home" replace />} />
+           <Route path="/login" element={<LoginPage />} />
+           <Route path="/home" element={<HomePage />} />
+           <Route path="/forgot-password" element={<ForgotPassword />} />
+           <Route path="/verify-otp" element={<VerifyOtp />} />
+           <Route path="/reset-password" element={<ResetPassword />} />           <Route path="/register" element={<RegisterPage />} />
+           <Route path="/dashboard" element={<DashboardPage />} />
+           <Route path="/profile" element={<ProfilePage />} />
         
 
-
-//         </Routes>
+        </Routes>  */}
 
     </Router>
   );
