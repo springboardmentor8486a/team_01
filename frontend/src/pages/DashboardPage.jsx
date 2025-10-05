@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // ADD THIS IMPORT
 import axios from 'axios';
 import './DashboardPage.css';
 import Header from '../components/Header';
@@ -23,6 +24,7 @@ const DashboardPage = () => {
         resolved: 0
     });
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate(); // ADD THIS HOOK
 
     const fetchStats = async () => {
         try {
@@ -42,7 +44,11 @@ const DashboardPage = () => {
     }, []);
 
     const handleActionClick = (action) => {
-        alert(`${action} button clicked!`);
+        if (action === 'Post a complaint') {
+            navigate('/register-complaint'); // ADD THIS NAVIGATION
+        } else {
+            alert(`${action} button clicked!`);
+        }
     };
 
     return (
