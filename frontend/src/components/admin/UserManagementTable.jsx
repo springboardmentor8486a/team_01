@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import { Filter, Search, Edit, Trash2, X } from 'lucide-react';
 
 // const mockUsersData = [
@@ -41,8 +42,37 @@ export default function UserManagementTable({ users }) {
 
     const openModal = (type, user) => setModalState({ type, user });
     const closeModal = () => setModalState({ type: null, user: null });
-    const handleSave = (id, updates) => setLocalUsers(p => p.map(u => u.id === id ? { ...u, ...updates } : u));
-    const handleDelete = (id) => setLocalUsers(p => p.filter(u => u.id !== id));
+    const handleSave = async (id, updates) => {
+        try {
+            const token = localStorage.getItem('accessToken');
+            const response = await axios.put(`http://localhost:3000/api/admin/usermanagement/${id}`, updates, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            const updatedUser = response.data;
+            setLocalUsers(p => p.map(u => u.id === id ? { ...u, ...updatedUser } : u));
+            alert('User updated successfully.');
+        } catch (error) {
+            console.error('Failed to update user:', error);
+            alert('Failed to update user. Please try again.');
+        }
+    };
+    const handleDelete = async (id) => {
+        try {
+            const token = localStorage.getItem('accessToken');
+            await axios.delete(`http://localhost:3000/api/admin/usermanagement/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setLocalUsers(p => p.filter(u => u.id !== id));
+            alert('User deleted successfully.');
+        } catch (error) {
+            console.error('Failed to delete user:', error);
+            alert('Failed to delete user. Please try again.');
+        }
+    };
     const handleRoleSelect = (role) => { setSelectedRole(role); setIsDropdownOpen(false); };
     const getRoleClass = (role) => `role-badge ${role.toLowerCase()}`;
 
