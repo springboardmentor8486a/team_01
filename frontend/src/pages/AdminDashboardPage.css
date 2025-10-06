@@ -135,7 +135,7 @@ th { font-weight: 600; color: #64748b; background-color: #f8fafc; }
 .actions-header, .actions-cell { text-align: right; }
 .actions-wrapper { display: flex; gap: 0.75rem; justify-content: flex-end; }
 .action-button {
-    height: 2.25rem !important; width: 2.25rem !important;
+    height: 3rem !important; width: 3rem !important;
     display: inline-flex !important; align-items: center !important; justify-content: center !important;
     border-radius: 0.5rem !important; border: none !important;
     background-color: #1e3a8a !important; cursor: pointer;
