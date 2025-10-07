@@ -164,7 +164,7 @@ th { font-weight: 600; color: #64748b; background-color: #f8fafc; }
     position: relative; width: 100%; max-width: 550px;
     background-color: white; border-radius: 1rem; border: 1px solid #e2e8f0;
     box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    animation: slideIn 0.3s ease-out; color: #475569;
+    animation: slideIn 0.3s ease-out; color: rgb(0, 0, 0);
 }
 @keyframes slideIn { from { transform: translateY(-20px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); } }
 .dialog-close-btn { position: absolute; top: 0.75rem; right: 0.75rem; height: 2rem; width: 2rem; border-radius: 9999px; border: none; background-color: #f1f5f9; color: #64748b; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
