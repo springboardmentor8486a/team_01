@@ -16,8 +16,8 @@ export const EyeIcon = ({ className }) => (
     strokeLinejoin="round"
     className={className}
   >
-    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-    <circle cx="12" cy="12" r="3" />
+    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" fill="none" />
+    <circle cx="12" cy="12" r="3" fill="none" />
   </svg>
 );
 
@@ -34,8 +34,8 @@ export const EditIcon = ({ className }) => (
     strokeLinejoin="round"
     className={className}
   >
-    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-    <path d="m15 5 4 4" />
+    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" fill="none" />
+    <path d="m15 5 4 4" fill="none" />
   </svg>
 );
 
@@ -52,9 +52,9 @@ export const TrashIcon = ({ className }) => (
     strokeLinejoin="round"
     className={className}
   >
-    <path d="M3 6h18" />
-    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    <path d="M3 6h18" fill="none" />
+    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" fill="none" />
+    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" fill="none" />
   </svg>
 );
 
@@ -71,7 +71,7 @@ export const CloseIcon = ({ className }) => (
         strokeLinejoin="round" 
         className={className}
     >
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
+        <line x1="18" y1="6" x2="6" y2="18" fill="none"></line>
+        <line x1="6" y1="6" x2="18" y2="18" fill="none"></line>
     </svg>
 );
