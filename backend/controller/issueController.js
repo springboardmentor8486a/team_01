@@ -134,10 +134,119 @@ const deleteIssue = async (req, res) => {
   }
 };
 
+// Get a single issue by ID with comments and votes
+const getIssueById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const issue = await Issue.findById(id).populate('comments.userId', 'name email').populate('upvotes', 'name').populate('downvotes', 'name');
+    if (!issue) {
+      return res.status(404).json({ message: "Issue not found" });
+    }
+    res.status(200).json(issue);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch issue", error: error.message });
+  }
+};
+
+// Add a comment to an issue
+const addComment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { text } = req.body;
+    const userId = req.user.userId;
+
+    if (!text || text.trim() === "") {
+      return res.status(400).json({ message: "Comment text is required" });
+    }
+
+    const issue = await Issue.findById(id);
+    if (!issue) {
+      return res.status(404).json({ message: "Issue not found" });
+    }
+
+    const comment = {
+      userId,
+      text: text.trim(),
+    };
+
+    issue.comments.push(comment);
+    await issue.save();
+
+    // Populate the new comment for response
+    await issue.populate('comments.userId', 'name email');
+
+    res.status(201).json({ message: "Comment added", issue });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to add comment", error: error.message });
+  }
+};
+
+// Upvote an issue
+const upvoteIssue = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.userId;
+
+    const issue = await Issue.findById(id);
+    if (!issue) {
+      return res.status(404).json({ message: "Issue not found" });
+    }
+
+    // Remove from downvotes if present
+    issue.downvotes = issue.downvotes.filter(id => id.toString() !== userId);
+
+    // Toggle upvote
+    const upvoteIndex = issue.upvotes.findIndex(id => id.toString() === userId);
+    if (upvoteIndex > -1) {
+      issue.upvotes.splice(upvoteIndex, 1);
+    } else {
+      issue.upvotes.push(userId);
+    }
+
+    await issue.save();
+    res.status(200).json({ message: "Upvote updated", upvotes: issue.upvotes.length, downvotes: issue.downvotes.length });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to upvote issue", error: error.message });
+  }
+};
+
+// Downvote an issue
+const downvoteIssue = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.userId;
+
+    const issue = await Issue.findById(id);
+    if (!issue) {
+      return res.status(404).json({ message: "Issue not found" });
+    }
+
+    // Remove from upvotes if present
+    issue.upvotes = issue.upvotes.filter(id => id.toString() !== userId);
+
+    // Toggle downvote
+    const downvoteIndex = issue.downvotes.findIndex(id => id.toString() === userId);
+    if (downvoteIndex > -1) {
+      issue.downvotes.splice(downvoteIndex, 1);
+    } else {
+      issue.downvotes.push(userId);
+    }
+
+    await issue.save();
+    res.status(200).json({ message: "Downvote updated", upvotes: issue.upvotes.length, downvotes: issue.downvotes.length });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to downvote issue", error: error.message });
+  }
+};
+
 module.exports = {
   getIssues,
   createIssue,
   getIssueStats,
   updateIssueStatus,
   deleteIssue,
+  getIssueById,
+  addComment,
+  upvoteIssue,
+  downvoteIssue,
 };
