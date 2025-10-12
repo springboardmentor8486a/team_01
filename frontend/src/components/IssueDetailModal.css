@@ -1,0 +1,97 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.issue-detail-modal {
+  background-color: #e3f2fd;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  padding: 25px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+  color: var(--text-dark);
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text-light);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.modal-close-button:hover {
+  color: var(--text-dark);
+}
+
+.modal-body {
+  padding-top: 10px;
+}
+
+.detail-subheader {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.detail-section {
+  margin-bottom: 20px;
+}
+
+.detail-title {
+  font-size: 16px;
+  font-weight: normal;
+  color: var(--text-light);
+  margin-bottom: 5px;
+}
+
+.detail-content {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.description-section {
+  margin-bottom: 30px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 30px;
+}
+
+.detail-priority-high {
+  color: var(--red-high);
+  font-weight: bold;
+}
+
+/* Inherit color variables from IssueManagement.css */
+/* :root { ... } is assumed to be available or copied here if this were a truly isolated component */
