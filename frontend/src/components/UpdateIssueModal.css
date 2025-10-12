@@ -1,0 +1,124 @@
+/* Reuse the modal-backdrop from IssueDetailModal.css */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.update-issue-modal {
+  background-color: #e3f2fd;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px; 
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.modal-header {
+  /* Reduced vertical padding slightly for a more compact look */
+  padding: 15px 25px 0 25px; 
+}
+
+.modal-header h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+  color: var(--text-dark);
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text-light);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+
+.modal-close-button:hover {
+  color: var(--text-dark);
+}
+
+.modal-body {
+  /* Adjusted vertical padding for tighter fit */
+  padding: 0 25px 15px 25px; 
+}
+
+.update-subheader {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.update-subheader strong {
+  color: var(--text-dark);
+  font-weight: bold;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: var(--text-dark);
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.select-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* Re-added the custom dropdown arrow */
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3D%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23777777%22%20d%3D%22M287%2064.6c-4.8-4.8-12.5-4.8-17.3%200l-123.7%20123.7L22.3%2064.6C17.5%2059.8%209.8%2059.8%205%2064.6c-4.8%204.8-4.8%2012.5%200%2017.3l132.3%20132.3c2.4%202.4%205.5%203.6%208.7%203.6s6.3-1.2%208.7-3.6l132.3-132.3C291.8%2077.1%20291.8%2069.4%20287%2064.6z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  padding-right: 30px;
+}
+
+.textarea-input {
+  resize: vertical;
+}
+
+/* --- Footer and Button --- */
+.modal-footer {
+  /* Reduced vertical padding slightly for a more compact look */
+  padding: 0 25px 20px 25px;
+}
+
+.update-button {
+  width: 100%;
+  background-color: var(--blue-primary);
+  color: white;
+  border: none;
+  padding: 12px 0;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.update-button:hover {
+  background-color: #3a7bd5;
+}

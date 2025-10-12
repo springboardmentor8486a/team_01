@@ -1,0 +1,257 @@
+/* Variables for colors */
+:root {
+  --blue-primary: #4a90e2;
+  --blue-light: #e6f0ff;
+  --blue-text: #2a65a2;
+  --green-resolved: #4CAF50;
+  --yellow-pending: #FFC107;
+  --red-high: #f44336;
+  --orange-medium: #ff9800;
+  --green-low: #8bc34a;
+  --text-dark: #333;
+  --text-light: #777;
+  --background-light: #e3f2fd;
+  --card-background: #ffffff;
+  --border-color: #ddd;
+  --shadow-light: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.issue-management-dashboard {
+  background-color: var(--background-light);
+  padding: 20px;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* --- Header & Navigation (No Change) --- */
+.dashboard-header {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--text-light);
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.nav-button:hover {
+  color: var(--blue-primary);
+}
+
+.nav-button.active {
+  color: var(--text-dark);
+  font-weight: bold;
+  border-bottom: 3px solid var(--blue-primary);
+}
+
+/* --- Search and Filter (FIXED LAYOUT) --- */
+.search-and-filter-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 15px; /* Added gap between search and filter */
+}
+
+.search-input-container {
+  flex-grow: 1;
+  position: relative;
+  margin-right: 50px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: var(--text-light);
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 15px 12px 45px; /* Padding adjusted for icon */
+  border: 1px solid var(--border-color);
+  border-radius: 25px;
+  font-size: 16px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Filter Dropdown Container --- */
+.filter-dropdown-container {
+  position: relative;
+  /* Explicit width/min-width to prevent stretching */
+  min-width: 120px; 
+}
+
+.filter-button {
+  /* This is now a <select> element */
+  appearance: none; /* Hide default dropdown arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  padding: 10px 35px 10px 15px; /* Adjusted padding for icon */
+  border: 1px solid var(--border-color);
+  background-color: var(--card-background);
+  color: var(--text-dark);
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: var(--shadow-light);
+  line-height: 1.4;
+}
+
+.filter-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--text-light);
+  pointer-events: none; /* Allows click to pass through to the select element */
+}
+
+/* --- Main Issue Card (No Change) --- */
+.all-issues-card {
+  background-color: var(--card-background);
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: var(--shadow-light);
+}
+
+.all-issues-card h2 {
+  font-size: 24px;
+  margin-top: 0;
+  margin-bottom: 5px;
+  color: var(--text-dark);
+}
+
+.card-subtitle {
+  color: var(--text-light);
+  margin-bottom: 20px;
+}
+
+/* --- Table Styling (No Change) --- */
+.issues-table-container {
+  overflow-x: auto;
+}
+
+.issues-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px; 
+}
+
+.issues-table thead th {
+  text-align: left;
+  padding: 10px 15px;
+  color: var(--text-light);
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.issues-table tbody tr {
+  background-color: var(--card-background);
+  transition: background-color 0.2s;
+}
+
+.issues-table tbody tr:hover {
+  background-color: var(--background-light);
+}
+
+.issues-table td {
+  padding: 15px;
+  color: var(--text-dark);
+  font-size: 15px;
+}
+
+.issue-title {
+  font-weight: bold;
+}
+
+.issue-location {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* --- Status Tags (No Change) --- */
+.status-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.status-in-progress {
+  background-color: var(--blue-light);
+  color: var(--blue-text);
+}
+
+.status-resolved {
+  background-color: rgba(76, 175, 80, 0.1); 
+  color: var(--green-resolved);
+}
+
+.status-pending {
+  background-color: rgba(255, 193, 7, 0.1); 
+  color: var(--yellow-pending);
+}
+
+/* --- Priority Tags (No Change) --- */
+.priority-high {
+  color: var(--red-high);
+  font-weight: bold;
+}
+
+.priority-medium {
+  color: var(--orange-medium);
+  font-weight: bold;
+}
+
+.priority-low {
+  color: var(--green-low);
+  font-weight: bold;
+}
+
+/* --- Actions (Updated to style SVG) --- */
+.actions-cell {
+  white-space: nowrap;
+}
+
+.action-icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+  color: var(--text-light);
+  transition: color 0.15s;
+  padding: 5px; /* Added small padding for better hit area */
+}
+
+.action-icon-button:hover {
+  color: var(--blue-primary);
+}
+
+.action-svg-icon {
+    width: 20px; /* Set consistent size for SVG icons */
+    height: 20px;
+    vertical-align: middle;
+}
+
+.no-results {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-light);
+}
