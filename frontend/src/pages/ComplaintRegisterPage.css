@@ -1,0 +1,407 @@
+/* General layout */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f0f6ff;
+  color: #333;
+  min-height: 100%;
+}
+
+body {
+  background-color: #f0f6ff;
+}
+
+.complaint-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f0f6ff; /* Add this line */
+  color: #333;
+}
+
+/* Header */
+.complaint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 120px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  color: #333;
+}
+
+.brand-group {
+  display: flex;
+  align-items: center;
+  margin-left: 0;
+  gap: 0;
+}
+
+.complaint-header .logo {
+  background: #4a9dfc;
+  color: #fff;
+  font-weight: bold;
+  padding: 5px 9px;
+  border-radius: 30%;
+  font-size: 16px;
+  margin-right: 0;
+}
+
+.brand-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+  margin-left: 8px;
+}
+
+.complaint-header nav {
+  margin-right: 0;
+}
+
+.complaint-header nav a {
+  color: #666;
+  margin-left: 30px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Banner */
+.complaint-banner {
+  background: #4a9dfc;
+  color: white;
+  padding: 20px 120px;
+  text-align: left;
+}
+
+.complaint-banner h1 {
+  margin: 10px 0;
+  margin-left: 0;
+  font-size: 26px;
+  color: white;
+}
+
+.complaint-banner p {
+  margin: 0;
+  margin-left: 0;
+  font-size: 15px;
+  opacity: 0.9;
+  color: white;
+}
+
+.complaint-banner nav a{
+    border: none;
+    background: transparent;
+    font-size: 30px;
+    margin-left: 0;
+    color: white;
+    cursor: pointer;
+}
+
+/* Form */
+.complaint-form {
+  max-width: 800px;
+  margin: 20px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.form-section {
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.form-section h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.form-section p {
+  font-size: 14px;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+label {
+  display: block;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* Location Box */
+.location-box {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+}
+
+.location-box div {
+  flex: 1;
+}
+
+.update-location {
+  padding: 10px 16px;
+  background: #eaf3ff;
+  border: 1px solid #1d70f2;
+  border-radius: 8px;
+  color: #1d70f2;
+  cursor: pointer;
+}
+
+/* Upload box */
+.upload-box {
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  color: #555;
+  background: #fafafa;
+}
+
+.upload-subtext {
+  font-size: 13px;
+  color: #555;
+}
+
+/* Buttons */
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+.cancel-btn {
+  padding: 10px 18px;
+  border: 1px solid #ccc;
+  background: #f8f8f8;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #333;
+}
+
+.submit-btn {
+  padding: 10px 20px;
+  background: #1d70f2;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Input, Select, Textarea - uniform look */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background-color: #fff;
+  color: #333;
+}
+
+/* Placeholder text color */
+input::placeholder,
+textarea::placeholder {
+  color: #666;
+  opacity: 1;
+}
+
+select:invalid {
+  color: #666;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* Upload Photo Section */
+.photo-upload-container {
+  position: relative;
+}
+
+.photo-input {
+  display: none;
+}
+
+.upload-box {
+  display: block;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fafafa;
+}
+
+.upload-box:hover {
+  border-color: #4a9dfc;
+  background: #f0f8ff;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #555;
+}
+
+.upload-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.upload-subtext {
+  font-size: 13px;
+  color: #555;
+}
+
+/* Photo Preview */
+.photo-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.photo-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.file-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.file-size {
+  font-size: 12px;
+  color: #555;
+}
+
+.remove-photo-btn {
+  padding: 8px 16px;
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.remove-photo-btn:hover {
+  background: #cc0000;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .complaint-header {
+    padding: 15px 20px;
+  }
+  
+  .complaint-banner {
+    padding: 20px 20px;
+  }
+  
+  .upload-box {
+    padding: 20px;
+  }
+  
+  .preview-image {
+    max-height: 150px;
+  }
+  
+  .upload-icon {
+    font-size: 30px;
+  }
+}
+
+/* Additional styles to ensure consistent background */
+* {
+  color: #333;
+}
+
+/* Ensure the entire page background is consistent */
+html, body, .complaint-container, .complaint-container > * {
+  background-color: #ddeaff;
+}
+
+/* Override for specific elements that should have different colors */
+.complaint-banner *,
+.submit-btn,
+.remove-photo-btn,
+.complaint-header .logo {
+  color: inherit;
+}
+
+/* Ensure form elements don't inherit the global color */
+input, select, textarea {
+  color: #333;
+}
+
+/* Force white background for form areas that should be white */
+.complaint-header,
+.complaint-form,
+.complaint-form .form-section,
+.upload-box {
+  background-color: white;
+}
+
+.complaint-banner {
+  background-color: #4a9dfc;
+}
+
+
+/* Style for navigation buttons in header */
+.nav-button {
+  background: none;
+  border: none;
+  color: #666;
+  margin-left: 30px;
+  text-decoration: none;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: inherit;
+  padding: 0;
+}
+
+.nav-button:hover {
+  color: #007AFF;
+}
+
+.brand-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+  /* Remove default button styles */
+  background: none;
+  border: none;
+  padding: 0;
+}

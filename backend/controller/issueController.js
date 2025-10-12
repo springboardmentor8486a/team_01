@@ -52,6 +52,11 @@ const createIssue = async (req, res) => {
       }
     }
 
+    if (!req.user || !req.user.userId) {
+      console.error("Authentication error: req.user or req.user.userId is missing");
+      return res.status(401).json({ message: "Unauthorized: User not authenticated" });
+    }
+
     const newIssue = new Issue({
       title: String(title),
       type: String(type),
