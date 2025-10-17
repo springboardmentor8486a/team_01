@@ -1,66 +1,120 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useParams, useLocation } from 'react-router-dom';
 import './IssueDetailPage.css';
 import ViewIssueComponent from '../components/ViewIssueComponent';
 
-const MOCK_ISSUE_DATA = {
-    title: "Large Pothole on Main Street",
-    priority: "high",
-    status: "in-review", // 'received', 'in-review', 'resolved'
-    type: "pothole",
-    reporter: "Demo User",
-    date: "Oct 10, 2025, 05:15 PM",
-    address: "123 Main Street, Downtown",
-    description: "There is a significant pothole on Main Street near the intersection with Oak Avenue. It's approximately 2 feet wide and 6 inches deep, posing a serious hazard to vehicles and pedestrians. This has been causing traffic slowdowns during peak hours.",
-    landmark: "Near City Hall",
-    coordinates: {
-        latitude: "40.712800",
-        longitude: "-74.006000"
-    },
-    // Mock image URL for demonstration
-    imageUrl: "https://placehold.co/900x300/e0e7ff/3b82f6?text=Pothole+Image+Placeholder", 
-    comments: [
-        {
-            id: 1,
-            author: "Sarah Johnson",
-            initials: "S",
-            timeAgo: "3d ago",
-            text: "I drive through here every day and this pothole is getting worse. Almost damaged my tire yesterday!",
-            role: "user"
-        },
-        {
-            id: 2,
-            author: "Mike Chen",
-            initials: "M",
-            timeAgo: "2d ago",
-            text: "Thanks for reporting this. The city needs to prioritize fixing this before someone gets hurt.",
-            role: "user"
-        },
-        {
-            id: 3,
-            author: "City Admin",
-            initials: "C",
-            timeAgo: "1d ago",
-            text: "We have received your report and our crew will be dispatched to assess and repair this pothole within the next 3-5 business days. Thank you.",
-            role: "admin"
-        },
-    ],
-    initialVotes: { // Initialize votes that will be managed by ViewIssueComponent's state
-        upvotes: 24,
-        downvotes: 2,
-    }
+/** Helpers to convert backend Issue -> ViewIssueComponent model **/
+const formatDate = (iso) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mm = String(d.getMinutes()).padStart(2,'0');
+    return `${months[d.getMonth()]} ${String(d.getDate()).padStart(2,'0')}, ${d.getFullYear()}, ${hh}:${mm}`;
 };
 
-const IssueDetailPage = () => {
-    // 🚨 API CALL INTEGRATION POINT 1: Initial Data Fetch
-    // Your team lead will replace this MOCK_ISSUE_DATA with a state
-    // that fetches data on mount (e.g., using useEffect with fetch).
-    const [issueData, setIssueData] = useState(MOCK_ISSUE_DATA);
+const formatRelative = (iso) => {
+    if (!iso) return 'Just now';
+    const diffMs = Date.now() - new Date(iso).getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    return `${days}d ago`;
+};
 
-    // In a real app, loading and error states would be managed here.
-    const loading = false; 
+const mapStatus = (s) => {
+    const v = String(s || '').toLowerCase();
+    if (v === 'resolved') return 'resolved';
+    if (v === 'in progress' || v === 'in-progress') return 'in-review';
+    if (v === 'received') return 'received';
+    return 'received'; // default for "Pending"
+};
+
+const toViewModel = (i) => ({
+    id: i?._id,
+    title: i?.title || 'Untitled Issue',
+    priority: String(i?.priority || 'Low').toLowerCase(),
+    status: mapStatus(i?.status || 'Pending'),
+    type: String(i?.type || '').toLowerCase(),
+    reporter: i?.reporterName || 'Demo User',
+    date: formatDate(i?.createdAt),
+    address: i?.address || '',
+    description: i?.description || '',
+    landmark: i?.landmark || '',
+    coordinates: {
+        latitude: typeof i?.location?.lat === 'number' ? i.location.lat.toFixed(6) : String(i?.location?.lat || ''),
+        longitude: typeof i?.location?.lng === 'number' ? i.location.lng.toFixed(6) : String(i?.location?.lng || '')
+    },
+    imageUrl: i?.image || 'https://placehold.co/900x300/e0e7ff/3b82f6?text=Pothole+Image+Placeholder',
+    comments: Array.isArray(i?.comments)
+        ? i.comments.slice().reverse().map((c, idx) => ({
+            id: c?._id || idx,
+            author: c?.userName || 'User',
+            initials: (c?.userName?.[0] || 'U').toUpperCase(),
+            timeAgo: formatRelative(c?.createdAt),
+            text: c?.text || '',
+            role: c?.role || 'user'
+        }))
+        : [],
+    initialVotes: {
+        upvotes: Array.isArray(i?.upvotes) ? i.upvotes.length : 0,
+        downvotes: Array.isArray(i?.downvotes) ? i.downvotes.length : 0
+    }
+});
+
+const IssueDetailPage = () => {
+    const params = useParams();
+    const location = useLocation();
+
+    // Be resilient if route param isn't matched (e.g., during HMR or wildcard route)
+    const derivedId = params?.id || location.pathname.split('/').filter(Boolean).pop();
+
+    const [issueData, setIssueData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        let mounted = true;
+        const fetchIssue = async () => {
+            // If we still cannot resolve an id, bail out with a clear error
+            if (!derivedId) {
+                setError('Invalid issue URL');
+                setLoading(false);
+                return;
+            }
+            try {
+                setLoading(true);
+                const { data } = await axios.get(`http://localhost:3000/api/issues/${derivedId}`);
+                if (!mounted) return;
+                setIssueData(toViewModel(data));
+            } catch (e) {
+                console.error('Failed to fetch issue by id:', e);
+                if (mounted) setError('Failed to load issue');
+            } finally {
+                if (mounted) setLoading(false);
+            }
+        };
+        fetchIssue();
+        return () => { mounted = false; };
+    }, [derivedId]);
 
     if (loading) {
         return <div className="loading">Loading issue details...</div>;
+    }
+
+    if (error || !issueData) {
+        return (
+            <div className="issue-detail-page-container">
+                <main className="content-area">
+                    <a href="/dashboard" className="back-link">&larr; Back to Dashboard</a>
+                    <div className="card"><h3>{error || 'Issue not found'}</h3></div>
+                </main>
+            </div>
+        );
     }
 
     return (
@@ -80,7 +134,6 @@ const IssueDetailPage = () => {
                 <a href="/dashboard" className="back-link">
                     &larr; Back to Dashboard
                 </a>
-                
                 <ViewIssueComponent issue={issueData} />
             </main>
         </div>

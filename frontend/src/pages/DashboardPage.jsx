@@ -16,7 +16,6 @@ import trackIcon from '../assets/dashboardAssets/track.png';
 import feedbackIcon from '../assets/dashboardAssets/pofeedback.png';
 import issueMapIcon from '../assets/dashboardAssets/issuemap.png';
 import IssueCard from '../components/IssueCard.jsx';
-import SideDrawer from '../components/SideDrawer.jsx';
 
 // Helpers to adapt API -> UI (module scope to keep stable references)
 const formatDate = (iso) => {
@@ -60,18 +59,10 @@ const DashboardPage = () => {
 
     // Reported issues data and drawer state
     const [issues, setIssues] = useState([]);
-    const [drawerOpen, setDrawerOpen] = useState(false);
-    const [selectedIssue, setSelectedIssue] = useState(null);
-    const imageAssets = [potholeImg, streetlightImg, garbageImg];
 
     const handleOpen = (issue) => {
-        setSelectedIssue(issue);
-        setDrawerOpen(true);
-    };
-    const handleClose = () => setDrawerOpen(false);
-    const handleSave = (updated) => {
-        setIssues(prev => prev.map(i => (i.id === updated.id ? updated : i)));
-        setDrawerOpen(false);
+        // Navigate to the view issue route with the selected issue's id
+        navigate(`/viewissue/${issue.id}`);
     };
 
     const fetchStats = useCallback(async () => {
@@ -238,13 +229,6 @@ const DashboardPage = () => {
                         </button>
                     </section>
                 </div>
-                <SideDrawer
-                    open={drawerOpen}
-                    issue={selectedIssue}
-                    onClose={handleClose}
-                    onSave={handleSave}
-                    assets={imageAssets}
-                />
             </main>
         </div>
     );

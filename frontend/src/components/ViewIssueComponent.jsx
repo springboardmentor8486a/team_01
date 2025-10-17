@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { Clock, CheckCircle, ThumbsUp, ThumbsDown, Send } from 'lucide-react';
 // Styling imported via IssueDetailPage.jsx
 
 // Helper component for the status steps
-const StatusStep = ({ label, icon: Icon, isActive, isCompleted }) => {
+const StatusStep = ({ label, isActive, isCompleted }) => {
     let iconClass = '';
     if (isCompleted) {
         iconClass = 'completed';
@@ -30,7 +31,7 @@ const StatusStep = ({ label, icon: Icon, isActive, isCompleted }) => {
 const ViewIssueComponent = ({ issue }) => {
     // Local State for Interactive Elements
     const [commentText, setCommentText] = useState('');
-    const [localComments, setLocalComments] = useState(issue.comments);
+    const [localComments, setLocalComments] = useState(issue.comments || []);
     const [votes, setVotes] = useState(issue.initialVotes);
     const [userVote, setUserVote] = useState(null); // 'upvote', 'downvote', or null
     
@@ -38,60 +39,124 @@ const ViewIssueComponent = ({ issue }) => {
 
     // --- Interaction Handlers ---
 
-    const handleVote = (type) => {
-        // Optimistic UI Update using local state
+    const handleVote = async (type) => {
+        if (!issue?.id) {
+            console.warn('Issue id missing; cannot vote');
+            return;
+        }
+
+        const prevVotes = { ...votes };
+        const prevUserVote = userVote;
+
+        // Optimistic UI update
         setVotes(prev => {
-            let newUpvotes = prev.upvotes;
-            let newDownvotes = prev.downvotes;
+            let up = prev.upvotes;
+            let down = prev.downvotes;
 
             if (type === 'upvote') {
-                if (userVote === 'upvote') { // Undo Upvote
-                    newUpvotes -= 1;
+                if (userVote === 'upvote') { // undo upvote
+                    up -= 1;
                     setUserVote(null);
-                } else { // New Upvote (or changing from downvote)
-                    newUpvotes += 1;
-                    if (userVote === 'downvote') newDownvotes -= 1;
+                } else { // set upvote (clear downvote if set)
+                    up += 1;
+                    if (userVote === 'downvote') down -= 1;
                     setUserVote('upvote');
                 }
-            } else { // type === 'downvote'
-                if (userVote === 'downvote') { // Undo Downvote
-                    newDownvotes -= 1;
+            } else { // downvote
+                if (userVote === 'downvote') { // undo downvote
+                    down -= 1;
                     setUserVote(null);
-                } else { // New Downvote (or changing from upvote)
-                    newDownvotes += 1;
-                    if (userVote === 'upvote') newUpvotes -= 1;
+                } else { // set downvote (clear upvote if set)
+                    down += 1;
+                    if (userVote === 'upvote') up -= 1;
                     setUserVote('downvote');
                 }
             }
-            return { upvotes: newUpvotes, downvotes: newDownvotes };
+            return { upvotes: up, downvotes: down };
         });
 
-        // 🚨 API CALL INTEGRATION POINT 2: Handle Voting
-        console.log(`Sending API call to register vote: ${type} for issue ${issue.title}`);
-        // Your team lead will implement the actual fetch request here.
+        try {
+            const url = `http://localhost:3000/api/issues/${issue.id}/${type}`;
+            const token = localStorage.getItem('accessToken');
+            const { data } = await axios.post(
+                url,
+                {},
+                {
+                    withCredentials: true,
+                    headers: token ? { Authorization: `Bearer ${token}` } : {}
+                }
+            );
+
+            // If backend responds with updated arrays/counts, sync from server
+            if (data) {
+                const upLen = Array.isArray(data.upvotes) ? data.upvotes.length
+                             : (typeof data.upvotes === 'number' ? data.upvotes : undefined);
+                const downLen = Array.isArray(data.downvotes) ? data.downvotes.length
+                               : (typeof data.downvotes === 'number' ? data.downvotes : undefined);
+
+                if (typeof upLen === 'number' || typeof downLen === 'number') {
+                    setVotes(prev => ({
+                        upvotes: typeof upLen === 'number' ? upLen : prev.upvotes,
+                        downvotes: typeof downLen === 'number' ? downLen : prev.downvotes
+                    }));
+                }
+            }
+        } catch (err) {
+            console.error('Vote request failed', err);
+            // Rollback optimistic update
+            setVotes(prevVotes);
+            setUserVote(prevUserVote);
+        }
     };
     
-    const handlePostComment = (e) => {
+    const handlePostComment = async (e) => {
         e.preventDefault();
         const text = commentText.trim();
         if (text.length === 0) return;
 
-        const newComment = {
-            id: Date.now(), // Unique ID for key
-            author: "Current User", // Mock current user
-            initials: "CU",
+        // optimistic add
+        const optimisticId = Date.now();
+        const optimisticComment = {
+            id: optimisticId,
+            author: "You",
+            initials: "Y",
             timeAgo: "Just now",
-            text: text,
+            text,
             role: "user"
         };
+        setLocalComments(prev => [optimisticComment, ...prev]);
+        setCommentText('');
 
-        // Optimistic UI Update
-        setLocalComments(prev => [newComment, ...prev]);
-        setCommentText(''); 
+        try {
+            const token = localStorage.getItem('accessToken');
+            const url = `http://localhost:3000/api/issues/${issue.id}/comment`;
+            const { data } = await axios.post(
+                url,
+                { text },
+                {
+                    withCredentials: true,
+                    headers: token ? { Authorization: `Bearer ${token}` } : {}
+                }
+            );
 
-        // 🚨 API CALL INTEGRATION POINT 3: Post Comment
-        console.log("Sending API call to post comment:", newComment);
-        // Your team lead will implement the actual fetch request here.
+            if (data && data.comment) {
+                const serverComment = {
+                    id: data.comment._id || optimisticId,
+                    author: "You",
+                    initials: "Y",
+                    timeAgo: "Just now",
+                    text: data.comment.text || text,
+                    role: "user"
+                };
+                // replace optimistic with server comment
+                setLocalComments(prev => [serverComment, ...prev.filter(c => c.id !== optimisticId)]);
+            }
+        } catch (err) {
+            console.error('Post comment failed', err);
+            // rollback optimistic
+            setLocalComments(prev => prev.filter(c => c.id !== optimisticId));
+            setCommentText(text);
+        }
     };
 
     // --- Status Logic ---
