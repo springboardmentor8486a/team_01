@@ -15,6 +15,8 @@ import volunteerIcon from '../assets/dashboardAssets/volunteer.png';
 import trackIcon from '../assets/dashboardAssets/track.png';
 import feedbackIcon from '../assets/dashboardAssets/pofeedback.png';
 import issueMapIcon from '../assets/dashboardAssets/issuemap.png';
+import IssueCard from '../components/IssueCard.jsx';
+import SideDrawer from '../components/SideDrawer.jsx';
 
 const DashboardPage = () => {
     const [stats, setStats] = useState({
@@ -25,6 +27,22 @@ const DashboardPage = () => {
     });
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate(); // ADD THIS HOOK
+
+    // Reported issues data and drawer state
+    const [issues, setIssues] = useState([]);
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [selectedIssue, setSelectedIssue] = useState(null);
+    const imageAssets = [potholeImg, streetlightImg, garbageImg];
+
+    const handleOpen = (issue) => {
+        setSelectedIssue(issue);
+        setDrawerOpen(true);
+    };
+    const handleClose = () => setDrawerOpen(false);
+    const handleSave = (updated) => {
+        setIssues(prev => prev.map(i => (i.id === updated.id ? updated : i)));
+        setDrawerOpen(false);
+    };
 
     const fetchStats = async () => {
         try {
@@ -39,8 +57,60 @@ const DashboardPage = () => {
         }
     };
 
+    // Helpers to adapt API -> UI
+    const formatDate = (iso) => {
+        if (!iso) return '';
+        const d = new Date(iso);
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const yyyy = d.getFullYear();
+        return `${mm}/${dd}/${yyyy}`;
+    };
+
+    const statusBorder = (status) => {
+        switch (status) {
+            case 'Resolved':
+                return 'border-green';
+            case 'In Progress':
+                return 'border-yellow';
+            case 'Pending':
+            default:
+                return 'border-red';
+        }
+    };
+
+    const imageForIssue = (issue) => {
+        if (issue?.image) return issue.image;
+        const t = (issue?.type || '').toLowerCase();
+        if (t.includes('street')) return streetlightImg;
+        if (t.includes('garbage') || t.includes('waste') || t.includes('dump')) return garbageImg;
+        return potholeImg;
+    };
+
+    const fetchIssues = async () => {
+        try {
+            const { data } = await axios.get('http://localhost:3000/api/issues');
+            const mapped = (Array.isArray(data) ? data : []).map((i) => ({
+                id: i._id,
+                title: i.title,
+                image: imageForIssue(i),
+                description: i.description || '',
+                status: i.status || 'Pending',
+                tags: [i?.type?.toLowerCase()].filter(Boolean),
+                likes: Array.isArray(i?.upvotes) ? i.upvotes.length : 0,
+                dislikes: Array.isArray(i?.downvotes) ? i.downvotes.length : 0,
+                date: formatDate(i?.createdAt),
+                border: statusBorder(i?.status),
+            }));
+            setIssues(mapped);
+        } catch (err) {
+            console.error('Error fetching issues:', err);
+        }
+    };
+    
     useEffect(() => {
         fetchStats();
+        fetchIssues();
     }, []);
 
     const handleActionClick = (action) => {
@@ -93,6 +163,23 @@ const DashboardPage = () => {
                             <span>{loading ? '...' : stats.resolved}</span>
                         </div>
                         <img src={resolvedIcon} alt="Resolved" className="user-stat-icon" />
+                    </div>
+                </section>
+
+                <section className="reported-issues">
+                    <div className="reported-header">
+                        <h2>Reported Issues</h2>
+                        <button
+                            className="report-issue-btn"
+                            onClick={() => navigate('/register-complaint')}
+                        >
+                            + Report New Issue
+                        </button>
+                    </div>
+                    <div className="cards-grid">
+                        {issues.map((issue) => (
+                            <IssueCard key={issue.id} issue={issue} onOpen={handleOpen} />
+                        ))}
                     </div>
                 </section>
 
@@ -150,6 +237,13 @@ const DashboardPage = () => {
                         </button>
                     </section>
                 </div>
+                <SideDrawer
+                    open={drawerOpen}
+                    issue={selectedIssue}
+                    onClose={handleClose}
+                    onSave={handleSave}
+                    assets={imageAssets}
+                />
             </main>
         </div>
     );
