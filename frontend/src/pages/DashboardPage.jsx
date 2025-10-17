@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom'; // ADD THIS IMPORT
 import axios from 'axios';
 import './DashboardPage.css';
 import Header from '../components/Header';
@@ -14,6 +15,37 @@ import volunteerIcon from '../assets/dashboardAssets/volunteer.png';
 import trackIcon from '../assets/dashboardAssets/track.png';
 import feedbackIcon from '../assets/dashboardAssets/pofeedback.png';
 import issueMapIcon from '../assets/dashboardAssets/issuemap.png';
+import IssueCard from '../components/IssueCard.jsx';
+
+// Helpers to adapt API -> UI (module scope to keep stable references)
+const formatDate = (iso) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    return `${mm}/${dd}/${yyyy}`;
+};
+
+const statusBorder = (status) => {
+    switch (status) {
+        case 'Resolved':
+            return 'border-green';
+        case 'In Progress':
+            return 'border-yellow';
+        case 'Pending':
+        default:
+            return 'border-red';
+    }
+};
+
+const imageForIssue = (issue) => {
+    if (issue?.image) return issue.image;
+    const t = (issue?.type || '').toLowerCase();
+    if (t.includes('street')) return streetlightImg;
+    if (t.includes('garbage') || t.includes('waste') || t.includes('dump')) return garbageImg;
+    return potholeImg;
+};
 
 const DashboardPage = () => {
     const [stats, setStats] = useState({
@@ -23,123 +55,176 @@ const DashboardPage = () => {
         resolved: 0
     });
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate(); // ADD THIS HOOK
 
-    const fetchStats = async () => {
+    // Reported issues data and drawer state
+    const [issues, setIssues] = useState([]);
+
+    const handleOpen = (issue) => {
+        // Navigate to the view issue route with the selected issue's id
+        navigate(`/viewissue/${issue.id}`);
+    };
+
+    const fetchStats = useCallback(async () => {
         try {
             setLoading(true);
             const response = await axios.get('http://localhost:3000/api/issues/stats');
             setStats(response.data);
         } catch (err) {
             console.error('Error fetching stats:', err);
-            // Keep default values on error
         } finally {
             setLoading(false);
         }
-    };
-
-    useEffect(() => {
-        fetchStats();
     }, []);
 
+    // helpers moved to module scope
+
+    const fetchIssues = useCallback(async () => {
+        try {
+            const { data } = await axios.get('http://localhost:3000/api/issues');
+            const mapped = (Array.isArray(data) ? data : []).map((i) => ({
+                id: i._id,
+                title: i.title,
+                image: imageForIssue(i),
+                description: i.description || '',
+                status: i.status || 'Pending',
+                tags: [i?.type?.toLowerCase()].filter(Boolean),
+                likes: Array.isArray(i?.upvotes) ? i.upvotes.length : 0,
+                dislikes: Array.isArray(i?.downvotes) ? i.downvotes.length : 0,
+                date: formatDate(i?.createdAt),
+                border: statusBorder(i?.status),
+            }));
+            setIssues(mapped);
+        } catch (err) {
+            console.error('Error fetching issues:', err);
+        }
+    }, []);
+    
+    useEffect(() => {
+        fetchStats();
+        fetchIssues();
+    }, [fetchStats, fetchIssues]);
+
     const handleActionClick = (action) => {
-        alert(`${action} button clicked!`);
+        if (action === 'Post a complaint') {
+            navigate('/register-complaint'); // ADD THIS NAVIGATION
+        } else {
+            alert(`${action} button clicked!`);
+        }
     };
 
     return (
-        <div className="dashboard-container">
+        <div className="user-dashboard-container">
             <Header activePage="dashboard" />
 
-            <main className="main-content">
-                <div className="welcome-banner">
+            <main className="user-main-content">
+                <div className="user-welcome-banner">
                     <h1>Hello, welcome to <strong>Clean Street!</strong></h1>
                     <p>Here are some actions for you</p>
                 </div>
 
-                <section className="stats-container">
-                    <div className="stat-card">
-                        <div className="card-header blue-header"></div>
-                        <div className="card-body">
+                <section className="user-stats-container">
+                    <div className="user-stat-card">
+                        <div className="user-card-header blue-header"></div>
+                        <div className="user-card-body">
                             <p>Total Issues</p>
                             <span>{loading ? '...' : stats.total}</span>
                         </div>
-                        <img src={totalIssuesIcon} alt="Total Issues" className="stat-icon" />
+                        <img src={totalIssuesIcon} alt="Total Issues" className="user-stat-icon" />
                     </div>
-                    <div className="stat-card">
-                        <div className="card-header blue-header"></div>
-                        <div className="card-body">
-                            <p>pending</p>
+                    <div className="user-stat-card">
+                        <div className="user-card-header blue-header"></div>
+                        <div className="user-card-body">
+                            <p>Pending</p>
                             <span>{loading ? '...' : stats.pending}</span>
                         </div>
-                        <img src={pendingIcon} alt="Pending" className="stat-icon" />
+                        <img src={pendingIcon} alt="Pending" className="user-stat-icon" />
                     </div>
-                    <div className="stat-card">
-                        <div className="card-header blue-header"></div>
-                        <div className="card-body">
+                    <div className="user-stat-card">
+                        <div className="user-card-header blue-header"></div>
+                        <div className="user-card-body">
                             <p>In Progress</p>
                             <span>{loading ? '...' : stats.inProgress}</span>
                         </div>
-                        <img src={inProgressIcon} alt="In Progress" className="stat-icon" />
+                        <img src={inProgressIcon} alt="In Progress" className="user-stat-icon" />
                     </div>
-                    <div className="stat-card">
-                        <div className="card-header blue-header"></div>
-                        <div className="card-body">
+                    <div className="user-stat-card">
+                        <div className="user-card-header blue-header"></div>
+                        <div className="user-card-body">
                             <p>Resolved</p>
                             <span>{loading ? '...' : stats.resolved}</span>
                         </div>
-                        <img src={resolvedIcon} alt="Resolved" className="stat-icon" />
+                        <img src={resolvedIcon} alt="Resolved" className="user-stat-icon" />
                     </div>
                 </section>
 
-                <div className="dashboard-body">
-                    <section className="recent-activity-section">
+                <section className="reported-issues">
+                    <div className="reported-header">
+                        <h2>Reported Issues</h2>
+                        <button
+                            className="report-issue-btn"
+                            onClick={() => navigate('/register-complaint')}
+                        >
+                            + Report New Issue
+                        </button>
+                    </div>
+                    <div className="cards-grid">
+                        {issues.map((issue) => (
+                            <IssueCard key={issue.id} issue={issue} onOpen={handleOpen} />
+                        ))}
+                    </div>
+                </section>
+
+                <div className="user-dashboard-body">
+                    <section className="user-recent-activity-section">
                         <h2>Recent Activity</h2>
-                        <div className="activity-list">
-                            <button className="activity-item" onClick={() => handleActionClick('Pothole activity')}>
+                        <div className="user-activity-list">
+                            <button className="user-activity-item" onClick={() => handleActionClick('Pothole activity')}>
                                 <img src={potholeImg} alt="Pothole" />
-                                <div className="activity-details">
-                                    <span className="activity-title">Pothole on Main Street Resolved</span>
-                                    <span className="activity-time">2 hours ago</span>
+                                <div className="user-activity-details">
+                                    <span className="user-activity-title">Pothole on Main Street Resolved</span>
+                                    <span className="user-activity-time">2 hours ago</span>
                                 </div>
                             </button>
-                            <button className="activity-item" onClick={() => handleActionClick('Streetlight activity')}>
+                            <button className="user-activity-item" onClick={() => handleActionClick('Streetlight activity')}>
                                 <img src={streetlightImg} alt="Streetlight" />
-                                <div className="activity-details">
-                                    <span className="activity-title">New streetlight issue reported</span>
-                                    <span className="activity-time">16 hours ago</span>
+                                <div className="user-activity-details">
+                                    <span className="user-activity-title">New streetlight issue reported</span>
+                                    <span className="user-activity-time">16 hours ago</span>
                                 </div>
                             </button>
-                            <button className="activity-item" onClick={() => handleActionClick('Garbage activity')}>
+                            <button className="user-activity-item" onClick={() => handleActionClick('Garbage activity')}>
                                 <img src={garbageImg} alt="Garbage" />
-                                <div className="activity-details">
-                                    <span className="activity-title">Garbage dump complaint updated</span>
-                                    <span className="activity-time">19 hours ago</span>
+                                <div className="user-activity-details">
+                                    <span className="user-activity-title">Garbage dump complaint updated</span>
+                                    <span className="user-activity-time">19 hours ago</span>
                                 </div>
                             </button>
                         </div>
                     </section>
 
-                    <section className="quick-actions-section">
+                    <section className="user-quick-actions-section">
                         <h2>Quick Actions</h2>
-                        <div className="actions-list">
-                            <button className="action-button" onClick={() => handleActionClick('Post a complaint')}>
-                                <span className="action-icon-wrapper"><img src={postIcon} alt="" className="action-icon" /></span>
+                        <div className="user-actions-list">
+                            <button className="user-action-button" onClick={() => handleActionClick('Post a complaint')}>
+                                <span className="user-action-icon-wrapper"><img src={postIcon} alt="" className="user-action-icon" /></span>
                                 Post a complaint
                             </button>
-                            <button className="action-button" onClick={() => handleActionClick('Volunteer')}>
-                                <span className="action-icon-wrapper"><img src={volunteerIcon} alt="" className="action-icon" /></span>
+                            <button className="user-action-button" onClick={() => handleActionClick('Volunteer')}>
+                                <span className="user-action-icon-wrapper"><img src={volunteerIcon} alt="" className="user-action-icon" /></span>
                                 volunteer
                             </button>
-                            <button className="action-button" onClick={() => handleActionClick('Track your complaint')}>
-                                <span className="action-icon-wrapper"><img src={trackIcon} alt="" className="action-icon" /></span>
+                            <button className="user-action-button" onClick={() => handleActionClick('Track your complaint')}>
+                                <span className="user-action-icon-wrapper"><img src={trackIcon} alt="" className="user-action-icon" /></span>
                                 Track your complaint
                             </button>
-                            <button className="action-button" onClick={() => handleActionClick('Post your Feedback')}>
-                                <span className="action-icon-wrapper"><img src={feedbackIcon} alt="" className="action-icon" /></span>
+                            <button className="user-action-button" onClick={() => handleActionClick('Post your Feedback')}>
+                                <span className="user-action-icon-wrapper"><img src={feedbackIcon} alt="" className="user-action-icon" /></span>
                                 Post your FeedBack
                             </button>
                         </div>
-                        <button className="issue-map-button" onClick={() => handleActionClick('Issue Map')}>
-                            <span className="action-icon-wrapper"><img src={issueMapIcon} alt="" className="action-icon" /></span>
+                        <button className="user-issue-map-button" onClick={() => handleActionClick('Issue Map')}>
+                            <span className="user-action-icon-wrapper"><img src={issueMapIcon} alt="" className="user-action-icon" /></span>
                             Issue Map
                         </button>
                     </section>

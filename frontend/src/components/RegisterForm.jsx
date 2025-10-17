@@ -62,6 +62,8 @@ function RegisterForm() {
     setError("");
     setSuccess("");
 
+    console.log("Selected role before submit:", formData.role);
+
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
       return;

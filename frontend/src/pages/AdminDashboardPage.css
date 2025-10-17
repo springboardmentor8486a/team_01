@@ -1,0 +1,217 @@
+/* --- src/pages/AdminDashboardPage.css --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+/* --- GLOBAL STYLES (FROM YOUR FILE) --- */
+.admin-dashboard-container{min-height:100vh;background-color:#F0F2F5;font-family:'Poppins',sans-serif;color:#475569}
+.admin-header{background-color:white;position:sticky;top:0;z-index:50;border-bottom:1px solid #e2e8f0}.admin-header-content{max-width:1280px;margin:0 auto;padding:0 1.5rem;height:4rem;display:flex;align-items:center;justify-content:space-between}.admin-logo-link{display:flex;align-items:center;gap:.5rem;text-decoration:none}.admin-logo-icon-bg{background-color:#2563eb;padding:.375rem;border-radius:.375rem}.admin-logo-icon-text{font-weight:800;color:white;font-size:1.125rem}.admin-logo-text{font-size:1.125rem;font-weight:700;color:#1e293b}.admin-nav{display:flex;align-items:center;gap:1.5rem}.admin-nav-link{text-decoration:none;font-size:.875rem;font-weight:500;color:#64748b;transition:color .2s}.admin-nav-link.active{color:#2563eb;font-weight:600;border-bottom:2px solid #2563eb;padding-bottom:.25rem}
+.admin-main-content{max-width:1280px;margin:0 auto;padding:2rem 1.5rem}.welcome-banner{background-color:white;border-radius:1rem;padding:1.5rem;text-align:center;margin-bottom:2rem;border:1px solid #e2e8f0;box-shadow:0 1px 2px 0 rgb(0 0 0 / .05)}.welcome-banner-title{font-size:1.875rem;font-weight:700;color:#1e293b;margin-bottom:.5rem}.welcome-banner-highlight{color:#2563eb}.welcome-banner-subtitle{color:#64748b;font-size:.875rem}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:2rem}@media (min-width:768px){.stats-grid{grid-template-columns:repeat(3,1fr)}}@media (min-width:1024px){.stats-grid{grid-template-columns:repeat(6,1fr)}}.stat-card{background-color:white;border-radius:.75rem;box-shadow:0 1px 2px 0 rgb(0 0 0 / .05);overflow:hidden;position:relative;padding:1rem;padding-top:1.5rem;border:1px solid #e2e8f0}.stat-card-header-bar{position:absolute;top:0;left:1rem;right:1rem;height:.375rem;background-color:#3b82f6;border-radius:0 0 .375rem .375rem}.stat-card-content{display:flex;align-items:flex-end;justify-content:space-between}.stat-card-title{font-size:.75rem;text-transform:uppercase;color:#64748b;font-weight:500;letter-spacing:.05em}.stat-card-value{font-size:1.875rem;font-weight:700;color:#334155}.stat-card-icon{height:1.75rem;width:1.75rem;color:#94a3b8}
+
+/* --- CHARTS LAYOUT (FROM YOUR FILE) --- */
+.charts-row { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 2rem; }
+@media (min-width: 768px) { .charts-row { grid-template-columns: repeat(2, 1fr); } }
+.chart-card { background-color: white; border-radius: 1rem; box-shadow: 0 1px 2px 0 rgb(0 0 0 / .05); border: 1px solid #e2e8f0; padding: 1.5rem; }
+.chart-title { font-weight: 600; color: #334155; background-color: #f1f5f9; padding: 0.5rem 1rem; border-radius: 0.5rem; display: inline-block; font-size: 0.875rem; }
+.chart-description { padding-top: 0.5rem; font-size: 0.875rem; color: #64748b; }
+
+/* 
+================================================================
+  INTEGRATED & CORRECTED MANAGEMENT SECTION
+================================================================
+*/
+.management-section {
+  margin-top: 2rem;
+}
+
+/* --- TABS --- */
+.management-tabs-list {
+  display: inline-flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+.management-tabs-trigger {
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  background-color: transparent !important;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0 !important;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.management-tabs-trigger.active {
+  color: #2563eb !important;
+  border-bottom-color: #2563eb !important;
+  box-shadow: none !important;
+}
+
+/* --- CONTENT CONTAINER & FILTERS (Light Blue Gradient) --- */
+.management-tabs-content {
+  background: linear-gradient(180deg, #EFF6FF 0%, #FFFFFF 100%);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+}
+.table-filters {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+.search-wrapper { position: relative; flex-grow: 1; }
+.search-icon { position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); height: 1.25rem; width: 1.25rem; color: #94a3b8; }
+.search-input, .filter-trigger-btn {
+  box-sizing: border-box;
+  height: 3rem !important;
+  border-radius: 0.75rem !important;
+  border: 1px solid #e2e8f0 !important;
+  background-color: white !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.875rem;
+}
+.search-input {
+  width: 100%;
+  padding-left: 2.75rem !important;
+  color: #1E293B !important;
+}
+
+/* --- DROPDOWN POSITIONING --- */
+.filter-actions { 
+  position: relative; 
+  display: flex; 
+}
+
+.filter-trigger-btn { display: flex; align-items: center; gap: 0.5rem; padding: 0 1.25rem !important; color: #334155; font-weight: 500; }
+.filter-icon { height: 1rem; width: 1rem; color: #64748b; margin: 0; }
+
+/* --- TABLE --- */
+.table-wrapper {
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+}
+.table-header-info { padding: 1.25rem 1.5rem; background-color: white; border-bottom: 1px solid #e2e8f0; }
+.table-title { font-size: 1.125rem; font-weight: 700; color: #1e293b; margin: 0; }
+.table-description { font-size: 0.875rem; color: #64748b; margin-top: 0.25rem; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 1.25rem 1.5rem; text-align: left; font-size: 0.875rem; white-space: nowrap; border-bottom: 1px solid #f1f5f9; }
+tr:last-child td { border-bottom: none; }
+th { font-weight: 600; color: #64748b; background-color: #f8fafc; }
+.issue-title, .user-name { font-weight: 600; color: #1e293b; }
+.issue-location, .user-email { font-size: 0.875rem; color: #64748b; }
+
+/* --- BADGES & PRIORITY --- */
+.status-badge { text-transform: capitalize; font-weight: 500; font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 9999px; }
+.status-badge.pending { background-color: #FEF3C7 !important; color: #92400E !important; }
+.status-badge.in-progress { background-color: #DBEAFE !important; color: #1E40AF !important; }
+.status-badge.resolved { background-color: #D1FAE5 !important; color: #065F46 !important; }
+.priority-high { color: #DC2626; font-weight: 600; text-transform: capitalize; }
+.priority-medium { color: #F59E0B; font-weight: 600; text-transform: capitalize; }
+.priority-low { color: #16A34A; font-weight: 600; text-transform: capitalize; }
+.role-badge { text-transform: capitalize; font-weight: 500; font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 9999px; }
+.role-badge.user { background-color: #E0E7FF !important; color: #3730A3 !important; }
+.role-badge.volunteer { background-color: #D1FAE5 !important; color: #065F46 !important; }
+.role-badge.admin { background-color: #FEE2E2 !important; color: #991B1B !important; }
+
+
+/* 
+================================================================
+  ACTION BUTTONS & ICONS (DEFINITIVE FIX)
+================================================================
+*/
+.actions-header, .actions-cell { text-align: right; }
+.actions-wrapper { display: flex; gap: 0.75rem; justify-content: flex-end; }
+.action-button {
+    height: 3rem !important; width: 3rem !important;
+    display: inline-flex !important; align-items: center !important; justify-content: center !important;
+    border-radius: 0.5rem !important; border: none !important;
+    background-color: #1e3a8a !important; cursor: pointer;
+    transition: background-color 0.2s;
+}
+.action-button:hover { background-color: #1c347b !important; }
+
+/* This is the bulletproof rule that targets the SVG by its class name */
+.action-icon {
+    stroke: white !important; /* Force the icon lines to be white */
+    height: 1.125rem;
+    width: 1.125rem;
+    stroke-width: 2;
+}
+.action-button.delete-button { background-color: #FEE2E2 !important; }
+
+/* Force the delete icon color using the same powerful selector */
+.action-button.delete-button .action-icon {
+    stroke: #DC2626 !important;
+}
+
+/* --- DIALOG / POP-UP STYLES --- */
+.dialog-overlay { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.6); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem; animation: fadeIn 0.2s ease-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.dialog-container {
+    position: relative; width: 100%; max-width: 550px;
+    background-color: white; border-radius: 1rem; border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    animation: slideIn 0.3s ease-out; color: #475569;
+}
+@keyframes slideIn { from { transform: translateY(-20px) scale(0.98); opacity: 0; } to { transform: translateY(0) scale(1); } }
+.dialog-close-btn { position: absolute; top: 0.75rem; right: 0.75rem; height: 2rem; width: 2rem; border-radius: 9999px; border: none; background-color: #f1f5f9; color: #64748b; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+.dialog-close-btn:hover { background-color: #e2e8f0; transform: rotate(90deg); }
+.dialog-header { padding: 1.5rem 1.5rem 1rem; text-align: center; }
+.dialog-title { font-size: 1.25rem; font-weight: 700; color: #1e2b3b; margin: 0; }
+.dialog-subtitle { font-size: 0.875rem; color: #64748b; margin-top: 0.25rem; }
+.dialog-content { padding: 0 1.5rem 1.5rem; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.detail-item { font-size: 0.875rem; }
+.detail-item strong { color: #1e2b3b; }
+.detail-description { font-size: 0.875rem; line-height: 1.5; background-color: #f8fafc; padding: 1rem; border-radius: 0.5rem; border: 1px solid #f1f5f9; }
+.form-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+@media (min-width: 640px) { .form-grid { grid-template-columns: 1fr 1fr; } }
+.form-item label { display: block; font-weight: 500; font-size: 0.875rem; color: #334155; margin-bottom: 0.5rem; }
+.dialog-select, .dialog-input { width: 100%; box-sizing: border-box; height: 2.75rem; border-radius: 0.5rem; border: 1px solid #e2e8f0; background-color: #f8fafc; padding: 0 0.75rem; font-family: 'Poppins', sans-serif; font-size: 0.875rem; cursor: pointer; color: #1E293B; }
+.delete-warning { text-align: center; font-size: 0.875rem; line-height: 1.5; }
+.dialog-footer { display: flex; justify-content: flex-end; gap: 0.75rem; padding-top: 1.5rem; margin-top: 1.5rem; border-top: 1px solid #f1f5f9; }
+.dialog-button-primary, .dialog-button-secondary, .dialog-button-danger { height: 2.5rem; padding: 0 1.25rem; border-radius: 0.5rem; font-weight: 600; font-size: 0.875rem; border: none; cursor: pointer; transition: all 0.2s; }
+.dialog-button-primary { background-color: #1e3a8a; color: white; }
+.dialog-button-primary:hover { background-color: #1c347b; }
+.dialog-button-secondary { background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+.dialog-button-secondary:hover { background-color: #e2e8f0; }
+.dialog-button-danger { background-color: #DC2626; color: white; }
+.dialog-button-danger:hover { background-color: #B91C1C; }
+
+/* --- DROPDOWN MENU --- */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background-color: white;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem;
+  z-index: 10;
+  width: 150px;
+  animation: fadeIn 0.1s ease-out;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+.dropdown-item {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  color: #1E293B;
+  transition: background-color 0.2s;
+}
+.dropdown-item:hover { background-color: #f1f5f9; }
