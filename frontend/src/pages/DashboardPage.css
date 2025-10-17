@@ -228,20 +228,33 @@
     transform: translateY(-1px);
 }
 
-/* Cards Grid */
+/* Cards Row - horizontal scroll */
 .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-wrap: nowrap;
     gap: 1.25rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 0.5rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
 }
-@media (max-width: 1200px) {
-    .cards-grid { grid-template-columns: repeat(3, 1fr); }
+.cards-grid .card {
+    flex: 0 0 340px; /* fixed card width for smooth horizontal scroll */
+    scroll-snap-align: start;
 }
-@media (max-width: 900px) {
-    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+
+/* Optional: visible slim scrollbar styling */
+.cards-grid::-webkit-scrollbar {
+    height: 8px;
 }
-@media (max-width: 640px) {
-    .cards-grid { grid-template-columns: 1fr; }
+.cards-grid::-webkit-scrollbar-thumb {
+    background: #c7d2fe;
+    border-radius: 9999px;
+}
+.cards-grid::-webkit-scrollbar-track {
+    background: #eef2ff;
+    border-radius: 9999px;
 }
 
 /* Issue Card */

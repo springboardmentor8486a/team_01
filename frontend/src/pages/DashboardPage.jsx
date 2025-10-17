@@ -29,56 +29,7 @@ const DashboardPage = () => {
     const navigate = useNavigate(); // ADD THIS HOOK
 
     // Reported issues data and drawer state
-    const [issues, setIssues] = useState(() => [
-        {
-            id: 1,
-            title: 'Large Pothole on Main Street',
-            image: potholeImg,
-            description: "There is a significant pothole on Main Street near the intersection with Oak Avenue. It's...",
-            status: 'in review',
-            tags: ['pothole'],
-            likes: 24,
-            dislikes: 2,
-            date: '10/11/2025',
-            border: 'border-red'
-        },
-        {
-            id: 2,
-            title: 'Broken Streetlight on Park Avenue',
-            image: streetlightImg,
-            description: 'The streetlight at the corner of Park Avenue and 5th Street has been non-functional for...',
-            status: 'received',
-            tags: ['streetlight'],
-            likes: 15,
-            dislikes: 1,
-            date: '10/02/2025',
-            border: 'border-yellow'
-        },
-        {
-            id: 3,
-            title: 'Illegal Garbage Dumping at River Park',
-            image: garbageImg,
-            description: 'Multiple bags of household waste and construction debris have been illegally...',
-            status: 'resolved',
-            tags: ['garbage'],
-            likes: 42,
-            dislikes: 0,
-            date: '10/05/2025',
-            border: 'border-green'
-        },
-        {
-            id: 4,
-            title: 'Graffiti on Community Center Wall',
-            image: potholeImg,
-            description: 'Large graffiti tags have appeared on the west wall of the community center.',
-            status: 'received',
-            tags: ['vandalism'],
-            likes: 8,
-            dislikes: 3,
-            date: '10/14/2025',
-            border: 'border-green'
-        }
-    ]);
+    const [issues, setIssues] = useState([]);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedIssue, setSelectedIssue] = useState(null);
     const imageAssets = [potholeImg, streetlightImg, garbageImg];
@@ -106,8 +57,60 @@ const DashboardPage = () => {
         }
     };
 
+    // Helpers to adapt API -> UI
+    const formatDate = (iso) => {
+        if (!iso) return '';
+        const d = new Date(iso);
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const yyyy = d.getFullYear();
+        return `${mm}/${dd}/${yyyy}`;
+    };
+
+    const statusBorder = (status) => {
+        switch (status) {
+            case 'Resolved':
+                return 'border-green';
+            case 'In Progress':
+                return 'border-yellow';
+            case 'Pending':
+            default:
+                return 'border-red';
+        }
+    };
+
+    const imageForIssue = (issue) => {
+        if (issue?.image) return issue.image;
+        const t = (issue?.type || '').toLowerCase();
+        if (t.includes('street')) return streetlightImg;
+        if (t.includes('garbage') || t.includes('waste') || t.includes('dump')) return garbageImg;
+        return potholeImg;
+    };
+
+    const fetchIssues = async () => {
+        try {
+            const { data } = await axios.get('http://localhost:3000/api/issues');
+            const mapped = (Array.isArray(data) ? data : []).map((i) => ({
+                id: i._id,
+                title: i.title,
+                image: imageForIssue(i),
+                description: i.description || '',
+                status: i.status || 'Pending',
+                tags: [i?.type?.toLowerCase()].filter(Boolean),
+                likes: Array.isArray(i?.upvotes) ? i.upvotes.length : 0,
+                dislikes: Array.isArray(i?.downvotes) ? i.downvotes.length : 0,
+                date: formatDate(i?.createdAt),
+                border: statusBorder(i?.status),
+            }));
+            setIssues(mapped);
+        } catch (err) {
+            console.error('Error fetching issues:', err);
+        }
+    };
+    
     useEffect(() => {
         fetchStats();
+        fetchIssues();
     }, []);
 
     const handleActionClick = (action) => {
