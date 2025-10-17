@@ -53,6 +53,7 @@ const toViewModel = (i) => ({
     comments: Array.isArray(i?.comments)
         ? i.comments.slice().reverse().map((c, idx) => ({
             id: c?._id || idx,
+            userId: c?.userId,
             author: c?.userName || 'User',
             initials: (c?.userName?.[0] || 'U').toUpperCase(),
             timeAgo: formatRelative(c?.createdAt),

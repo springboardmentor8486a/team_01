@@ -246,6 +246,76 @@ const addIssueComment = async (req, res) => {
   }
 };
 
+// Update a comment on an issue
+const updateIssueComment = async (req, res) => {
+  try {
+    const { id, commentId } = req.params;
+    const { text } = req.body;
+    const userId = req.user && req.user.userId;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    if (!text || String(text).trim().length === 0) {
+      return res.status(400).json({ message: "Comment text is required" });
+    }
+
+    const issue = await Issue.findById(id);
+    if (!issue) {
+      return res.status(404).json({ message: "Issue not found" });
+    }
+
+    const comment = issue.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    if (String(comment.userId) !== String(userId)) {
+      return res.status(403).json({ message: "Forbidden: cannot edit others' comments" });
+    }
+
+    comment.text = String(text).trim();
+    await issue.save();
+
+    return res.status(200).json({ comment });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to update comment", error: error.message });
+  }
+};
+
+// Delete a comment from an issue
+const deleteIssueComment = async (req, res) => {
+  try {
+    const { id, commentId } = req.params;
+    const userId = req.user && req.user.userId;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const issue = await Issue.findById(id);
+    if (!issue) {
+      return res.status(404).json({ message: "Issue not found" });
+    }
+
+    const comment = issue.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    if (String(comment.userId) !== String(userId)) {
+      return res.status(403).json({ message: "Forbidden: cannot delete others' comments" });
+    }
+
+    comment.deleteOne();
+    await issue.save();
+
+    return res.status(200).json({ success: true });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to delete comment", error: error.message });
+  }
+};
+
  // Delete an issue
  const deleteIssue = async (req, res) => {
    try {
@@ -272,5 +342,7 @@ module.exports = {
   upvoteIssue,
   downvoteIssue,
   addIssueComment,
+  updateIssueComment,
+  deleteIssueComment,
   deleteIssue,
 };

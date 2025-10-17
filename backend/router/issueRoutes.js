@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getIssues, getIssueById, createIssue, getIssueStats, updateIssueStatus, deleteIssue, upvoteIssue, downvoteIssue, addIssueComment } = require("../controller/issueController");
+const { getIssues, getIssueById, createIssue, getIssueStats, updateIssueStatus, deleteIssue, upvoteIssue, downvoteIssue, addIssueComment, updateIssueComment, deleteIssueComment } = require("../controller/issueController");
 const upload = require("../middleware/upload");
 const authenticateJWT = require("../middleware/authMiddleware");
 
@@ -30,5 +30,11 @@ router.put("/:id", updateIssueStatus);
 
 // DELETE /api/issues/:id - delete an issue
 router.delete("/:id", deleteIssue);
+
+// PUT /api/issues/:id/comment/:commentId - update a specific comment
+router.put("/:id/comment/:commentId", authenticateJWT, updateIssueComment);
+
+// DELETE /api/issues/:id/comment/:commentId - delete a specific comment
+router.delete("/:id/comment/:commentId", authenticateJWT, deleteIssueComment);
 
 module.exports = router;

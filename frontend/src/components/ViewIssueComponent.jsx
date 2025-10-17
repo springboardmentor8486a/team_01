@@ -3,6 +3,18 @@ import axios from 'axios';
 import { Clock, CheckCircle, ThumbsUp, ThumbsDown, Send } from 'lucide-react';
 // Styling imported via IssueDetailPage.jsx
 
+// Lightweight JWT payload parser to get current user id for comment ownership checks
+const getCurrentUserId = () => {
+    try {
+        const token = localStorage.getItem('accessToken');
+        if (!token) return null;
+        const payload = JSON.parse(atob((token.split('.')[1]) || ''));
+        return payload?.userId || payload?.user?.userId || null;
+    } catch {
+        return null;
+    }
+};
+
 // Helper component for the status steps
 const StatusStep = ({ label, isActive, isCompleted }) => {
     let iconClass = '';
@@ -34,6 +46,9 @@ const ViewIssueComponent = ({ issue }) => {
     const [localComments, setLocalComments] = useState(issue.comments || []);
     const [votes, setVotes] = useState(issue.initialVotes);
     const [userVote, setUserVote] = useState(null); // 'upvote', 'downvote', or null
+    const currentUserId = getCurrentUserId();
+    const [editingId, setEditingId] = useState(null);
+    const [editText, setEditText] = useState('');
     
     const MAX_CHARS = 500;
 
@@ -118,6 +133,7 @@ const ViewIssueComponent = ({ issue }) => {
         const optimisticId = Date.now();
         const optimisticComment = {
             id: optimisticId,
+            userId: currentUserId,
             author: "You",
             initials: "Y",
             timeAgo: "Just now",
@@ -142,6 +158,7 @@ const ViewIssueComponent = ({ issue }) => {
             if (data && data.comment) {
                 const serverComment = {
                     id: data.comment._id || optimisticId,
+                    userId: data.comment.userId || currentUserId,
                     author: "You",
                     initials: "Y",
                     timeAgo: "Just now",
@@ -159,7 +176,61 @@ const ViewIssueComponent = ({ issue }) => {
         }
     };
 
-    // --- Status Logic ---
+    // Delete a comment (only if owned by current user)
+    const handleDeleteComment = async (commentId) => {
+        const prev = [...localComments];
+        setLocalComments(prev.filter(c => c.id !== commentId));
+        try {
+            const token = localStorage.getItem('accessToken');
+            const url = `http://localhost:3000/api/issues/${issue.id}/comment/${commentId}`;
+            await axios.delete(url, {
+                withCredentials: true,
+                headers: token ? { Authorization: `Bearer ${token}` } : {}
+            });
+        } catch (err) {
+            console.error('Delete comment failed', err);
+            // rollback
+            setLocalComments(prev);
+        }
+    };
+
+    // Begin editing a comment
+    const startEdit = (comment) => {
+        setEditingId(comment.id);
+        setEditText(comment.text || '');
+    };
+
+    const cancelEdit = () => {
+        setEditingId(null);
+        setEditText('');
+    };
+
+    // Save edited comment
+    const saveEdit = async (commentId) => {
+        const old = localComments.find(c => c.id === commentId)?.text;
+        // optimistic update
+        setLocalComments(prev => prev.map(c => c.id === commentId ? { ...c, text: editText } : c));
+        try {
+            const token = localStorage.getItem('accessToken');
+            const url = `http://localhost:3000/api/issues/${issue.id}/comment/${commentId}`;
+            const { data } = await axios.put(url, { text: editText }, {
+                withCredentials: true,
+                headers: token ? { Authorization: `Bearer ${token}` } : {}
+            });
+            // sync with server response
+            if (data && data.comment) {
+                setLocalComments(prev => prev.map(c => c.id === commentId ? { ...c, text: data.comment.text || editText } : c));
+            }
+            setEditingId(null);
+            setEditText('');
+        } catch (err) {
+            console.error('Update comment failed', err);
+            // rollback
+            setLocalComments(prev => prev.map(c => c.id === commentId ? { ...c, text: old } : c));
+        }
+    };
+
+     // --- Status Logic ---
     let progressWidth = '0%';
     let stepReceived = false;
     let stepInReview = false;
@@ -288,12 +359,69 @@ const ViewIssueComponent = ({ issue }) => {
                     {localComments.map((comment) => (
                         <div key={comment.id} className="comment-item">
                             <div className={`comment-avatar comment-avatar-${comment.role}`}>
-                                {comment.initials}
+                                {comment.initials || 'U'}
                             </div>
                             <div className="comment-content">
-                                <strong>{comment.author}</strong>
-                                <span>{comment.timeAgo}</span>
-                                <p className="comment-text">{comment.text}</p>
+                                <div className="comment-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+                                    <div className="comment-author">
+                                        <strong>{comment.author || 'User'}</strong>
+                                        <span style={{ marginLeft: 10 }}>{comment.timeAgo || ''}</span>
+                                    </div>
+                                    {comment.userId && currentUserId && String(comment.userId) === String(currentUserId) && (
+                                        <div className="comment-actions-inline" style={{ display: 'flex', gap: 8 }}>
+                                            {editingId === comment.id ? (
+                                                <>
+                                                    <button
+                                                        type="button"
+                                                        className="post-comment-button"
+                                                        onClick={() => saveEdit(comment.id)}
+                                                        style={{ padding: '6px 12px' }}
+                                                    >
+                                                        Save
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        className="post-comment-button"
+                                                        onClick={cancelEdit}
+                                                        style={{ padding: '6px 12px' }}
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <button
+                                                        type="button"
+                                                        className="post-comment-button"
+                                                        onClick={() => startEdit(comment)}
+                                                        style={{ padding: '6px 12px' }}
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        className="post-comment-button"
+                                                        onClick={() => handleDeleteComment(comment.id)}
+                                                        style={{ padding: '6px 12px' }}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {editingId === comment.id ? (
+                                    <textarea
+                                        className="comment-textarea"
+                                        value={editText}
+                                        onChange={(e) => setEditText(e.target.value)}
+                                        style={{ marginTop: 8 }}
+                                    />
+                                ) : (
+                                    <p className="comment-text">{comment.text}</p>
+                                )}
                             </div>
                         </div>
                     ))}
