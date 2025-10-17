@@ -13,6 +13,7 @@ import LocationSelectionPage from './pages/LocationSelectionPage';
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import './App.css';
 
+import IssueDetailpage from "./pages/IssueDetailPage";
 function App() {
   return (
     <Router>
@@ -30,6 +31,7 @@ function App() {
         <Route path="/register-complaint" element={<ComplaintRegisterPage />} />
         <Route path="/location-selection" element={<LocationSelectionPage />} />
         <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+        <Route path="/viewissue" element={<IssueDetailpage/>}/>
       </Routes>
 
         {/* <Routes>
@@ -45,6 +47,7 @@ function App() {
         
 
         </Routes>  */}
+
 
     </Router>
   );
