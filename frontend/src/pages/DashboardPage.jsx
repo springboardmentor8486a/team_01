@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom'; // ADD THIS IMPORT
 import axios from 'axios';
 import './DashboardPage.css';
@@ -17,6 +17,36 @@ import feedbackIcon from '../assets/dashboardAssets/pofeedback.png';
 import issueMapIcon from '../assets/dashboardAssets/issuemap.png';
 import IssueCard from '../components/IssueCard.jsx';
 import SideDrawer from '../components/SideDrawer.jsx';
+
+// Helpers to adapt API -> UI (module scope to keep stable references)
+const formatDate = (iso) => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    return `${mm}/${dd}/${yyyy}`;
+};
+
+const statusBorder = (status) => {
+    switch (status) {
+        case 'Resolved':
+            return 'border-green';
+        case 'In Progress':
+            return 'border-yellow';
+        case 'Pending':
+        default:
+            return 'border-red';
+    }
+};
+
+const imageForIssue = (issue) => {
+    if (issue?.image) return issue.image;
+    const t = (issue?.type || '').toLowerCase();
+    if (t.includes('street')) return streetlightImg;
+    if (t.includes('garbage') || t.includes('waste') || t.includes('dump')) return garbageImg;
+    return potholeImg;
+};
 
 const DashboardPage = () => {
     const [stats, setStats] = useState({
@@ -44,50 +74,21 @@ const DashboardPage = () => {
         setDrawerOpen(false);
     };
 
-    const fetchStats = async () => {
+    const fetchStats = useCallback(async () => {
         try {
             setLoading(true);
             const response = await axios.get('http://localhost:3000/api/issues/stats');
             setStats(response.data);
         } catch (err) {
             console.error('Error fetching stats:', err);
-            // Keep default values on error
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    // Helpers to adapt API -> UI
-    const formatDate = (iso) => {
-        if (!iso) return '';
-        const d = new Date(iso);
-        const dd = String(d.getDate()).padStart(2, '0');
-        const mm = String(d.getMonth() + 1).padStart(2, '0');
-        const yyyy = d.getFullYear();
-        return `${mm}/${dd}/${yyyy}`;
-    };
+    // helpers moved to module scope
 
-    const statusBorder = (status) => {
-        switch (status) {
-            case 'Resolved':
-                return 'border-green';
-            case 'In Progress':
-                return 'border-yellow';
-            case 'Pending':
-            default:
-                return 'border-red';
-        }
-    };
-
-    const imageForIssue = (issue) => {
-        if (issue?.image) return issue.image;
-        const t = (issue?.type || '').toLowerCase();
-        if (t.includes('street')) return streetlightImg;
-        if (t.includes('garbage') || t.includes('waste') || t.includes('dump')) return garbageImg;
-        return potholeImg;
-    };
-
-    const fetchIssues = async () => {
+    const fetchIssues = useCallback(async () => {
         try {
             const { data } = await axios.get('http://localhost:3000/api/issues');
             const mapped = (Array.isArray(data) ? data : []).map((i) => ({
@@ -106,12 +107,12 @@ const DashboardPage = () => {
         } catch (err) {
             console.error('Error fetching issues:', err);
         }
-    };
+    }, []);
     
     useEffect(() => {
         fetchStats();
         fetchIssues();
-    }, []);
+    }, [fetchStats, fetchIssues]);
 
     const handleActionClick = (action) => {
         if (action === 'Post a complaint') {
@@ -143,7 +144,7 @@ const DashboardPage = () => {
                     <div className="user-stat-card">
                         <div className="user-card-header blue-header"></div>
                         <div className="user-card-body">
-                            <p>pending</p>
+                            <p>Pending</p>
                             <span>{loading ? '...' : stats.pending}</span>
                         </div>
                         <img src={pendingIcon} alt="Pending" className="user-stat-icon" />
