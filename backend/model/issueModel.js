@@ -28,11 +28,6 @@ const issueSchema = new mongoose.Schema({
   downvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
   comments: { type: [commentSchema], default: [] },
   createdAt: { type: Date, default: Date.now },
-
-  // New fields for comments and votes
-  comments: [commentSchema],
-  upvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  downvotes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 });
 
 module.exports = mongoose.model("Issue", issueSchema);

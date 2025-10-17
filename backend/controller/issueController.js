@@ -4,14 +4,8 @@ const { uploadToCloudinary } = require("../helpers/cloudinaryHelper");
 // Get all issues
 const getIssues = async (req, res) => {
   try {
-    const issues = await Issue.find().sort({ createdAt: -1 }).populate('comments.userId', 'name email').populate('reporterId', 'name email');
-    const issuesWithCounts = issues.map(issue => ({
-      ...issue.toObject(),
-      upvotesCount: issue.upvotes.length,
-      downvotesCount: issue.downvotes.length,
-      commentsCount: issue.comments.length
-    }));
-    res.status(200).json(issuesWithCounts);
+    const issues = await Issue.find().sort({ createdAt: -1 });
+    res.status(200).json(issues);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch issues", error: error.message });
   }
@@ -351,8 +345,4 @@ module.exports = {
   updateIssueComment,
   deleteIssueComment,
   deleteIssue,
-  getIssueById,
-  addComment,
-  upvoteIssue,
-  downvoteIssue,
 };

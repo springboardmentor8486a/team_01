@@ -12,7 +12,6 @@ import ComplaintRegisterPage from './pages/ComplaintRegisterPage';
 import LocationSelectionPage from './pages/LocationSelectionPage';
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import './App.css';
-import AdminDashboard from "./pages/AdminDashboard";
 
 import IssueDetailpage from "./pages/IssueDetailPage";
 function App() {
