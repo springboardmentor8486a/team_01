@@ -5,7 +5,7 @@ export default function AdminHeader() {
   return (
     <header className="admin-header">
       <div className="admin-header-content">
-        <Link to="/dashboard" className="admin-logo-link">
+        <Link to="/admin/dashboard" className="admin-logo-link">
           <div className="admin-logo-icon-bg">
             <span className="admin-logo-icon-text">CS</span>
           </div>
