@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import "./ComplaintRegisterPage.css";
 import { useNavigate } from "react-router-dom"; // ADD THIS IMPORT
@@ -9,6 +9,8 @@ const ComplaintRegistration = () => {
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
     const navigate = useNavigate(); // ADD THIS HOOK
+  const [submitting, setSubmitting] = useState(false);
+  const formRef = useRef(null);
 
   // ... your existing code ...
 
@@ -36,9 +38,20 @@ const ComplaintRegistration = () => {
     setPhotoPreview(null);
   };
 
+  // Allow user to cancel and reset the form manually
+  const handleCancel = () => {
+    if (formRef.current) {
+      formRef.current.reset();
+    }
+    setPhoto(null);
+    setPhotoPreview(null);
+    setSubmitting(false);
+  };
+
   // New submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
 
     const form = e.target;
     const formData = new FormData();
@@ -70,21 +83,21 @@ const ComplaintRegistration = () => {
     }
 
     try {
-      const token = localStorage.getItem("accessToken");
-      await axios.post("http://localhost:3000/api/issues", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      alert("Complaint registered successfully!");
-      form.reset();
-      setPhoto(null);
-      setPhotoPreview(null);
-    } catch (error) {
-      alert("Failed to register complaint. Please try again.");
-      console.error(error);
-    }
+        const token = localStorage.getItem("accessToken");
+        await axios.post("http://localhost:3000/api/issues", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        alert("Complaint registered successfully!");
+        navigate('/dashboard');
+      } catch (error) {
+        alert("Failed to register complaint. Please try again.");
+        console.error(error);
+      } finally {
+        setSubmitting(false);
+      }
   };
 
   return (
@@ -109,7 +122,7 @@ const ComplaintRegistration = () => {
       </div>
 
       {/* Form */}
-      <form className="complaint-form" onSubmit={handleSubmit}>
+      <form ref={formRef} className="complaint-form" onSubmit={handleSubmit}>
         <div className="form-section">
           <h2>📷 Issue Details</h2>
           <p>Provide detailed information about the issue you want to report</p>
@@ -251,8 +264,15 @@ const ComplaintRegistration = () => {
 
         {/* Buttons */}
         <div className="form-buttons">
-          <button type="button" className="cancel-btn">Cancel</button>
-          <button type="submit" className="submit-btn">Submit Report</button>
+          <button type="button" className="cancel-btn" disabled={submitting} onClick={handleCancel}>Cancel</button>
+          <button
+            type="submit"
+            className="submit-btn"
+            disabled={submitting}
+            aria-busy={submitting ? "true" : "false"}
+          >
+            {submitting ? (<><span className="btn-spinner"></span>Submitting...</>) : 'Submit Report'}
+          </button>
         </div>
       </form>
     </div>
