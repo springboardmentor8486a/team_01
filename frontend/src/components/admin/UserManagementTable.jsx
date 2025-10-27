@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { Filter, Search, Edit, Trash2, X } from 'lucide-react';
+import { Filter, Search, X } from 'lucide-react';
+import { EditIcon, TrashIcon } from './IconComponents';
 
 // const mockUsersData = [
 //   { id: 1, name: 'John Citizen', email: 'john.citizen@example.com', role: 'user', location: 'Downtown District', joinDate: '20/9/2024' },
@@ -125,10 +126,17 @@ export default function UserManagementTable({ users }) {
                                     <td className="actions-cell">
                                         <div className="actions-wrapper">
                                             <button className="action-button" title="Edit User" onClick={() => openModal('edit', user)}>
-                                                <Edit className="action-icon" />
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                    <path d="m15 5 4 4" />
+                                                </svg>
                                             </button>
                                             <button className="action-button delete-button" title="Delete User" onClick={() => openModal('delete', user)}>
-                                                <Trash2 className="action-icon" />
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                                                    <path d="M3 6h18" />
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                                                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                                </svg>
                                             </button>
                                         </div>
                                     </td>

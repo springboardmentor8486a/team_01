@@ -1,7 +1,35 @@
 import React from 'react';
 import './Header.css';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../store/authSlice';
 
 const Header = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem('accessToken');
+    try {
+      await axios.post(
+        'http://localhost:3000/api/auth/logout',
+        null,
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          withCredentials: true
+        }
+      );
+    } catch (err) {
+      console.error('Logout error:', err);
+    } finally {
+      localStorage.removeItem('accessToken');
+      if (axios?.defaults?.headers?.common?.Authorization) { delete axios.defaults.headers.common.Authorization; }
+      dispatch(setUser(null));
+      navigate('/login');
+    }
+  };
+
   return (
     <header className="header">
       <div className="header-left">
@@ -12,19 +40,21 @@ const Header = () => {
       </div>
 
       <div className="header-center">
-        {/* <div className="search-bar">
-          <svg className="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.35-4.35"></path>
-          </svg>
-          <input type="text" placeholder="Search" className="search-input" />
-        </div> */}
+        
       </div>
 
       <div className="header-right">
         <nav className="nav-links">
-          <a href="/dashboard" className="nav-link dashboard">Dashboard</a>
-          <a href="/profile" className="nav-link profile active">Profile</a>
+          <Link to="/dashboard" className="nav-link dashboard">Dashboard</Link>
+          <Link to="/profile" className="nav-link profile active">Profile</Link>
+          <a
+            href="#"
+            className="nav-link logout"
+            onClick={(e) => { e.preventDefault(); handleLogout(); }}
+            title="Logout"
+          >
+            Logout
+          </a>
         </nav>
       </div>
     </header>
