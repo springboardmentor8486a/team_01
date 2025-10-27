@@ -27,6 +27,19 @@
   line-height: 1.4;
 }
 
+/* Label styling */
+.register-box label {
+  display: block;
+  text-align: left;
+  width: 300px;
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 5px;
+  margin-bottom: 4px;
+  color: white;
+  padding-bottom:0px;
+}
+
 /* Input field container */
 .register-box .input-box {
   display: flex;
@@ -35,7 +48,7 @@
   border-radius: 10px;
   padding: 10px 12px;
   width: 300px;
-  margin: 12px 0; /* even spacing between fields */
+  margin-bottom:5px;
 }
 
 /* Icons */
@@ -47,7 +60,8 @@
 
 /* Inputs & Select */
 .register-box .input-box input,
-.register-box .input-box select {
+.register-box .input-box select,
+.register-box .input-box textarea {
   border: none;
   outline: none;
   background: transparent;
@@ -55,18 +69,13 @@
   font-size: 14px;
   color: black;
   padding: 2px;
+  resize: none;
 }
 
-/* Dropdown arrow removed for cleaner look */
+/* Dropdown */
 .register-box .input-box select {
   appearance: none;
   cursor: pointer;
-}
-
-/* Options styling */
-.register-box .input-box select option {
-  color: black;
-  background: white;
 }
 
 /* Register button */

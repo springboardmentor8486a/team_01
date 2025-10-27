@@ -14,7 +14,7 @@ function RegisterForm() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    name: "", // This will be the username
+    name: "",
     email: "",
     location: "",
     role: "",
@@ -62,8 +62,6 @@ function RegisterForm() {
     setError("");
     setSuccess("");
 
-    console.log("Selected role before submit:", formData.role);
-
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
       return;
@@ -71,7 +69,7 @@ function RegisterForm() {
 
     try {
       const data = new FormData();
-      data.append("name", formData.name); // This is now the username
+      data.append("name", formData.name);
       data.append("email", formData.email);
       data.append("location", formData.location);
       data.append("role", formData.role);
@@ -87,9 +85,7 @@ function RegisterForm() {
         "http://localhost:3000/api/auth/register",
         data,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
 
@@ -108,7 +104,6 @@ function RegisterForm() {
         });
         setProfileImage(null);
         setProfileImagePreview(null);
-        // Redirect to login page after successful registration
         navigate("/login");
       } else {
         setError(response.data.message || "Registration failed");
@@ -155,11 +150,14 @@ function RegisterForm() {
           style={{ display: "none" }}
         />
 
+        {/* Name */}
+        <label htmlFor="name">Username *</label>
         <div className="input-box">
           <img src={userIcon} alt="user" />
           <input
             type="text"
-            placeholder="Username"
+            id="name"
+            placeholder="Enter your name"
             name="name"
             value={formData.name}
             onChange={handleChange}
@@ -167,11 +165,14 @@ function RegisterForm() {
           />
         </div>
 
+        {/* Full Name */}
+        <label htmlFor="fullName">Full Name *</label>
         <div className="input-box">
           <img src={userIcon} alt="user" />
           <input
             type="text"
-            placeholder="Full Name"
+            id="fullName"
+            placeholder="Enter Full Name"
             name="fullName"
             value={formData.fullName}
             onChange={handleChange}
@@ -179,11 +180,14 @@ function RegisterForm() {
           />
         </div>
 
+        {/* Email */}
+        <label htmlFor="email">Email *</label>
         <div className="input-box">
           <img src={emailIcon} alt="email" />
           <input
             type="email"
-            placeholder="Email"
+            id="email"
+            placeholder="Enter your email"
             name="email"
             value={formData.email}
             onChange={handleChange}
@@ -191,20 +195,26 @@ function RegisterForm() {
           />
         </div>
 
+        {/* Location */}
+        <label htmlFor="location">Location</label>
         <div className="input-box">
           <img src={locationIcon} alt="location" />
           <input
             type="text"
-            placeholder="Location"
+            id="location"
+            placeholder="Enter your location"
             name="location"
             value={formData.location}
             onChange={handleChange}
           />
         </div>
 
+        {/* Role */}
+        <label htmlFor="role">Role *</label>
         <div className="input-box">
           <img src={roleIcon} alt="role" />
           <select
+            id="role"
             name="role"
             value={formData.role}
             onChange={handleChange}
@@ -217,11 +227,14 @@ function RegisterForm() {
           </select>
         </div>
 
+        {/* Password */}
+        <label htmlFor="password">Password *</label>
         <div className="input-box">
           <img src={passwordIcon} alt="password" />
           <input
             type="password"
-            placeholder="Password"
+            id="password"
+            placeholder="Enter your password"
             name="password"
             value={formData.password}
             onChange={handleChange}
@@ -229,11 +242,14 @@ function RegisterForm() {
           />
         </div>
 
+        {/* Confirm Password */}
+        <label htmlFor="confirmPassword">Confirm Password *</label>
         <div className="input-box">
           <img src={confirmIcon} alt="confirm" />
           <input
             type="password"
-            placeholder="Confirm Password"
+            id="confirmPassword"
+            placeholder="Re-enter your password"
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}
@@ -241,20 +257,26 @@ function RegisterForm() {
           />
         </div>
 
+        {/* Phone */}
+        <label htmlFor="phoneNumber">Phone Number</label>
         <div className="input-box">
           <img src={userIcon} alt="phone" />
           <input
             type="tel"
-            placeholder="Phone Number"
+            id="phoneNumber"
+            placeholder="Enter your phonenumber"
             name="phoneNumber"
             value={formData.phoneNumber}
             onChange={handleChange}
           />
         </div>
 
+        {/* Bio */}
+        <label htmlFor="bio">Bio</label>
         <div className="input-box">
           <img src={userIcon} alt="bio" />
           <textarea
+            id="bio"
             placeholder="Bio (Tell us about yourself)"
             name="bio"
             value={formData.bio}

@@ -1,6 +1,3 @@
-
-
-
 .login-box {
   background: rgba(59, 142, 229, 1);
   padding: 30px;
@@ -14,30 +11,47 @@
   align-items: center;
 }
 
+/* Logo */
 .login-logo {
   display: flex;
   align-items: center;
   justify-content: center;
   padding-left: 50px;
-  
 }
 
 .logo-img {
-  width: 248px; 
+  width: 248px;
   height: 48px;
   border-radius: 8px;
-  object-fit:contain;
-  
+  object-fit: contain;
 }
 
-
+/* Subtitle */
 .subtitle {
-font-family: Konkhmer Sleokchher;
+  font-family: "Konkhmer Sleokchher", sans-serif;
   font-size: 20px;
   font-weight: 400;
   margin: 10px;
 }
 
+/* Label styling */
+.input-label {
+  display: block;
+  text-align: left;
+  width: 300px;
+  font-size: 13px;
+  margin-bottom: 5px;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* Required asterisk */
+.required {
+  color: #ffcccb;
+  margin-left: 3px;
+}
+
+/* Input box */
 .input-box {
   display: flex;
   align-items: center;
@@ -45,7 +59,7 @@ font-family: Konkhmer Sleokchher;
   border-radius: 10px;
   padding: 10px 10px;
   width: 300px;
-  margin: 20px 0; /* spacing between fields */
+  margin: 10px 0 20px; /* spacing adjusted for labels */
 }
 
 .input-box .icon img {
@@ -63,12 +77,11 @@ font-family: Konkhmer Sleokchher;
   color: black;
 }
 
-
-
-
+/* Forgot password */
 .forgot {
   text-align: right;
-  padding-top:2px;
+  padding-top: 2px;
+  width: 300px;
 }
 
 .forgot a {
@@ -76,6 +89,7 @@ font-family: Konkhmer Sleokchher;
   color: black;
 }
 
+/* Button */
 .login-btn {
   background: white;
   color: black;
@@ -83,11 +97,16 @@ font-family: Konkhmer Sleokchher;
   border: none;
   border-radius: 8px;
   padding: 10px;
-  width:100px;
+  width: 100px;
   cursor: pointer;
   margin: 15px 0;
 }
 
+.login-btn:hover {
+  background: #e3eaf5;
+}
+
+/* Register text */
 .register {
   font-size: 12px;
 }
@@ -95,4 +114,9 @@ font-family: Konkhmer Sleokchher;
 .register a {
   color: black;
   font-weight: bold;
+  text-decoration: none;
+}
+
+.register a:hover {
+  text-decoration: underline;
 }
