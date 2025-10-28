@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./LoginForm.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/authSlice";
 
@@ -12,6 +12,7 @@ import padlock from "../assets/padlock.png";
 
 function LoginForm() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,6 +21,7 @@ function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const from = location.state?.from;
     setLoading(true);
     try {
       const response = await axios.post("http://localhost:3000/api/auth/login", {
@@ -37,18 +39,29 @@ function LoginForm() {
       try {
         const profileResponse = await axios.get("http://localhost:3000/api/auth/profile");
         if (profileResponse.data.success && profileResponse.data.user) {
-          dispatch(setUser(profileResponse.data.user));
-          if (profileResponse.data.user.role === "admin") {
+          const user = profileResponse.data.user;
+          dispatch(setUser(user));
+          if (from) {
+            navigate(from, { replace: true });
+          } else if (user?.role === "admin") {
             navigate("/admin/dashboard");
           } else {
             navigate("/dashboard");
           }
         } else {
-          navigate("/dashboard");
+          if (from) {
+            navigate(from, { replace: true });
+          } else {
+            navigate("/dashboard");
+          }
         }
       } catch (profileError) {
         console.error("Failed to fetch user profile:", profileError);
-        navigate("/dashboard");
+        if (from) {
+          navigate(from, { replace: true });
+        } else {
+          navigate("/dashboard");
+        }
       }
     } catch (error) {
       if (error.response?.data?.message) {

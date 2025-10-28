@@ -17,6 +17,8 @@ import TrackComplaintPage from "./pages/TrackComplaintPage";
 import FeedbackPage from "./pages/FeedbackPage";
 import IssueMapPage from "./pages/IssueMapPage";
 import AboutUsPage from "./pages/AboutUsPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 import './App.css';
 
 import IssueDetailpage from "./pages/IssueDetailPage";
@@ -32,38 +34,73 @@ function App() {
         <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/register-complaint" element={<ComplaintRegisterPage />} />
-        <Route path="/location-selection" element={<LocationSelectionPage />} />
+
+        {/* Protected user routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/register-complaint"
+          element={
+            <ProtectedRoute>
+              <ComplaintRegisterPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/track-complaint"
+          element={
+            <ProtectedRoute>
+              <TrackComplaintPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/issue-map"
+          element={
+            <ProtectedRoute>
+              <IssueMapPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Optional: keep location selection protected since it's part of reporting flow */}
+        <Route
+          path="/location-selection"
+          element={
+            <ProtectedRoute>
+              <LocationSelectionPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Admin routes (left as-is; assume server-side role validation) */}
         <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
         <Route path="/admin/profile" element={<AdminProfilePage />} />
-        <Route path="/viewissue/:id" element={<IssueDetailpage/>}/>
-        {/* Fallback for any /viewissue/* path to avoid "No routes matched" during HMR or direct loads */}
-        <Route path="/viewissue/*" element={<IssueDetailpage/>}/>
-        <Route path="/location-selection" element={<LocationSelectionPage />} />
+
+        {/* Public informational routes */}
         <Route path="/volunteer" element={<VolunteerPage />} />
-        <Route path="/track-complaint" element={<TrackComplaintPage />} />
-        <Route path="/post-feedback" element={<FeedbackPage />} />
-        <Route path="/issue-map" element={<IssueMapPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+
+        {/* Issue detail routes */}
+        <Route path="/viewissue/:id" element={<IssueDetailpage />} />
+        {/* Fallback for any /viewissue/* path to avoid "No routes matched" during HMR or direct loads */}
+        <Route path="/viewissue/*" element={<IssueDetailpage />} />
       </Routes>
-
-        {/* <Routes>
-         
-           <Route path="/" element={<Navigate to="/home" replace />} />
-           <Route path="/login" element={<LoginPage />} />
-           <Route path="/home" element={<HomePage />} />
-           <Route path="/forgot-password" element={<ForgotPassword />} />
-           <Route path="/verify-otp" element={<VerifyOtp />} />
-           <Route path="/reset-password" element={<ResetPassword />} />           <Route path="/register" element={<RegisterPage />} />
-           <Route path="/dashboard" element={<DashboardPage />} />
-           <Route path="/profile" element={<ProfilePage />} />
-        
-
-        </Routes>  */}
-
-
     </Router>
   );
 }
