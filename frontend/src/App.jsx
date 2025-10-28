@@ -76,6 +76,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/post-feedback"
+          element={
+            <ProtectedRoute>
+              <FeedbackPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Optional: keep location selection protected since it's part of reporting flow */}
         <Route

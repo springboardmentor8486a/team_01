@@ -228,34 +228,34 @@ const DashboardPage = () => {
                     <div className="user-stat-card">
                         <div className="user-card-header blue-header"></div>
                         <div className="user-card-body">
-                            <p>My Issues</p>
+                            <p>Issues</p>
                             <span>{loadingMy ? '...' : myStats.myTotal}</span>
                         </div>
-                        <img src={myIssuesIcon} alt="My Issues" className="user-stat-icon" />
+                        <img src={myIssuesIcon} alt="Issues" className="user-stat-icon" />
                     </div>
                     <div className="user-stat-card">
                         <div className="user-card-header blue-header"></div>
                         <div className="user-card-body">
-                            <p>My Pending</p>
+                            <p>Pending</p>
                             <span>{loadingMy ? '...' : myStats.pending}</span>
                         </div>
-                        <img src={pendingIcon} alt="My Pending" className="user-stat-icon" />
+                        <img src={pendingIcon} alt="Pending" className="user-stat-icon" />
                     </div>
                     <div className="user-stat-card">
                         <div className="user-card-header blue-header"></div>
                         <div className="user-card-body">
-                            <p>My In Progress</p>
+                            <p>In Progress</p>
                             <span>{loadingMy ? '...' : myStats.inProgress}</span>
                         </div>
-                        <img src={inProgressIcon} alt="My In Progress" className="user-stat-icon" />
+                        <img src={inProgressIcon} alt="In Progress" className="user-stat-icon" />
                     </div>
                     <div className="user-stat-card">
                         <div className="user-card-header blue-header"></div>
                         <div className="user-card-body">
-                            <p>My Resolved</p>
+                            <p>Resolved</p>
                             <span>{loadingMy ? '...' : myStats.resolved}</span>
                         </div>
-                        <img src={resolvedIcon} alt="My Resolved" className="user-stat-icon" />
+                        <img src={resolvedIcon} alt="Resolved" className="user-stat-icon" />
                     </div>
                 </section>
 

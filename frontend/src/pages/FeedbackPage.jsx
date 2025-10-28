@@ -10,6 +10,7 @@ const FeedbackPage = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [emailSent, setEmailSent] = useState(false);
     const [formData, setFormData] = useState({
         service: '',
         rating: '',
@@ -46,7 +47,10 @@ const FeedbackPage = () => {
 
             if (response.status === 201) {
                 setIsSubmitted(true);
+                setEmailSent(response.data.emailSent || false);
                 setFormData({ service: '', rating: '', comments: '' });
+                // Show success message from server
+                console.log('Feedback submitted:', response.data.message);
             }
         } catch (err) {
             console.error('Feedback submission error:', err);
@@ -72,14 +76,28 @@ const FeedbackPage = () => {
                             <h2>Service Feedback Form</h2>
                             {isSubmitted ? (
                                 <div style={{ padding: '2rem', textAlign: 'center', background: '#dcfce7', color: '#15803d', borderRadius: '10px' }}>
+                                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
                                     <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Thank you for your valuable feedback!</p>
                                     <p>We appreciate you taking the time to help us improve.</p>
+                                    {emailSent ? (
+                                        <div style={{ background: '#f0f9ff', color: '#0369a1', padding: '1rem', borderRadius: '8px', margin: '1rem 0', border: '1px solid #bae6fd' }}>
+                                            <p style={{ margin: 0, fontSize: '0.9rem' }}>
+                                                📧 A confirmation email has been sent to your registered email address with a summary of your feedback.
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div style={{ background: '#fef3c7', color: '#92400e', padding: '1rem', borderRadius: '8px', margin: '1rem 0', border: '1px solid #fde68a' }}>
+                                            <p style={{ margin: 0, fontSize: '0.9rem' }}>
+                                                ℹ️ Your feedback has been recorded successfully. Email notifications are currently not configured.
+                                            </p>
+                                        </div>
+                                    )}
                                     <button 
                                         className="save-btn" 
                                         style={{ marginTop: '1rem', background: '#3b82f6' }}
                                         onClick={() => setIsSubmitted(false)}
                                     >
-                                        Submit Another
+                                        Submit Another Feedback
                                     </button>
                                 </div>
                             ) : (
