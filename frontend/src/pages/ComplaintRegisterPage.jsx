@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./ComplaintRegisterPage.css";
 import { useNavigate } from "react-router-dom"; // ADD THIS IMPORT
@@ -8,14 +8,54 @@ import { useNavigate } from "react-router-dom"; // ADD THIS IMPORT
 const ComplaintRegistration = () => {
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
-    const navigate = useNavigate(); // ADD THIS HOOK
+  const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const formRef = useRef(null);
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    issueType: '',
+    issueTitle: '',
+    priority: '',
+    address: '',
+    landmark: '',
+    description: ''
+  });
+
+  // Restore form data from sessionStorage on component mount
+  useEffect(() => {
+    const savedFormData = sessionStorage.getItem('complaintFormData');
+    if (savedFormData) {
+      try {
+        const parsedData = JSON.parse(savedFormData);
+        setFormData(parsedData);
+        // Clear the saved data after restoring
+        sessionStorage.removeItem('complaintFormData');
+      } catch (error) {
+        console.error('Error parsing saved form data:', error);
+      }
+    }
+
+    // Restore photo preview if exists
+    const savedPhotoPreview = sessionStorage.getItem('complaintPhotoPreview');
+    if (savedPhotoPreview) {
+      setPhotoPreview(savedPhotoPreview);
+      sessionStorage.removeItem('complaintPhotoPreview');
+    }
+  }, []);
 
   // ... your existing code ...
 
-  // ADD THIS FUNCTION
+  // Save form data and navigate to location selection
   const handleUpdateLocation = () => {
+    // Save current form data to sessionStorage
+    sessionStorage.setItem('complaintFormData', JSON.stringify(formData));
+    
+    // Save photo preview if exists
+    if (photoPreview) {
+      sessionStorage.setItem('complaintPhotoPreview', photoPreview);
+    }
+    
     navigate('/location-selection');
   };
 
@@ -38,14 +78,30 @@ const ComplaintRegistration = () => {
     setPhotoPreview(null);
   };
 
+  // Handle form field changes
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   // Allow user to cancel and reset the form manually
   const handleCancel = () => {
-    if (formRef.current) {
-      formRef.current.reset();
-    }
+    setFormData({
+      issueType: '',
+      issueTitle: '',
+      priority: '',
+      address: '',
+      landmark: '',
+      description: ''
+    });
     setPhoto(null);
     setPhotoPreview(null);
     setSubmitting(false);
+    // Also clear any saved form data
+    sessionStorage.removeItem('complaintFormData');
+    sessionStorage.removeItem('complaintPhotoPreview');
   };
 
   // New submit handler
@@ -53,45 +109,56 @@ const ComplaintRegistration = () => {
     e.preventDefault();
     setSubmitting(true);
 
-    const form = e.target;
-    const formData = new FormData();
+    const submitData = new FormData();
 
-    // Collect form values
-    const issueType = form.querySelector('select[required]').value;
-    const issueTitle = form.querySelector('input[type="text"][placeholder="Brief summary of the issue"]').value;
-    let priority = form.querySelectorAll('select[required]')[1].value;
+    // Use state values instead of DOM querying
+    const { issueType, issueTitle, priority, address, landmark, description } = formData;
+    
+    // Validate required fields
+    if (!issueType || !issueTitle || !priority || !address || !description) {
+      alert('Please fill in all required fields.');
+      setSubmitting(false);
+      return;
+    }
+
     // Capitalize first letter of priority to match backend enum
-    priority = priority.charAt(0).toUpperCase() + priority.slice(1);
-    const address = form.querySelector('input[type="text"][placeholder="Enter city or address"]').value;
-    const landmark = form.querySelector('input[type="text"][placeholder="Nearby landmark for reference"]').value;
-    const description = form.querySelector('textarea[placeholder^="Describe the issue"]').value;
+    const formattedPriority = priority.charAt(0).toUpperCase() + priority.slice(1);
 
-    formData.append("type", issueType);
-    formData.append("title", issueTitle);
-    formData.append("priority", priority);
-    formData.append("address", address);
-    formData.append("landmark", landmark);
-    formData.append("description", description);
+    submitData.append("type", issueType);
+    submitData.append("title", issueTitle);
+    submitData.append("priority", formattedPriority);
+    submitData.append("address", address);
+    submitData.append("landmark", landmark);
+    submitData.append("description", description);
 
     // Add location hardcoded for now (latitude and longitude)
-    formData.append("lat", "13.0827");
-    formData.append("lng", "80.2707");
+    submitData.append("lat", "13.0827");
+    submitData.append("lng", "80.2707");
 
     // Add photo if exists
     if (photo) {
-      formData.append("image", photo);
+      submitData.append("image", photo);
     }
 
     try {
         const token = localStorage.getItem("accessToken");
-        await axios.post("http://localhost:3000/api/issues", formData, {
+        const { data } = await axios.post("http://localhost:3000/api/issues", submitData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
         });
-        alert("Complaint registered successfully!");
-        navigate('/dashboard');
+        const complaintId = data?.complaintId || data?.complaintID || '';
+        if (complaintId) {
+          if (typeof window !== 'undefined' && window.sessionStorage) {
+            window.sessionStorage.setItem('lastComplaintId', complaintId);
+          }
+          alert(`Complaint registered successfully!\n\nYour Complaint ID: ${complaintId}\n\nUse this ID on the Track page to check status.`);
+          navigate(`/track-complaint?cid=${encodeURIComponent(complaintId)}`);
+        } else {
+          alert("Complaint registered successfully!");
+          navigate('/dashboard');
+        }
       } catch (error) {
         alert("Failed to register complaint. Please try again.");
         console.error(error);
@@ -122,7 +189,7 @@ const ComplaintRegistration = () => {
       </div>
 
       {/* Form */}
-      <form ref={formRef} className="complaint-form" onSubmit={handleSubmit}>
+      <form ref={formRef} className="complaint-form" onSubmit={handleSubmit} noValidate>
         <div className="form-section">
           <h2>📷 Issue Details</h2>
           <p>Provide detailed information about the issue you want to report</p>
@@ -130,21 +197,25 @@ const ComplaintRegistration = () => {
           {/* Issue Type */}
           <label>
             Issue Type *
-            <select required defaultValue="">
+            <select 
+              required 
+              value={formData.issueType}
+              onChange={(e) => handleInputChange('issueType', e.target.value)}
+            >
               <option value="" disabled>
                 Select issue type
               </option>
-              <option>Broken Streetlight</option>
-              <option>Pothole</option>
-              <option>Drainage Leakage</option>
-              <option>Waste Management</option>
-              <option>Vandalism</option>
-              <option>Traffic Signal</option>
-              <option>Public Safety</option>
-              <option>Park Maintenance</option>
-              <option>Water Leakage</option>
-              <option>Noise Complaint</option>
-              <option>Other</option>
+              <option value="Broken Streetlight">Broken Streetlight</option>
+              <option value="Pothole">Pothole</option>
+              <option value="Drainage Leakage">Drainage Leakage</option>
+              <option value="Waste Management">Waste Management</option>
+              <option value="Vandalism">Vandalism</option>
+              <option value="Traffic Signal">Traffic Signal</option>
+              <option value="Public Safety">Public Safety</option>
+              <option value="Park Maintenance">Park Maintenance</option>
+              <option value="Water Leakage">Water Leakage</option>
+              <option value="Noise Complaint">Noise Complaint</option>
+              <option value="Other">Other</option>
             </select>
           </label>
 
@@ -155,13 +226,19 @@ const ComplaintRegistration = () => {
               type="text"
               placeholder="Brief summary of the issue"
               required
+              value={formData.issueTitle}
+              onChange={(e) => handleInputChange('issueTitle', e.target.value)}
             />
           </label>
 
           {/* Priority */}
           <label>
             Priority *
-            <select required defaultValue="">
+            <select 
+              required 
+              value={formData.priority}
+              onChange={(e) => handleInputChange('priority', e.target.value)}
+            >
               <option value="" disabled>
                 Select priority level
               </option>
@@ -178,6 +255,8 @@ const ComplaintRegistration = () => {
               type="text"
               placeholder="Enter city or address"
               required
+              value={formData.address}
+              onChange={(e) => handleInputChange('address', e.target.value)}
             />
           </label>
 
@@ -187,6 +266,8 @@ const ComplaintRegistration = () => {
             <input
               type="text"
               placeholder="Nearby landmark for reference"
+              value={formData.landmark}
+              onChange={(e) => handleInputChange('landmark', e.target.value)}
             />
           </label>
 
@@ -196,6 +277,8 @@ const ComplaintRegistration = () => {
             <textarea
               placeholder="Describe the issue in detail (e.g., 'my area has the drainage leak')"
               required
+              value={formData.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
             />
           </label>
         </div>

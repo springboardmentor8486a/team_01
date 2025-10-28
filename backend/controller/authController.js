@@ -108,7 +108,16 @@ const loginController = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Login successful",
-            accessToken
+            accessToken,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                fullName: user.fullName,
+                role: user.role,
+                roles: user.roles || [user.role], // Support both role and roles array
+                profileImage: user.profileImage
+            }
         });
     } catch (error) {
         return res.status(500).json({
@@ -368,6 +377,57 @@ const updateUserProfileController = async (req, res) => {
     }
 };
 
+/**
+ * Become Volunteer Controller
+ * Updates the authenticated user's role to 'volunteer' and optionally stores
+ * some additional volunteer preferences provided from the form.
+ */
+const becomeVolunteerController = async (req, res) => {
+    try {
+        const userId = req.user && req.user.userId;
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
+        const { name, fullName, area, skills } = req.body;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // Persist any optional fields coming from the volunteer form
+        if (name !== undefined) user.name = name;
+        if (fullName !== undefined) user.fullName = fullName;
+        if (area !== undefined) user.location = area;
+        if (skills !== undefined) user.bio = skills;
+
+        // Flip the role
+        user.role = 'volunteer';
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "You are now registered as a volunteer",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                fullName: user.fullName,
+                location: user.location,
+                bio: user.bio,
+                role: user.role,
+                profileImage: user.profileImage
+            }
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Failed to register as volunteer",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     registerController,
     loginController,
@@ -377,5 +437,6 @@ module.exports = {
     logoutController,
     uploadProfileController,
     getUserProfileController,
-    updateUserProfileController
+    updateUserProfileController,
+    becomeVolunteerController
 };

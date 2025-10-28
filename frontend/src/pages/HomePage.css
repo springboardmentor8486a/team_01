@@ -1,0 +1,220 @@
+/* General Home Page Styles */
+.home-page-container {
+    background-color: #f7f9fc; /* A very light, neutral blue-gray */
+    color: #334155;
+    font-family: 'Poppins', sans-serif;
+}
+
+.home-main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.home-section {
+    margin-bottom: 5rem;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.8s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.home-section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1rem;
+}
+
+.home-section-subtitle {
+    font-size: 1.1rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto 3rem auto;
+    line-height: 1.6;
+}
+
+/* Features Section */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    background-color: #ffffff;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+}
+
+.feature-icon {
+    height: 50px;
+    width: 50px;
+    margin-bottom: 1.5rem;
+    background-color: #e0f2fe;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.feature-card h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1e3a8a;
+    margin-bottom: 0.75rem;
+}
+
+.feature-card p {
+    color: #475569;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* How It Works Section */
+.how-it-works-section {
+    background-color: #ffffff;
+    padding: 5rem 2rem;
+    border-radius: 20px;
+}
+
+.how-it-works-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.step-card {
+    display: flex;
+    align-items: flex-start;
+    text-align: left;
+    gap: 1.5rem;
+}
+
+.step-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #3b82f6;
+    background-color: #eff6ff;
+    border-radius: 50%;
+    min-width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-content h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1e3a8a;
+    margin: 0 0 0.5rem 0;
+}
+
+.step-content p {
+    color: #475569;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Call to Action (CTA) Section */
+.cta-section {
+    background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+    border-radius: 20px;
+    padding: 4rem 2rem;
+    color: #ffffff;
+}
+
+.cta-content h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.cta-content p {
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+    opacity: 0.9;
+}
+
+.cta-button {
+    background-color: #ffffff;
+    color: #1d4ed8;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 1rem 2.5rem;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cta-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Live Activity Marquee Section */
+.scrolling-section {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.scrolling-container {
+    width: 100%;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+}
+
+.scrolling-wrapper {
+    display: flex;
+    width: max-content;
+    animation: scroll 40s linear infinite;
+}
+
+.scrolling-item {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    background-color: #ffffff;
+    border-radius: 9999px;
+    margin: 2rem 1rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.scrolling-item img {
+    height: 32px;
+    width: 32px;
+}
+
+.scrolling-item span {
+    font-weight: 600;
+    color: #1e3a8a;
+    font-size: 1.1rem;
+    white-space: nowrap;
+}
+
+@keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}

@@ -21,6 +21,9 @@ const issueSchema = new mongoose.Schema({
     lng: Number,
   },
   status: { type: String, enum: ["Pending", "In Progress", "Resolved"], default: "Pending" },
+  // Human-friendly tracking id (e.g., PEND-48231). Indexed for quick lookup.
+  // Not unique at schema level to avoid migration issues with old documents; controller ensures uniqueness.
+  complaintId: { type: String, default: null, index: true },
   image: { type: String, default: null }, // Optional field for issue image URL from Cloudinary
   reporterId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   // Social interactions
