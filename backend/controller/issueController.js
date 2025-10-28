@@ -105,6 +105,20 @@ const getIssueStats = async (req, res) => {
   }
 };
 
+// Get stats for the current user's issues
+const getMyIssueStats = async (req, res) => {
+  try {
+    const userId = req.user && req.user.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const myTotal = await Issue.countDocuments({ reporterId: userId });
+    return res.status(200).json({ myTotal });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to fetch my issue stats", error: error.message });
+  }
+};
+
 // Update issue status
 const updateIssueStatus = async (req, res) => {
   try {
@@ -338,6 +352,7 @@ module.exports = {
   getIssueById,
   createIssue,
   getIssueStats,
+  getMyIssueStats,
   updateIssueStatus,
   upvoteIssue,
   downvoteIssue,
