@@ -13,13 +13,18 @@ const TrackComplaintPage = () => {
     const [loading, setLoading] = useState(false);
     const [searchParams] = useSearchParams();
 
-    useEffect(() => {
-        const cidFromUrl = searchParams.get('cid');
-        if (cidFromUrl) {
-            setComplaintId(cidFromUrl);
-            handleTrackById(cidFromUrl);
+    const getStatusDetails = useCallback((status) => {
+        switch (status) {
+            case 'Pending':
+                return 'Your complaint has been received and is awaiting review by our team.';
+            case 'In Progress':
+                return 'Your complaint is currently being processed and worked on by our field team.';
+            case 'Resolved':
+                return 'Your complaint has been successfully resolved. Thank you for reporting!';
+            default:
+                return 'Status information is not available.';
         }
-    }, [searchParams, handleTrackById]);
+    }, []);
 
     const handleTrackById = useCallback(async (id) => {
         setLoading(true);
@@ -53,20 +58,15 @@ const TrackComplaintPage = () => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [getStatusDetails]);
 
-    const getStatusDetails = (status) => {
-        switch (status) {
-            case 'Pending':
-                return 'Your complaint has been received and is awaiting review by our team.';
-            case 'In Progress':
-                return 'Your complaint is currently being processed and worked on by our field team.';
-            case 'Resolved':
-                return 'Your complaint has been successfully resolved. Thank you for reporting!';
-            default:
-                return 'Status information is not available.';
+    useEffect(() => {
+        const cidFromUrl = searchParams.get('cid');
+        if (cidFromUrl) {
+            setComplaintId(cidFromUrl);
+            handleTrackById(cidFromUrl);
         }
-    };
+    }, [searchParams, handleTrackById]);
 
     const handleTrack = (e) => {
         e.preventDefault();
