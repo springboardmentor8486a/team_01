@@ -12,6 +12,11 @@ import ComplaintRegisterPage from './pages/ComplaintRegisterPage';
 import LocationSelectionPage from './pages/LocationSelectionPage';
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminProfilePage from "./pages/AdminProfilePage";
+import VolunteerPage from "./pages/VolunteerPage";
+import TrackComplaintPage from "./pages/TrackComplaintPage";
+import FeedbackPage from "./pages/FeedbackPage";
+import IssueMapPage from "./pages/IssueMapPage";
+import AboutUsPage from "./pages/AboutUsPage";
 import './App.css';
 
 import IssueDetailpage from "./pages/IssueDetailPage";
@@ -36,6 +41,12 @@ function App() {
         <Route path="/viewissue/:id" element={<IssueDetailpage/>}/>
         {/* Fallback for any /viewissue/* path to avoid "No routes matched" during HMR or direct loads */}
         <Route path="/viewissue/*" element={<IssueDetailpage/>}/>
+        <Route path="/location-selection" element={<LocationSelectionPage />} />
+        <Route path="/volunteer" element={<VolunteerPage />} />
+        <Route path="/track-complaint" element={<TrackComplaintPage />} />
+        <Route path="/post-feedback" element={<FeedbackPage />} />
+        <Route path="/issue-map" element={<IssueMapPage />} />
+        <Route path="/about-us" element={<AboutUsPage />} />
       </Routes>
 
         {/* <Routes>
