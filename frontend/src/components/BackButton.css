@@ -1,0 +1,17 @@
+.back-button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    /* 🌟 Add top margin to separate from the Header 🌟 */
+    margin-top: 1.5rem; 
+    /* 🌟 Reduced bottom margin from 16px to 8px to close gap to title banner 🌟 */
+    margin-bottom: 2px; 
+    transition: background-color 0.2s;
+}
+
+.back-button:hover {
+    background-color: #e0e0e0;
+}

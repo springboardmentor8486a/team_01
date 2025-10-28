@@ -4,3 +4,111 @@ body, html, #root {
       width: 100%;
       height: 100%;
   }
+
+  .hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* Animates the element into view */
+.fade-in-up {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- Styling for RecentIssuesPreview --- */
+
+.recent-issues-preview-section {
+    padding: 4rem 3rem;
+    background-color: #f7f9fc; /* Light background for contrast */
+    text-align: center;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    color: #003366; /* Dark blue, matching your theme */
+    margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+    color: #6A8AAE;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.issue-preview-grid {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.issue-preview-card {
+    display: block;
+    width: 300px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    text-align: left;
+    transition: transform 0.3s ease;
+    text-decoration: none; /* Remove underline */
+}
+
+.issue-preview-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.issue-preview-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.issue-preview-details {
+    padding: 1rem;
+}
+
+.issue-preview-details h3 {
+    font-size: 1.25rem;
+    color: #2D4A6E;
+    margin: 0 0 0.5rem;
+}
+
+.issue-status {
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* Status Colors (matching your dashboard theme) */
+.status-pending {
+    background-color: #fee2e2; /* light red */
+    color: #dc2626; /* dark red */
+}
+.status-inprogress {
+    background-color: #fef9c3; /* light yellow */
+    color: #ca8a04; /* dark yellow */
+}
+.status-resolved {
+    background-color: #dcfce7; /* light green */
+    color: #16a34a; /* dark green */
+}
+
+.view-all-button {
+    background-color: #3B82F6;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.view-all-button:hover {
+    background-color: #1e40af;
+}

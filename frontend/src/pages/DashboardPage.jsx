@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom'; // ADD THIS IMPORT
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './DashboardPage.css';
 import Header from '../components/Header';
@@ -159,13 +159,35 @@ const DashboardPage = () => {
         fetchIssues();
     }, [fetchStats, fetchMyStats, fetchIssues]);
 
+    // 🌟 UPDATED FUNCTION: Redirects to new routes based on button action 🌟
     const handleActionClick = (action) => {
-        if (action === 'Post a complaint') {
-            navigate('/register-complaint'); // ADD THIS NAVIGATION
-        } else {
-            alert(`${action} button clicked!`);
+        switch (action) {
+            case 'Post a complaint':
+                // Existing, working route
+                navigate('/register-complaint');
+                break;
+            case 'Volunteer':
+                // New route for Volunteer Page
+                navigate('/volunteer');
+                break;
+            case 'Track your complaint':
+                // New route for Tracking Page
+                navigate('/track-complaint');
+                break;
+            case 'Post your Feedback':
+                // New route for Feedback Page
+                navigate('/post-feedback');
+                break;
+            case 'Issue Map':
+                // New route for Issue Map Page
+                navigate('/issue-map');
+                break;
+            default:
+                // Fallback for activity list buttons
+                alert(`${action} button clicked! (This activity is just a placeholder action.)`);
         }
     };
+    // --------------------------------------------------------------------
 
     return (
         <div className="user-dashboard-container">

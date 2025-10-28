@@ -168,6 +168,12 @@ export default function AdminDashboardPage() {
           <p className="welcome-banner-subtitle">
             Manage and track all civic issues across the community
           </p>
+          <button 
+                className="admin-logout-button" 
+                onClick={handleLogout}
+            >
+                Logout
+            </button>
         </div>
 
         <DashboardStats stats={stats} />

@@ -1,0 +1,96 @@
+/* --- FEATURES SECTION --- */
+.features-section-wrapper {
+    padding: 6rem 3rem;
+    background-color: #ffffff; /* White background for a clean professional look */
+    text-align: center;
+}
+
+.features-intro {
+    max-width: 800px;
+    margin: 0 auto 4rem;
+}
+
+.features-main-title {
+    font-size: 2.5rem;
+    color: #003366;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.features-subtitle {
+    font-size: 1.2rem;
+    color: #6A8AAE;
+}
+
+/* --- FEATURES GRID --- */
+.features-grid {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.feature-card {
+    flex: 0 0 320px;
+    padding: 2rem;
+    border-radius: 16px;
+    background: #f7f9fc; /* Very light blue background for the card */
+    box-shadow: 0 4px 15px rgba(0, 51, 102, 0.05);
+    transition: all 0.4s ease-out; 
+    text-align: left;
+    border: 1px solid transparent; /* Base border for clean look */
+    
+    /* Animation properties for staggered scroll-in */
+    animation-fill-mode: both; 
+    opacity: 0; /* Hidden by default for scroll animation */
+}
+
+/* 🌟 Hover Effect: Professional lift and border highlight 🌟 */
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(59, 130, 246, 0.2);
+    background: #ffffff; /* Change to white on hover */
+    border-color: #3B82F6; /* Primary blue border */
+}
+
+.feature-icon-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #3B82F6;
+    color: white;
+    font-size: 2rem;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+}
+
+.feature-card h3 {
+    font-size: 1.4rem;
+    color: #003366;
+    margin-bottom: 0.75rem;
+}
+
+.feature-card p {
+    color: #4a5568;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.feature-action-link {
+    color: #3B82F6;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.feature-action-link:hover {
+    color: #1e40af;
+    text-decoration: underline;
+}
