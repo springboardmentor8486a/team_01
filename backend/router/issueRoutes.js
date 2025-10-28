@@ -1,6 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const { getIssues, getIssueById, createIssue, getIssueStats, updateIssueStatus, deleteIssue, upvoteIssue, downvoteIssue, addIssueComment, updateIssueComment, deleteIssueComment } = require("../controller/issueController");
+const {
+  getIssues,
+  getIssueById,
+  createIssue,
+  getIssueStats,
+  getMyIssueStats,
+  updateIssueStatus,
+  deleteIssue,
+  upvoteIssue,
+  downvoteIssue,
+  addIssueComment,
+  updateIssueComment,
+  deleteIssueComment,
+  getIssueByComplaintId
+} = require("../controller/issueController");
 const upload = require("../middleware/upload");
 const authenticateJWT = require("../middleware/authMiddleware");
 
@@ -12,6 +26,12 @@ router.post("/", authenticateJWT, upload.single('image'), createIssue);
 
 // GET /api/issues/stats - get issue stats for dashboard
 router.get("/stats", getIssueStats);
+
+// GET /api/issues/my/stats - get stats for the authenticated user's issues
+router.get("/my/stats", authenticateJWT, getMyIssueStats);
+
+// GET /api/issues/track/:complaintId - get issue by complaintId (for tracking)
+router.get("/track/:complaintId", getIssueByComplaintId);
 
 // GET /api/issues/:id - get issue by id
 router.get("/:id", getIssueById);

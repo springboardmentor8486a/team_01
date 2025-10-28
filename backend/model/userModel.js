@@ -27,6 +27,19 @@ const userSchema = new mongoose.Schema({
         enum: ["user", "admin", "volunteer"],
         default: "user"
     },
+    roles: {
+        type: [String],
+        enum: ["user", "admin", "volunteer"],
+        default: ["user"]
+    },
+    preferredArea: {
+        type: String,
+        trim: true
+    },
+    skills: {
+        type: String,
+        trim: true
+    },
     otp: {
         type: String,
         trim: true,

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registerController, loginController, forgotPasswordController, verifyOtpController, resetPasswordController, logoutController, uploadProfileController, getUserProfileController, updateUserProfileController } = require('../controller/authController');
+const { registerController, loginController, forgotPasswordController, verifyOtpController, resetPasswordController, logoutController, uploadProfileController, getUserProfileController, updateUserProfileController, becomeVolunteerController } = require('../controller/authController');
 const { refreshTokenController } = require('../controller/refreshTokenController');
 const authenticateJWT = require('../middleware/authMiddleware');
 
@@ -20,6 +20,9 @@ router.post('/reset-password', resetPasswordController);
 router.post('/refresh-token', refreshTokenController);
 // logout
 router.post('/logout', authenticateJWT, logoutController);
+
+// Volunteer: upgrade current user role to volunteer
+router.post('/become-volunteer', authenticateJWT, becomeVolunteerController);
 
 // profile image upload
 router.post('/upload-profile', authenticateJWT, upload.single('profileImage'), uploadProfileController);

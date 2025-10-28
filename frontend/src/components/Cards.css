@@ -1,21 +1,93 @@
-.cards {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem; /* space between cards */
-  padding:0 2rem;
-  flex-wrap: wrap; /* allows wrapping on small screens */
+.cards-section-wrapper {
+    text-align: center;
+    padding: 4rem 3rem;
 }
 
-.card-img {
-  margin-top: 20px;
-  width: 300px;   /* control card size */
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease-in-out;
-  cursor: pointer;
+.tagline-header {
+    font-size: 2rem;
+    color: #2D4A6E;
+    margin-bottom: 0.5rem;
 }
 
-.card-img:hover {
-  transform: scale(1.05);
+.tagline-subheader {
+    font-size: 1.1rem;
+    color: #6A8AAE;
+    margin-bottom: 3rem;
+}
+
+.cards-grid-new {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+}
+
+.card-link {
+    display: block;
+    max-width: 300px;
+    text-decoration: none;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border-bottom: 4px solid transparent; /* Base for hover effect */
+}
+
+/* 🌟 Hover Effect for Interactivity 🌟 */
+.card-hover-effect:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(59, 130, 246, 0.2); /* Blue shadow on hover */
+    border-bottom-color: #3B82F6;
+}
+
+.card-title {
+    color: #003366;
+    margin: 1rem 0 0.5rem;
+}
+
+.card-description {
+    color: #4a5568;
+    font-size: 0.95rem;
+}
+
+/* ================= GLOBAL ANIMATIONS (in App.css or similar) ================= */
+
+/* Existing Fade-In-Up for general use */
+.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.fade-in-up {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* New Animation 1: Slide from Left */
+.hidden-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.fade-in-left {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* New Animation 2: Slide from Right */
+.hidden-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.fade-in-right {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* New Animation 3: Slower Fade-in-Up (for center card) */
+.fade-in-up-slow {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 1.2s ease-out, transform 1.2s ease-out; /* Slower transition */
 }

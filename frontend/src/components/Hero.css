@@ -1,26 +1,271 @@
-.hero-container {
-  position: relative;
-  width: 100%;         /* full screen width */
-  height: auto;        /* let image height adjust naturally */
-  max-width: 100%;
-  overflow: hidden;
+/* ================= HERO.CSS UPDATES ================= */
+
+.hero-container-new {
+    background: linear-gradient(135deg, #e0ecf8, #ffffff);
+    padding: 0 0 4rem 0;
+    min-height: 70vh;
 }
 
-.hero-image {
-  width: 100%;         /* stretch to screen width */
-  height: auto;        /* maintain aspect ratio */
-  display: block;
-  object-fit: cover;   /* ensure good fit */
+.hero-content-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 3rem 0;
 }
 
-/* Mobile tweaks */
-@media (max-width: 768px) {
-  .hero-container {
-    height:auto;
-  }
+.hero-text-area {
+    max-width: 55%;
+}
 
-  .hero-image {
-    width: 100%;
-    height: auto;
-  }
+.hero-text-area h1 {
+    font-size: 3.5rem;
+    color: #003366;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.hero-text-area h2 {
+    font-size: 1.8rem;
+    color: #3B82F6;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+}
+
+.hero-text-area p {
+    font-size: 1.1rem;
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.hero-buttons-wrapper {
+    /* Ensures buttons are aligned if they wrap */
+    display: flex;
+    gap: 1rem;
+}
+
+.hero-main-button {
+    background-color: #3B82F6;
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.hero-main-button:hover {
+    background-color: #1e40af;
+    transform: translateY(-2px);
+}
+
+.hero-secondary-button {
+    background: none;
+    color: #3B82F6;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border: 2px solid #3B82F6;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.hero-secondary-button:hover {
+    background-color: #3B82F6;
+    color: white;
+}
+
+.hero-dynamic-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 40%;
+}
+
+.hero-illustration-box {
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 51, 102, 0.1);
+    animation: pulse 4s infinite ease-in-out;
+}
+
+.hero-issue-img {
+    width: 250px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.illustration-caption {
+    margin-top: 1rem;
+    font-weight: 600;
+    color: #003366;
+    text-align: center;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 10px 30px rgba(0, 51, 102, 0.1); }
+    50% { transform: scale(1.02); box-shadow: 0 15px 40px rgba(0, 51, 102, 0.15); }
+    100% { transform: scale(1); box-shadow: 0 10px 30px rgba(0, 51, 102, 0.1); }
+}
+
+/* ================= FEATURES SECTION STYLES ================= */
+.features-section-wrapper {
+    padding: 6rem 3rem;
+    background-color: #ffffff;
+    text-align: center;
+}
+
+.features-intro {
+    max-width: 800px;
+    margin: 0 auto 4rem;
+}
+
+.features-main-title {
+    font-size: 2.5rem;
+    color: #003366;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.features-subtitle {
+    font-size: 1.2rem;
+    color: #6A8AAE;
+}
+
+/* --- FEATURES GRID --- */
+.features-grid {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.feature-card {
+    flex: 0 0 320px;
+    padding: 2rem;
+    border-radius: 16px;
+    background: #f7f9fc;
+    box-shadow: 0 4px 15px rgba(0, 51, 102, 0.05);
+    transition: all 0.4s ease-out; 
+    text-align: left;
+    border: 1px solid transparent; 
+    
+    /* Animation properties for staggered scroll-in */
+    animation-fill-mode: both; 
+    opacity: 0;
+}
+
+/* 🌟 Hover Effect: Professional lift and border highlight 🌟 */
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(59, 130, 246, 0.2);
+    background: #ffffff;
+    border-color: #3B82F6;
+}
+
+.feature-icon-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #3B82F6;
+    color: white;
+    font-size: 2rem;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
+}
+
+.feature-card h3 {
+    font-size: 1.4rem;
+    color: #003366;
+    margin-bottom: 0.75rem;
+}
+
+.feature-card p {
+    color: #4a5568;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.feature-action-link {
+    color: #3B82F6;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.feature-action-link:hover {
+    color: #1e40af;
+    text-decoration: underline;
+}
+
+/* ================= HERO ENTRANCE ANIMATIONS ================= */
+
+/* Initial state (hidden) */
+.hero-animated-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    /* Ensure all items use the same transition duration */
+}
+
+/* Base class added on component mount via useEffect */
+.animate-loaded .hero-animated-item {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Staggered Delay - Use these transition-delay values for a professional, cascading effect */
+.animate-loaded .delay-1 { transition-delay: 0.2s; } /* H1 */
+.animate-loaded .delay-2 { transition-delay: 0.4s; } /* H2 */
+.animate-loaded .delay-3 { transition-delay: 0.6s; } /* P */
+.animate-loaded .delay-4 { transition-delay: 0.8s; } /* Buttons Wrapper */
+.animate-loaded .delay-5 { transition-delay: 1.0s; } /* Illustration Box */
+
+
+/* ================= SCROLL ANIMATIONS (Used by Features/RecentIssuesPreview) ================= */
+
+/* Hides the element initially for scroll animations */
+.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+/* General fade-in-up (used for intro text in Features) */
+.fade-in-up {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Slide from Left */
+.hidden-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.fade-in-left {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Slide from Right */
+.hidden-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+.fade-in-right {
+    opacity: 1;
+    transform: translateX(0);
 }

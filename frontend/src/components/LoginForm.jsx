@@ -1,67 +1,78 @@
 // src/components/LoginForm.jsx
 import React, { useState } from "react";
-import axios from "axios"; // Added axios import
+import axios from "axios";
 import "./LoginForm.css";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from 'react-redux';
-import { setUser } from '../store/authSlice';
-
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setUser } from "../store/authSlice";
 
 import logo from "../assets/logo.png";
 import maillogo from "../assets/maillogo.png";
 import padlock from "../assets/padlock.png";
 
-
-
 function LoginForm() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const from = location.state?.from;
     setLoading(true);
     try {
       const response = await axios.post("http://localhost:3000/api/auth/login", {
         email,
         password,
       });
-      // You can store token, redirect, or show a success message here
+
       if (response.data && response.data.accessToken) {
         localStorage.setItem("accessToken", response.data.accessToken);
-        // Set axios default Authorization header for future requests
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
+        axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.accessToken}`;
       }
+
+      // Store user data if returned from login
+      if (response.data && response.data.user) {
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        dispatch(setUser(response.data.user));
+        console.log("User data stored:", response.data.user);
+      }
+
       alert("Login successful!");
       console.log("Login success:", response.data);
 
-      // Fetch user profile after login to get full user data including profileImage
       try {
-        const profileResponse = await axios.get("http://localhost:3000/api/auth/profile");
-        if (profileResponse.data.success && profileResponse.data.user) {
-          dispatch(setUser(profileResponse.data.user));
-          console.log("User profile fetched and stored in Redux:", profileResponse.data.user);
-          // Redirect based on user role after successful login
-          if (profileResponse.data.user.role === "admin") {
-            navigate("/admin/dashboard");
-          } else {
-            navigate("/dashboard");
+        // If user data wasn't returned from login, fetch it from profile endpoint
+        if (!response.data.user) {
+          const profileResponse = await axios.get("http://localhost:3000/api/auth/profile");
+          if (profileResponse.data.success && profileResponse.data.user) {
+            const user = profileResponse.data.user;
+            localStorage.setItem("user", JSON.stringify(user));
+            dispatch(setUser(user));
           }
+        }
+
+        const user = response.data.user || JSON.parse(localStorage.getItem("user") || "{}");
+        if (from) {
+          navigate(from, { replace: true });
+        } else if (user?.role === "admin") {
+          navigate("/admin/dashboard");
         } else {
           navigate("/dashboard");
         }
       } catch (profileError) {
-        console.error("Failed to fetch user profile after login:", profileError);
-        // Still proceed to dashboard even if profile fetch fails
-        navigate("/dashboard");
+        console.error("Failed to fetch user profile:", profileError);
+        if (from) {
+          navigate(from, { replace: true });
+        } else {
+          navigate("/dashboard");
+        }
       }
     } catch (error) {
-      // Handle error (show message to user)
-      if (error.response && error.response.data && error.response.data.message) {
+      if (error.response?.data?.message) {
         alert("Login failed: " + error.response.data.message);
       } else {
         alert("Login failed. Please try again.");
@@ -72,7 +83,6 @@ function LoginForm() {
     }
   };
 
-
   return (
     <div className="login-box">
       <div className="login-logo">
@@ -81,27 +91,37 @@ function LoginForm() {
       <p className="subtitle">Sign in to your account</p>
 
       <form onSubmit={handleSubmit}>
+        {/* Email Field */}
+        <label className="input-label">
+          Email <span className="required">*</span>
+        </label>
         <div className="input-box">
           <span className="icon">
-     <img src={maillogo} alt="email" />
-      </span>
+            <img src={maillogo} alt="email" />
+          </span>
           <input
             type="email"
-            placeholder="Email"
+            placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
 
+        {/* Password Field */}
+        <label className="input-label">
+          Password <span className="required">*</span>
+        </label>
         <div className="input-box">
           <span className="icon">
-    <img src={padlock} alt="password" />
-  </span>
+            <img src={padlock} alt="password" />
+          </span>
           <input
             type="password"
-            placeholder="Password"
+            placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
 

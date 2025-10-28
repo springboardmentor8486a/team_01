@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom'; // ADD THIS IMPORT
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './DashboardPage.css';
 import Header from '../components/Header';
@@ -15,6 +15,7 @@ import volunteerIcon from '../assets/dashboardAssets/volunteer.png';
 import trackIcon from '../assets/dashboardAssets/track.png';
 import feedbackIcon from '../assets/dashboardAssets/pofeedback.png';
 import issueMapIcon from '../assets/dashboardAssets/issuemap.png';
+import myIssuesIcon from '../assets/dashboardAssets/Usericon.png';
 import IssueCard from '../components/IssueCard.jsx';
 
 // Helpers to adapt API -> UI (module scope to keep stable references)
@@ -55,10 +56,19 @@ const DashboardPage = () => {
         resolved: 0
     });
     const [loading, setLoading] = useState(true);
+    const [myStats, setMyStats] = useState({ 
+        myTotal: 0,
+        pending: 0,
+        inProgress: 0,
+        resolved: 0
+    });
+    const [loadingMy, setLoadingMy] = useState(true);
+    const [user, setUser] = useState(null);
     const navigate = useNavigate(); // ADD THIS HOOK
 
     // Reported issues data and drawer state
     const [issues, setIssues] = useState([]);
+    const [recentActivity, setRecentActivity] = useState([]);
 
     const handleOpen = (issue) => {
         // Navigate to the view issue route with the selected issue's id
@@ -76,42 +86,125 @@ const DashboardPage = () => {
             setLoading(false);
         }
     }, []);
-
+   
+    const fetchMyStats = useCallback(async () => {
+        try {
+            setLoadingMy(true);
+            const token = localStorage.getItem('accessToken');
+            const { data } = await axios.get('http://localhost:3000/api/issues/my/stats', {
+                headers: token ? { Authorization: `Bearer ${token}` } : {},
+                withCredentials: true
+            });
+            setMyStats({ 
+                myTotal: data?.myTotal ?? 0,
+                pending: data?.pending ?? 0,
+                inProgress: data?.inProgress ?? 0,
+                resolved: data?.resolved ?? 0
+            });
+        } catch (err) {
+            console.error('Error fetching my stats:', err);
+        } finally {
+            setLoadingMy(false);
+        }
+    }, []);
+   
     // helpers moved to module scope
-
+   
     const fetchIssues = useCallback(async () => {
         try {
             const { data } = await axios.get('http://localhost:3000/api/issues');
-            const mapped = (Array.isArray(data) ? data : []).map((i) => ({
-                id: i._id,
-                title: i.title,
-                image: imageForIssue(i),
-                description: i.description || '',
-                status: i.status || 'Pending',
-                tags: [i?.type?.toLowerCase()].filter(Boolean),
-                likes: Array.isArray(i?.upvotes) ? i.upvotes.length : 0,
-                dislikes: Array.isArray(i?.downvotes) ? i.downvotes.length : 0,
-                date: formatDate(i?.createdAt),
-                border: statusBorder(i?.status),
-            }));
+            const list = Array.isArray(data) ? data : [];
+            const mapped = list.map((i) => {
+                const createdAt = i?.createdAt ? new Date(i.createdAt) : null;
+                // inline timeAgo to avoid extra helpers
+                const diffSec = createdAt ? Math.floor((Date.now() - createdAt.getTime()) / 1000) : 0;
+                let ta = '';
+                if (createdAt) {
+                    if (diffSec < 60) ta = `${diffSec}s ago`;
+                    else {
+                        const m = Math.floor(diffSec / 60);
+                        if (m < 60) ta = `${m} minute${m !== 1 ? 's' : ''} ago`;
+                        else {
+                            const h = Math.floor(m / 60);
+                            if (h < 24) ta = `${h} hour${h !== 1 ? 's' : ''} ago`;
+                            else {
+                                const d = Math.floor(h / 24);
+                                if (d < 30) ta = `${d} day${d !== 1 ? 's' : ''} ago`;
+                                else {
+                                    const mo = Math.floor(d / 30);
+                                    if (mo < 12) ta = `${mo} month${mo !== 1 ? 's' : ''} ago`;
+                                    else {
+                                        const y = Math.floor(mo / 12);
+                                        ta = `${y} year${y !== 1 ? 's' : ''} ago`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return {
+                    id: i._id,
+                    title: i.title,
+                    image: imageForIssue(i),
+                    description: i.description || '',
+                    status: i.status || 'Pending',
+                    tags: [i?.type?.toLowerCase()].filter(Boolean),
+                    likes: Array.isArray(i?.upvotes) ? i.upvotes.length : 0,
+                    dislikes: Array.isArray(i?.downvotes) ? i.downvotes.length : 0,
+                    date: formatDate(i?.createdAt),
+                    createdAt,
+                    timeAgo: ta,
+                    border: statusBorder(i?.status),
+                };
+            });
             setIssues(mapped);
+            setRecentActivity(mapped.slice(0, 3));
         } catch (err) {
             console.error('Error fetching issues:', err);
         }
     }, []);
     
     useEffect(() => {
-        fetchStats();
-        fetchIssues();
-    }, [fetchStats, fetchIssues]);
+        // Fetch user data from localStorage
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
 
+        fetchStats();
+        fetchMyStats();
+        fetchIssues();
+    }, [fetchStats, fetchMyStats, fetchIssues]);
+
+    // 🌟 UPDATED FUNCTION: Redirects to new routes based on button action 🌟
     const handleActionClick = (action) => {
-        if (action === 'Post a complaint') {
-            navigate('/register-complaint'); // ADD THIS NAVIGATION
-        } else {
-            alert(`${action} button clicked!`);
+        switch (action) {
+            case 'Post a complaint':
+                // Existing, working route
+                navigate('/register-complaint');
+                break;
+            case 'Volunteer':
+                // New route for Volunteer Page
+                navigate('/volunteer');
+                break;
+            case 'Track your complaint':
+                // New route for Tracking Page
+                navigate('/track-complaint');
+                break;
+            case 'Post your Feedback':
+                // New route for Feedback Page
+                navigate('/post-feedback');
+                break;
+            case 'Issue Map':
+                // New route for Issue Map Page
+                navigate('/issue-map');
+                break;
+            default:
+                // Fallback for activity list buttons
+                alert(`${action} button clicked! (This activity is just a placeholder action.)`);
         }
     };
+    // --------------------------------------------------------------------
 
     return (
         <div className="user-dashboard-container">
@@ -135,8 +228,16 @@ const DashboardPage = () => {
                     <div className="user-stat-card">
                         <div className="user-card-header blue-header"></div>
                         <div className="user-card-body">
+                            <p>Issues</p>
+                            <span>{loadingMy ? '...' : myStats.myTotal}</span>
+                        </div>
+                        <img src={myIssuesIcon} alt="Issues" className="user-stat-icon" />
+                    </div>
+                    <div className="user-stat-card">
+                        <div className="user-card-header blue-header"></div>
+                        <div className="user-card-body">
                             <p>Pending</p>
-                            <span>{loading ? '...' : stats.pending}</span>
+                            <span>{loadingMy ? '...' : myStats.pending}</span>
                         </div>
                         <img src={pendingIcon} alt="Pending" className="user-stat-icon" />
                     </div>
@@ -144,7 +245,7 @@ const DashboardPage = () => {
                         <div className="user-card-header blue-header"></div>
                         <div className="user-card-body">
                             <p>In Progress</p>
-                            <span>{loading ? '...' : stats.inProgress}</span>
+                            <span>{loadingMy ? '...' : myStats.inProgress}</span>
                         </div>
                         <img src={inProgressIcon} alt="In Progress" className="user-stat-icon" />
                     </div>
@@ -152,7 +253,7 @@ const DashboardPage = () => {
                         <div className="user-card-header blue-header"></div>
                         <div className="user-card-body">
                             <p>Resolved</p>
-                            <span>{loading ? '...' : stats.resolved}</span>
+                            <span>{loadingMy ? '...' : myStats.resolved}</span>
                         </div>
                         <img src={resolvedIcon} alt="Resolved" className="user-stat-icon" />
                     </div>
@@ -179,27 +280,24 @@ const DashboardPage = () => {
                     <section className="user-recent-activity-section">
                         <h2>Recent Activity</h2>
                         <div className="user-activity-list">
-                            <button className="user-activity-item" onClick={() => handleActionClick('Pothole activity')}>
-                                <img src={potholeImg} alt="Pothole" />
-                                <div className="user-activity-details">
-                                    <span className="user-activity-title">Pothole on Main Street Resolved</span>
-                                    <span className="user-activity-time">2 hours ago</span>
-                                </div>
-                            </button>
-                            <button className="user-activity-item" onClick={() => handleActionClick('Streetlight activity')}>
-                                <img src={streetlightImg} alt="Streetlight" />
-                                <div className="user-activity-details">
-                                    <span className="user-activity-title">New streetlight issue reported</span>
-                                    <span className="user-activity-time">16 hours ago</span>
-                                </div>
-                            </button>
-                            <button className="user-activity-item" onClick={() => handleActionClick('Garbage activity')}>
-                                <img src={garbageImg} alt="Garbage" />
-                                <div className="user-activity-details">
-                                    <span className="user-activity-title">Garbage dump complaint updated</span>
-                                    <span className="user-activity-time">19 hours ago</span>
-                                </div>
-                            </button>
+                            {recentActivity.length === 0 ? (
+                                <div className="user-activity-empty">No recent activity</div>
+                            ) : (
+                                recentActivity.map((item) => (
+                                    <button
+                                        key={item.id}
+                                        className="user-activity-item"
+                                        onClick={() => handleOpen(item)}
+                                        title={item.title}
+                                    >
+                                        <img src={item.image} alt={item.title} />
+                                        <div className="user-activity-details">
+                                            <span className="user-activity-title">{item.title}</span>
+                                            <span className="user-activity-time">{item.timeAgo}</span>
+                                        </div>
+                                    </button>
+                                ))
+                            )}
                         </div>
                     </section>
 
@@ -210,17 +308,19 @@ const DashboardPage = () => {
                                 <span className="user-action-icon-wrapper"><img src={postIcon} alt="" className="user-action-icon" /></span>
                                 Post a complaint
                             </button>
-                            <button className="user-action-button" onClick={() => handleActionClick('Volunteer')}>
-                                <span className="user-action-icon-wrapper"><img src={volunteerIcon} alt="" className="user-action-icon" /></span>
-                                volunteer
-                            </button>
+                            {(!user?.roles?.includes('volunteer') && user?.role !== 'volunteer') && (
+                                <button className="user-action-button" onClick={() => handleActionClick('Volunteer')}>
+                                    <span className="user-action-icon-wrapper"><img src={volunteerIcon} alt="" className="user-action-icon" /></span>
+                                    volunteer
+                                </button>
+                            )}
                             <button className="user-action-button" onClick={() => handleActionClick('Track your complaint')}>
                                 <span className="user-action-icon-wrapper"><img src={trackIcon} alt="" className="user-action-icon" /></span>
                                 Track your complaint
                             </button>
                             <button className="user-action-button" onClick={() => handleActionClick('Post your Feedback')}>
                                 <span className="user-action-icon-wrapper"><img src={feedbackIcon} alt="" className="user-action-icon" /></span>
-                                Post your FeedBack
+                                Post your Feedback
                             </button>
                         </div>
                         <button className="user-issue-map-button" onClick={() => handleActionClick('Issue Map')}>
