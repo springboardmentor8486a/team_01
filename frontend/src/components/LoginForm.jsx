@@ -33,27 +33,35 @@ function LoginForm() {
         localStorage.setItem("accessToken", response.data.accessToken);
         axios.defaults.headers.common["Authorization"] = `Bearer ${response.data.accessToken}`;
       }
+
+      // Store user data if returned from login
+      if (response.data && response.data.user) {
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        dispatch(setUser(response.data.user));
+        console.log("User data stored:", response.data.user);
+      }
+
       alert("Login successful!");
       console.log("Login success:", response.data);
 
       try {
-        const profileResponse = await axios.get("http://localhost:3000/api/auth/profile");
-        if (profileResponse.data.success && profileResponse.data.user) {
-          const user = profileResponse.data.user;
-          dispatch(setUser(user));
-          if (from) {
-            navigate(from, { replace: true });
-          } else if (user?.role === "admin") {
-            navigate("/admin/dashboard");
-          } else {
-            navigate("/dashboard");
+        // If user data wasn't returned from login, fetch it from profile endpoint
+        if (!response.data.user) {
+          const profileResponse = await axios.get("http://localhost:3000/api/auth/profile");
+          if (profileResponse.data.success && profileResponse.data.user) {
+            const user = profileResponse.data.user;
+            localStorage.setItem("user", JSON.stringify(user));
+            dispatch(setUser(user));
           }
+        }
+
+        const user = response.data.user || JSON.parse(localStorage.getItem("user") || "{}");
+        if (from) {
+          navigate(from, { replace: true });
+        } else if (user?.role === "admin") {
+          navigate("/admin/dashboard");
         } else {
-          if (from) {
-            navigate(from, { replace: true });
-          } else {
-            navigate("/dashboard");
-          }
+          navigate("/dashboard");
         }
       } catch (profileError) {
         console.error("Failed to fetch user profile:", profileError);

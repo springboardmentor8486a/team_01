@@ -7,6 +7,8 @@ const adminRoutes = require('./router/adminRoutes');
 const volunteerRoutes = require('./router/volunteerRoutes');
 const authRoutes = require('./router/authRoutes');
 const issueRoutes = require('./router/issueRoutes');
+const contactRoutes = require('./router/contactRoutes');
+const feedbackRoutes = require('./router/feedbackRoutes');
 const app = express();
 const connectToDb = require('./database/db');
 // middleware
@@ -27,11 +29,13 @@ app.get("/",(req, res)=>{
 });
 
 // routes
-app.use("/api/auth",authRoutes);
+app.use("/api/auth", authRoutes);
 app.use('/api/home', homeRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/volunteer', volunteerRoutes);
 app.use('/api/issues', issueRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 const PORT = process.env.PORT || 3000;
 

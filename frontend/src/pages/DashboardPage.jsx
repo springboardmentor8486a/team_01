@@ -56,8 +56,14 @@ const DashboardPage = () => {
         resolved: 0
     });
     const [loading, setLoading] = useState(true);
-    const [myStats, setMyStats] = useState({ myTotal: 0 });
+    const [myStats, setMyStats] = useState({ 
+        myTotal: 0,
+        pending: 0,
+        inProgress: 0,
+        resolved: 0
+    });
     const [loadingMy, setLoadingMy] = useState(true);
+    const [user, setUser] = useState(null);
     const navigate = useNavigate(); // ADD THIS HOOK
 
     // Reported issues data and drawer state
@@ -89,7 +95,12 @@ const DashboardPage = () => {
                 headers: token ? { Authorization: `Bearer ${token}` } : {},
                 withCredentials: true
             });
-            setMyStats({ myTotal: data?.myTotal ?? 0 });
+            setMyStats({ 
+                myTotal: data?.myTotal ?? 0,
+                pending: data?.pending ?? 0,
+                inProgress: data?.inProgress ?? 0,
+                resolved: data?.resolved ?? 0
+            });
         } catch (err) {
             console.error('Error fetching my stats:', err);
         } finally {
@@ -154,6 +165,12 @@ const DashboardPage = () => {
     }, []);
     
     useEffect(() => {
+        // Fetch user data from localStorage
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            setUser(JSON.parse(userData));
+        }
+
         fetchStats();
         fetchMyStats();
         fetchIssues();
@@ -219,26 +236,26 @@ const DashboardPage = () => {
                     <div className="user-stat-card">
                         <div className="user-card-header blue-header"></div>
                         <div className="user-card-body">
-                            <p>Pending</p>
-                            <span>{loading ? '...' : stats.pending}</span>
+                            <p>My Pending</p>
+                            <span>{loadingMy ? '...' : myStats.pending}</span>
                         </div>
-                        <img src={pendingIcon} alt="Pending" className="user-stat-icon" />
+                        <img src={pendingIcon} alt="My Pending" className="user-stat-icon" />
                     </div>
                     <div className="user-stat-card">
                         <div className="user-card-header blue-header"></div>
                         <div className="user-card-body">
-                            <p>In Progress</p>
-                            <span>{loading ? '...' : stats.inProgress}</span>
+                            <p>My In Progress</p>
+                            <span>{loadingMy ? '...' : myStats.inProgress}</span>
                         </div>
-                        <img src={inProgressIcon} alt="In Progress" className="user-stat-icon" />
+                        <img src={inProgressIcon} alt="My In Progress" className="user-stat-icon" />
                     </div>
                     <div className="user-stat-card">
                         <div className="user-card-header blue-header"></div>
                         <div className="user-card-body">
-                            <p>Resolved</p>
-                            <span>{loading ? '...' : stats.resolved}</span>
+                            <p>My Resolved</p>
+                            <span>{loadingMy ? '...' : myStats.resolved}</span>
                         </div>
-                        <img src={resolvedIcon} alt="Resolved" className="user-stat-icon" />
+                        <img src={resolvedIcon} alt="My Resolved" className="user-stat-icon" />
                     </div>
                 </section>
 
@@ -291,17 +308,19 @@ const DashboardPage = () => {
                                 <span className="user-action-icon-wrapper"><img src={postIcon} alt="" className="user-action-icon" /></span>
                                 Post a complaint
                             </button>
-                            <button className="user-action-button" onClick={() => handleActionClick('Volunteer')}>
-                                <span className="user-action-icon-wrapper"><img src={volunteerIcon} alt="" className="user-action-icon" /></span>
-                                volunteer
-                            </button>
+                            {(!user?.roles?.includes('volunteer') && user?.role !== 'volunteer') && (
+                                <button className="user-action-button" onClick={() => handleActionClick('Volunteer')}>
+                                    <span className="user-action-icon-wrapper"><img src={volunteerIcon} alt="" className="user-action-icon" /></span>
+                                    volunteer
+                                </button>
+                            )}
                             <button className="user-action-button" onClick={() => handleActionClick('Track your complaint')}>
                                 <span className="user-action-icon-wrapper"><img src={trackIcon} alt="" className="user-action-icon" /></span>
                                 Track your complaint
                             </button>
                             <button className="user-action-button" onClick={() => handleActionClick('Post your Feedback')}>
                                 <span className="user-action-icon-wrapper"><img src={feedbackIcon} alt="" className="user-action-icon" /></span>
-                                Post your FeedBack
+                                Post your Feedback
                             </button>
                         </div>
                         <button className="user-issue-map-button" onClick={() => handleActionClick('Issue Map')}>

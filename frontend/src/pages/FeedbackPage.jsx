@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import Header from '../components/Header';
 import './DashboardPage.css';
 import BackButton from '../components/BackButton';
@@ -7,13 +8,52 @@ import Footer from '../components/Footer';
 
 const FeedbackPage = () => {
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [formData, setFormData] = useState({
+        service: '',
+        rating: '',
+        comments: ''
+    });
 
-    const handleSubmit = (e) => {
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Here you would typically send the data to your backend API
-        console.log('Feedback Submitted!'); 
-        setIsSubmitted(true);
-        // Clear form fields if necessary
+        setLoading(true);
+        setError('');
+
+        try {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                setError('You must be logged in to submit feedback.');
+                setLoading(false);
+                return;
+            }
+
+            const response = await axios.post('http://localhost:3000/api/feedback/submit', formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 201) {
+                setIsSubmitted(true);
+                setFormData({ service: '', rating: '', comments: '' });
+            }
+        } catch (err) {
+            console.error('Feedback submission error:', err);
+            setError(err.response?.data?.message || 'Error submitting feedback. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -43,30 +83,63 @@ const FeedbackPage = () => {
                                     </button>
                                 </div>
                             ) : (
-                                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '600px' }}>
-                                    <div className="form-row">
-                                        <label htmlFor="service">Related Service/Issue (Optional)</label>
-                                        <input type="text" id="service" placeholder="e.g., Pothole repair, response time" />
-                                    </div>
-                                    <div className="form-row">
-                                        <label htmlFor="rating">Overall Satisfaction Rating</label>
-                                        <select id="rating" required>
-                                            <option value="">Select a rating</option>
-                                            <option value="5">5 - Excellent</option>
-                                            <option value="4">4 - Very Good</option>
-                                            <option value="3">3 - Good</option>
-                                            <option value="2">2 - Fair</option>
-                                            <option value="1">1 - Poor</option>
-                                        </select>
-                                    </div>
-                                    <div className="form-row">
-                                        <label htmlFor="comments">Comments / Suggestions</label>
-                                        <textarea id="comments" rows="5" placeholder="Please provide details about your experience..." required></textarea>
-                                    </div>
-                                    <button type="submit" className="save-btn" style={{ marginTop: '1rem', background: '#2563eb', width: '200px' }}>
-                                        Post Feedback
-                                    </button>
-                                </form>
+                                <>
+                                    {error && (
+                                        <div style={{ padding: '1rem', background: '#fef2f2', color: '#dc2626', borderRadius: '5px', marginBottom: '1rem' }}>
+                                            {error}
+                                        </div>
+                                    )}
+                                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '600px' }}>
+                                        <div className="form-row">
+                                            <label htmlFor="service">Related Service/Issue (Optional)</label>
+                                            <input 
+                                                type="text" 
+                                                id="service" 
+                                                name="service"
+                                                value={formData.service}
+                                                onChange={handleChange}
+                                                placeholder="e.g., Pothole repair, response time" 
+                                            />
+                                        </div>
+                                        <div className="form-row">
+                                            <label htmlFor="rating">Overall Satisfaction Rating</label>
+                                            <select 
+                                                id="rating" 
+                                                name="rating"
+                                                value={formData.rating}
+                                                onChange={handleChange}
+                                                required
+                                            >
+                                                <option value="">Select a rating</option>
+                                                <option value="5">5 - Excellent</option>
+                                                <option value="4">4 - Very Good</option>
+                                                <option value="3">3 - Good</option>
+                                                <option value="2">2 - Fair</option>
+                                                <option value="1">1 - Poor</option>
+                                            </select>
+                                        </div>
+                                        <div className="form-row">
+                                            <label htmlFor="comments">Comments / Suggestions</label>
+                                            <textarea 
+                                                id="comments" 
+                                                name="comments"
+                                                value={formData.comments}
+                                                onChange={handleChange}
+                                                rows="5" 
+                                                placeholder="Please provide details about your experience..." 
+                                                required
+                                            />
+                                        </div>
+                                        <button 
+                                            type="submit" 
+                                            className="save-btn" 
+                                            style={{ marginTop: '1rem', background: '#2563eb', width: '200px' }}
+                                            disabled={loading}
+                                        >
+                                            {loading ? 'Submitting...' : 'Post Feedback'}
+                                        </button>
+                                    </form>
+                                </>
                             )}
                         </section>
                     </main>

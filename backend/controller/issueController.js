@@ -29,14 +29,11 @@ const getIssueById = async (req, res) => {
 // Create a new issue
 const createIssue = async (req, res) => {
   try {
-    // console.log("Request body:", req.body);
-    // console.log("Request file:", req.file);
-
     const { title, type, priority, address, landmark, description, lat, lng } = req.body;
 
     // Simple validation - just check if they exist and have content
     if (!title || !type || String(title).length === 0 || String(type).length === 0) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: "Title and type are required",
         debug: {
           title: title,
@@ -71,6 +68,23 @@ const createIssue = async (req, res) => {
       return res.status(401).json({ message: "Unauthorized: User not authenticated" });
     }
 
+    // Generate a human-friendly complaintId (e.g., PEND-12345)
+    const prefix = "PEND"; // new reports start as Pending
+    let complaintId;
+    let attempts = 0;
+    do {
+      const rand = Math.floor(10000 + Math.random() * 90000);
+      complaintId = `${prefix}-${rand}`;
+      // Ensure uniqueness
+      // eslint-disable-next-line no-await-in-loop
+      var existing = await Issue.findOne({ complaintId });
+      attempts += 1;
+    } while (existing && attempts < 5);
+    if (existing) {
+      // As a final fallback, append timestamp suffix
+      complaintId = `${prefix}-${Date.now().toString().slice(-5)}`;
+    }
+
     const newIssue = new Issue({
       title: String(title),
       type: String(type),
@@ -81,6 +95,7 @@ const createIssue = async (req, res) => {
       location,
       image: imageUrl,
       reporterId: req.user.userId,
+      complaintId
     });
 
     const savedIssue = await newIssue.save();
@@ -112,8 +127,15 @@ const getMyIssueStats = async (req, res) => {
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    const myTotal = await Issue.countDocuments({ reporterId: userId });
-    return res.status(200).json({ myTotal });
+
+    const [myTotal, pending, inProgress, resolved] = await Promise.all([
+      Issue.countDocuments({ reporterId: userId }),
+      Issue.countDocuments({ reporterId: userId, status: "Pending" }),
+      Issue.countDocuments({ reporterId: userId, status: "In Progress" }),
+      Issue.countDocuments({ reporterId: userId, status: "Resolved" }),
+    ]);
+
+    return res.status(200).json({ myTotal, pending, inProgress, resolved });
   } catch (error) {
     return res.status(500).json({ message: "Failed to fetch my issue stats", error: error.message });
   }
@@ -334,30 +356,57 @@ const deleteIssueComment = async (req, res) => {
  const deleteIssue = async (req, res) => {
    try {
      const { id } = req.params;
-
+ 
      const deletedIssue = await Issue.findByIdAndDelete(id);
-
+ 
      if (!deletedIssue) {
        return res.status(404).json({ message: "Issue not found" });
      }
-
+ 
      res.status(200).json({ message: "Issue deleted successfully" });
    } catch (error) {
      res.status(500).json({ message: "Failed to delete issue", error: error.message });
    }
  };
-
-module.exports = {
-  getIssues,
-  getIssueById,
-  createIssue,
-  getIssueStats,
-  getMyIssueStats,
-  updateIssueStatus,
-  upvoteIssue,
-  downvoteIssue,
-  addIssueComment,
-  updateIssueComment,
-  deleteIssueComment,
-  deleteIssue,
-};
+ 
+ // Get issue by complaintId for tracking
+ const getIssueByComplaintId = async (req, res) => {
+   try {
+     const { complaintId } = req.params;
+     if (!complaintId) {
+       return res.status(400).json({ message: "Complaint ID is required" });
+     }
+     const issue = await Issue.findOne({ complaintId });
+     if (!issue) {
+       return res.status(404).json({ message: "Issue not found" });
+     }
+     return res.status(200).json({
+       complaintId: issue.complaintId,
+       status: issue.status,
+       title: issue.title,
+       type: issue.type,
+       createdAt: issue.createdAt,
+       address: issue.address,
+       landmark: issue.landmark,
+       _id: issue._id,
+     });
+   } catch (error) {
+     return res.status(500).json({ message: "Failed to fetch issue by complaint ID", error: error.message });
+   }
+ };
+ 
+ module.exports = {
+   getIssues,
+   getIssueById,
+   createIssue,
+   getIssueStats,
+   getMyIssueStats,
+   updateIssueStatus,
+   upvoteIssue,
+   downvoteIssue,
+   addIssueComment,
+   updateIssueComment,
+   deleteIssueComment,
+   deleteIssue,
+   getIssueByComplaintId,
+ };
