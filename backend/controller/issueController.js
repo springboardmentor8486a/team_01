@@ -4,14 +4,8 @@ const { uploadToCloudinary } = require("../helpers/cloudinaryHelper");
 // Get all issues
 const getIssues = async (req, res) => {
   try {
-    const issues = await Issue.find().sort({ createdAt: -1 }).populate('comments.userId', 'name email').populate('reporterId', 'name email');
-    const issuesWithCounts = issues.map(issue => ({
-      ...issue.toObject(),
-      upvotesCount: issue.upvotes.length,
-      downvotesCount: issue.downvotes.length,
-      commentsCount: issue.comments.length
-    }));
-    res.status(200).json(issuesWithCounts);
+    const issues = await Issue.find().sort({ createdAt: -1 });
+    res.status(200).json(issues);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch issues", error: error.message });
   }
@@ -108,6 +102,20 @@ const getIssueStats = async (req, res) => {
     res.status(200).json({ total, pending, inProgress, resolved });
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch issue stats", error: error.message });
+  }
+};
+
+// Get stats for the current user's issues
+const getMyIssueStats = async (req, res) => {
+  try {
+    const userId = req.user && req.user.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const myTotal = await Issue.countDocuments({ reporterId: userId });
+    return res.status(200).json({ myTotal });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to fetch my issue stats", error: error.message });
   }
 };
 
@@ -344,6 +352,7 @@ module.exports = {
   getIssueById,
   createIssue,
   getIssueStats,
+  getMyIssueStats,
   updateIssueStatus,
   upvoteIssue,
   downvoteIssue,
@@ -351,8 +360,4 @@ module.exports = {
   updateIssueComment,
   deleteIssueComment,
   deleteIssue,
-  getIssueById,
-  addComment,
-  upvoteIssue,
-  downvoteIssue,
 };

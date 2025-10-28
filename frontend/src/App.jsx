@@ -11,8 +11,8 @@ import ProfilePage from "./pages/ProfilePage";
 import ComplaintRegisterPage from './pages/ComplaintRegisterPage';
 import LocationSelectionPage from './pages/LocationSelectionPage';
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import AdminProfilePage from "./pages/AdminProfilePage";
 import './App.css';
-import AdminDashboard from "./pages/AdminDashboard";
 
 import IssueDetailpage from "./pages/IssueDetailPage";
 function App() {
@@ -32,6 +32,7 @@ function App() {
         <Route path="/register-complaint" element={<ComplaintRegisterPage />} />
         <Route path="/location-selection" element={<LocationSelectionPage />} />
         <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+        <Route path="/admin/profile" element={<AdminProfilePage />} />
         <Route path="/viewissue/:id" element={<IssueDetailpage/>}/>
         {/* Fallback for any /viewissue/* path to avoid "No routes matched" during HMR or direct loads */}
         <Route path="/viewissue/*" element={<IssueDetailpage/>}/>
