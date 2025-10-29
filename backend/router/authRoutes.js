@@ -3,11 +3,12 @@ const router = express.Router();
 const { registerController, loginController, forgotPasswordController, verifyOtpController, resetPasswordController, logoutController, uploadProfileController, getUserProfileController, updateUserProfileController, becomeVolunteerController } = require('../controller/authController');
 const { refreshTokenController } = require('../controller/refreshTokenController');
 const authenticateJWT = require('../middleware/authMiddleware');
+const multerErrorHandler = require('../middleware/multerErrorHandler');
 
 const upload = require('../middleware/multer');
 
 // register
-router.post('/register', upload.single('profileImage'), registerController);
+router.post('/register', upload.single('profileImage'), multerErrorHandler, registerController);
 // login
 router.post('/login', loginController);
 // forgot password - send OTP
@@ -25,7 +26,7 @@ router.post('/logout', authenticateJWT, logoutController);
 router.post('/become-volunteer', authenticateJWT, becomeVolunteerController);
 
 // profile image upload
-router.post('/upload-profile', authenticateJWT, upload.single('profileImage'), uploadProfileController);
+router.post('/upload-profile', authenticateJWT, upload.single('profileImage'), multerErrorHandler, uploadProfileController);
 
 // get user profile
 router.get('/profile', authenticateJWT, getUserProfileController);

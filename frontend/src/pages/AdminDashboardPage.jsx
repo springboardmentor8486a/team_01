@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import AdminHeader from '../components/admin/AdminHeader';
 import DashboardStats from '../components/admin/DashboardStats';
@@ -11,8 +10,6 @@ import UserManagementTable from '../components/admin/UserManagementTable';
 import './AdminDashboardPage.css';
 
 export default function AdminDashboardPage() {
-  const navigate = useNavigate();
-  
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
@@ -160,28 +157,6 @@ export default function AdminDashboardPage() {
         fetchUsers();
     }, []);
 
-  const handleLogout = async () => {
-    const token = localStorage.getItem('accessToken');
-    try {
-      await axios.post(
-        'http://localhost:3000/api/auth/logout',
-        null,
-        {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-          withCredentials: true
-        }
-      );
-    } catch (err) {
-      console.error('Logout error:', err);
-    } finally {
-      localStorage.removeItem('accessToken');
-      if (axios?.defaults?.headers?.common?.Authorization) {
-        delete axios.defaults.headers.common.Authorization;
-      }
-      navigate('/login');
-    }
-  };
-
   return (
     <div className="admin-dashboard-container">
       <AdminHeader />
@@ -193,12 +168,6 @@ export default function AdminDashboardPage() {
           <p className="welcome-banner-subtitle">
             Manage and track all civic issues across the community
           </p>
-          <button 
-                className="admin-logout-button" 
-                onClick={handleLogout}
-            >
-                Logout
-            </button>
         </div>
 
         <DashboardStats stats={stats} />

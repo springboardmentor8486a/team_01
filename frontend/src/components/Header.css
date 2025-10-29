@@ -93,12 +93,8 @@
   transition: color 0.2s;
 }
 
-.nav-link.dashboard {
+.nav-link.active {
   color: #2196f3;
-}
-
-.nav-link.profile.active {
-  color: #333;
   font-weight: 600;
 }
 

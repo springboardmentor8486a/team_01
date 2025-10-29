@@ -12,7 +12,7 @@ const VolunteerPage = () => {
         <div className="page-container">
             <div className="content-wrap">
                 <div className="user-dashboard-container">
-                    <Header activePage="volunteer" />
+                    <Header />
                     <main className="user-main-content">
                         {/* 🌟 PLACEMENT: The BackButton is now directly before the title banner. 🌟 */}
                         <BackButton /> 

@@ -85,30 +85,6 @@ const ProfileForm = () => {
     setIsEditing(!isEditing);
   };
 
-
-  const handleImageUpload = async (file) => {
-    if (!file) return;
-    const formDataUpload = new FormData();
-    formDataUpload.append('profileImage', file);
-    try {
-      const token = localStorage.getItem('accessToken');
-      const response = await axios.post('http://localhost:3000/api/auth/upload-profile', formDataUpload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      if (response.data.success) {
-        // Refetch profile to get updated user data
-        await fetchUserProfile();
-        alert('Profile image updated successfully!');
-      }
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('Failed to upload image. Please try again.');
-    }
-  };
-
   const handleSave = async () => {
     try {
       setSaving(true);
@@ -146,13 +122,6 @@ const ProfileForm = () => {
   const handleCancel = () => {
     setFormData(originalData);
     setIsEditing(false);
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      handleImageUpload(file);
-    }
   };
 
 
@@ -294,17 +263,6 @@ const ProfileForm = () => {
           />
         </div>
 
-        {isEditing && (
-          <div className="form-group image-upload-group">
-            <label className="form-label">Profile Image</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="form-input"
-            />
-          </div>
-        )}
 
         {isEditing && (
 

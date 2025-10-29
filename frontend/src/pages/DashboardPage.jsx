@@ -208,7 +208,7 @@ const DashboardPage = () => {
 
     return (
         <div className="user-dashboard-container">
-            <Header activePage="dashboard" />
+            <Header />
 
             <main className="user-main-content">
                 <div className="user-welcome-banner">

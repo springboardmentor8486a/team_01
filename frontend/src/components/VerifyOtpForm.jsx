@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 function VerifyOtpForm() {
   const [otp, setOtpLocal] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -39,6 +40,8 @@ function VerifyOtpForm() {
       setError("Please enter a 6-digit OTP.");
       return;
     }
+    
+    setLoading(true);
     try {
       const response = await axios.post("http://localhost:3000/api/auth/verify-otp", {
         email,
@@ -56,6 +59,8 @@ function VerifyOtpForm() {
     } catch (error) {
       setError("Error verifying OTP. Please try again.");
       console.error("Verify OTP error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,7 +87,9 @@ function VerifyOtpForm() {
           ))}
         </div>
         {error && <div className="otp-error">{error}</div>}
-        <button type="submit">Verify</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Verifying..." : "Verify"}
+        </button>
       </form>
 
       <div className="resend-text">

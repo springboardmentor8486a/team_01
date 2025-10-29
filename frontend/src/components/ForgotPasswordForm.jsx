@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 export default function ForgotPasswordForm() {
   const [email, setEmailLocal] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const validateEmail = (v) => /\S+@\S+\.\S+/.test(v);
@@ -19,8 +20,10 @@ export default function ForgotPasswordForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     if (!validateEmail(email)) {
       setError("Please enter a valid email address");
+      setLoading(false);
       return;
     }
     try {
@@ -35,6 +38,8 @@ export default function ForgotPasswordForm() {
     } catch (error) {
       alert("Error sending OTP. Please try again.");
       console.error("Forgot password error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,8 +74,8 @@ export default function ForgotPasswordForm() {
 
           {error && <div className="forgot-error">{error}</div>}
 
-          <button type="submit" className="forgot-button">
-            Send otp
+          <button type="submit" className="forgot-button" disabled={loading}>
+            {loading ? "Sending..." : "Send otp"}
           </button>
         </form>
 

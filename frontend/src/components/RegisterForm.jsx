@@ -29,6 +29,7 @@ function RegisterForm() {
   const [profileImagePreview, setProfileImagePreview] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -61,9 +62,11 @@ function RegisterForm() {
     e.preventDefault();
     setError("");
     setSuccess("");
+    setLoading(true);
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
+      setLoading(false);
       return;
     }
 
@@ -110,6 +113,8 @@ function RegisterForm() {
       }
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -288,8 +293,8 @@ function RegisterForm() {
         {error && <p style={{ color: "red" }}>{error}</p>}
         {success && <p style={{ color: "green" }}>{success}</p>}
 
-        <button type="submit" className="register-btn">
-          Register
+        <button type="submit" className="register-btn" disabled={loading}>
+          {loading ? "Registering..." : "Register"}
         </button>
       </form>
 

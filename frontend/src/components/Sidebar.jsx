@@ -1,6 +1,7 @@
 
 import React, { useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../store/authSlice';
 
 
 import axios from 'axios';
@@ -9,6 +10,7 @@ import './Sidebar.css';
 const Sidebar = () => {
   const fileInputRef = useRef(null);
   const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
 
   const handleCameraClick = () => {
     fileInputRef.current.click();
@@ -34,6 +36,8 @@ const Sidebar = () => {
           }
         });
         if (profileResponse.data.success && profileResponse.data.user) {
+          // Update Redux store with new user data including updated profile image
+          dispatch(setUser(profileResponse.data.user));
           alert('Profile image updated successfully!');
         }
       }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../store/authSlice';
@@ -7,6 +7,12 @@ import { setUser } from '../../store/authSlice';
 export default function AdminHeader() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
+  
+  // Automatically determine active page based on current route
+  const currentPath = location.pathname;
+  const isDashboardActive = currentPath === '/admin/dashboard';
+  const isProfileActive = currentPath === '/admin/profile';
 
   const handleLogout = async () => {
     const token = localStorage.getItem('accessToken');
@@ -39,8 +45,8 @@ export default function AdminHeader() {
           <span className="admin-logo-text">CleanStreet</span>
         </Link>
         <nav className="admin-nav">
-          <Link to="/admin/dashboard" className="admin-nav-link active">Dashboard</Link>
-          <Link to="/admin/profile" className="admin-nav-link">Profile</Link>
+          <Link to="/admin/dashboard" className={`admin-nav-link${isDashboardActive ? ' active' : ''}`}>Dashboard</Link>
+          <Link to="/admin/profile" className={`admin-nav-link${isProfileActive ? ' active' : ''}`}>Profile</Link>
           <a
             href="#"
             className="admin-nav-link"

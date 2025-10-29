@@ -13,6 +13,7 @@ export default function ResetPasswordForm() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const validate = () => {
@@ -39,7 +40,8 @@ export default function ResetPasswordForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
+    
+    setLoading(true);
     try {
       await axios.post("http://localhost:3000/api/auth/reset-password", {
         email,
@@ -50,6 +52,8 @@ export default function ResetPasswordForm() {
       navigate("/login");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to reset password");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -92,8 +96,8 @@ export default function ResetPasswordForm() {
 
         {error && <div className="reset-error">{error}</div>}
 
-        <button type="submit" className="reset-submit">
-          Submit
+        <button type="submit" className="reset-submit" disabled={loading}>
+          {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
 

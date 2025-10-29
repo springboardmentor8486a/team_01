@@ -9,7 +9,7 @@ const IssueMapPage = () => {
         <div className="page-container">
             <div className="content-wrap">
                 <div className="user-dashboard-container">
-                    <Header activePage="issuemap" />
+                    <Header />
                     <main className="user-main-content">
                         <BackButton />
                         <div className="user-welcome-banner" style={{ textAlign: 'left', padding: '2rem 3rem' }}>
