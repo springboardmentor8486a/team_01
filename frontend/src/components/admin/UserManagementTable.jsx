@@ -27,6 +27,7 @@ export default function UserManagementTable({ users }) {
     const [modalState, setModalState] = useState({ type: null, user: null });
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [selectedRole, setSelectedRole] = useState('all');
+    const [searchTerm, setSearchTerm] = useState('');
     const dropdownRef = useRef(null);
 
     useEffect(() => {
@@ -75,9 +76,21 @@ export default function UserManagementTable({ users }) {
         }
     };
     const handleRoleSelect = (role) => { setSelectedRole(role); setIsDropdownOpen(false); };
+    const handleSearchChange = (e) => setSearchTerm(e.target.value);
     const getRoleClass = (role) => `role-badge ${role.toLowerCase()}`;
 
-    const filteredUsers = selectedRole === 'all' ? localUsers : localUsers.filter(user => user.role.toLowerCase() === selectedRole.toLowerCase());
+    // Filter users based on search term and selected role
+    const filteredUsers = localUsers.filter(user => {
+        const matchesSearch = searchTerm === '' ||
+            user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.location?.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        const matchesRole = selectedRole === 'all' || 
+            user.role?.toLowerCase() === selectedRole.toLowerCase();
+        
+        return matchesSearch && matchesRole;
+    });
 
     return (
         <>
@@ -85,7 +98,7 @@ export default function UserManagementTable({ users }) {
                 <div className="table-filters">
                     <div className="search-wrapper">
                         <Search className="search-icon" />
-                        <input placeholder="Search users by name or email..." className="search-input" />
+                        <input placeholder="Search users by name or email..." className="search-input" value={searchTerm} onChange={handleSearchChange} />
                     </div>
                     <div className="filter-actions" ref={dropdownRef}>
                         <button className="filter-trigger-btn" onClick={() => setIsDropdownOpen(p => !p)}>

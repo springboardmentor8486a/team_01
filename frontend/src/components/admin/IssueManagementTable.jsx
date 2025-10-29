@@ -80,6 +80,7 @@ export default function IssueManagementTable({ issues: propIssues }) {
     const [modalState, setModalState] = useState({ type: null, issue: null });
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [selectedStatus, setSelectedStatus] = useState('All Status');
+    const [searchTerm, setSearchTerm] = useState('');
     const dropdownRef = useRef(null);
 
     useEffect(() => {
@@ -96,6 +97,22 @@ export default function IssueManagementTable({ issues: propIssues }) {
     const closeModal = () => setModalState({ type: null, issue: null });
     const handleSave = (id, updates) => setIssues(p => p.map(i => i.id === id ? { ...i, ...updates } : i));
     const handleStatusSelect = (status) => { setSelectedStatus(status); setIsDropdownOpen(false); };
+    const handleSearchChange = (e) => setSearchTerm(e.target.value);
+
+    // Filter issues based on search term and selected status
+    const filteredIssues = issues.filter(issue => {
+        const matchesSearch = searchTerm === '' || 
+            issue.issue?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            issue.issue?.address?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            issue.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            issue.reportedBy?.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        const matchesStatus = selectedStatus === 'All Status' || 
+            issue.status?.toLowerCase() === selectedStatus.toLowerCase();
+        
+        return matchesSearch && matchesStatus;
+    });
+
 const getStatusClass = (status) => `status-badge ${status.toLowerCase().replace(/ /g, '-')}`;
 const getPriorityClass = (priority) => `priority-${priority.toLowerCase()}`;
 
@@ -103,7 +120,7 @@ const getPriorityClass = (priority) => `priority-${priority.toLowerCase()}`;
         <>
             <div className="issue-management-container">
                 <div className="table-filters">
-                    <div className="search-wrapper"><Search className="search-icon" /><input placeholder="Search issues..." className="search-input" /></div>
+                    <div className="search-wrapper"><Search className="search-icon" /><input placeholder="Search issues..." className="search-input" value={searchTerm} onChange={handleSearchChange} /></div>
                     <div className="filter-actions" ref={dropdownRef}>
                         <button className="filter-trigger-btn" onClick={() => setIsDropdownOpen(p => !p)}><SlidersHorizontal className="filter-icon" /><span>{selectedStatus}</span></button>
                         {isDropdownOpen && (
@@ -121,7 +138,7 @@ const getPriorityClass = (priority) => `priority-${priority.toLowerCase()}`;
                     <table>
                         <thead><tr><th>Issue</th><th>Status</th><th>Priority</th><th>Category</th><th>Reported By</th><th>Date</th><th className="actions-header">Actions</th></tr></thead>
                         <tbody>
-                            {issues.map((issue) => (
+                            {filteredIssues.map((issue) => (
                                 <tr key={issue.id}>
                                     <td><div className="issue-title">{issue.issue?.title}</div><div className="issue-location">{issue.issue?.address}</div></td>
                                     <td><span className={getStatusClass(issue.status)}>{issue.status}</span></td>
