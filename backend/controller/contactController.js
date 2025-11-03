@@ -1,6 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const User = require('../model/userModel');
-const { sendWelcomeEmail } = require('../helpers/emailService');
+const { sendWelcomeEmail, sendContactMessage } = require('../helpers/emailService');
 
 const registerVolunteer = async (req, res) => {
     try {
@@ -69,6 +69,48 @@ const registerVolunteer = async (req, res) => {
     }
 };
 
+const handleContactMessage = async (req, res) => {
+    try {
+        console.log('Received contact message:', req.body); // Debug log
+
+        const { name, email, subject, message } = req.body;
+
+        if (!name || !email || !subject || !message) {
+            console.log('Missing required fields'); // Debug log
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                message: 'Missing required fields. Please fill in all required information.'
+            });
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                message: 'Please provide a valid email address.'
+            });
+        }
+
+        // Send the contact message via email
+        await sendContactMessage({
+            name,
+            email,
+            subject,
+            message
+        });
+
+        res.status(StatusCodes.OK).json({
+            message: 'Your message has been sent successfully. We will get back to you soon!'
+        });
+    } catch (error) {
+        console.error('Error sending contact message:', error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            message: 'Error sending message. Please try again later.',
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
-    registerVolunteer
+    registerVolunteer,
+    handleContactMessage
 };

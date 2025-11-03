@@ -18,6 +18,7 @@ import FeedbackPage from "./pages/FeedbackPage";
 import IssueMapPage from "./pages/IssueMapPage";
 import AboutUsPage from "./pages/AboutUsPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import ContactPage from "./pages/ContactPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import './App.css';
 
@@ -103,6 +104,7 @@ function App() {
         <Route path="/volunteer" element={<VolunteerPage />} />
         <Route path="/about-us" element={<AboutUsPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/contact" element={<ContactPage />} />
 
         {/* Issue detail routes */}
         <Route path="/viewissue/:id" element={<IssueDetailpage />} />
